@@ -1,0 +1,73 @@
+<?php
+namespace ddGetDocuments\DataProvider;
+
+
+abstract class DataProvider
+{
+	//Delimiter used in the “filter” parameter to distinct fields/tvs
+	protected $filterFieldDelimiter = '`';
+	public $defaultParams = array();
+	
+	/**
+	 * @param $providerName
+	 * @return string
+	 * @throws \Exception
+	 */
+	public final static function includeProviderByName($providerName){
+		$providerName = ucfirst(strtolower($providerName));
+		$providerPath = $providerName.DIRECTORY_SEPARATOR.'DataProvider'.".php";
+		
+		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
+			require_once($providerPath);
+			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
+		}else{
+			throw new \Exception("Data provider $providerName not found.", 500);
+		}
+	}
+	
+	/**
+	 * @param array $providerParams
+	 * @param array $snippetParams
+	 * @return mixed
+	 */
+	abstract protected function getDataFromSource(array $providerParams, array $snippetParams);
+	
+	/**
+	 * @param array $providerParams
+	 * @param array $snippetParams
+	 * @return array
+	 */
+	public final function get(array $providerParams = array(), array $snippetParams){
+		
+		if(empty($providerParams)){
+			$providerParams = $this->defaultParams;
+		}
+		
+		return $this->getDataFromSource($providerParams, $snippetParams);
+	}
+	
+	/**
+	 * @param string $filterStr
+	 * @return array
+	 */
+	public final function getUsedFieldsFromFilter($filterStr){
+		$output = array();
+		//Try to find all fields/tvs used in filter by the pattern
+		preg_match_all("/{$this->filterFieldDelimiter}(\w+){$this->filterFieldDelimiter}/", $filterStr, $fields);
+		
+		if(!empty($fields[1])){
+			//Sort out fields from tvs
+			$fieldsArray = \ddTools::explodeFieldsArr(array_flip($fields[1]));
+			
+			if(!empty($fieldsArray[0])){
+				$output['fields'] = array_keys($fieldsArray[0]);
+			}
+			
+			if(!empty($fieldsArray[1])){
+				$output['tvs'] = array_keys($fieldsArray[1]);
+			}
+		}
+		
+		return $output;
+	}
+}

@@ -1,0 +1,10 @@
+<?php
+require_once('src/ddGetDocuments.php');
+require_once('src/Output.php');
+require_once('src/Extender/Extender.php');
+require_once('src/Extender/Pagination/Extender.php');
+require_once('src/Format/Format.php');
+require_once('src/Format/String/Format.php');
+require_once('src/DataProvider/DataProvider.php');
+require_once('src/DataProvider/Parent/DataProvider.php');
+?>
