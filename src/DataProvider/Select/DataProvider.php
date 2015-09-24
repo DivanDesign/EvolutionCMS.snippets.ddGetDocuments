@@ -1,35 +1,28 @@
 <?php
-namespace ddGetDocuments\DataProvider\Parent;
+
+namespace ddGetDocuments\DataProvider\Select;
 
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	public $defaultParams = array(
-		'parentId' => 0,
-		'depth' => 1,
-		'filter' => '`published` = 1 AND `deleted` = 0'
+		'ids' => null
 	);
 	
-	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
-	 * @return array
-	 */
 	protected function getDataFromSource(array $providerParams, array $snippetParams){
 		global $modx;
 		$output = array();
 		
-		//TODO: эти проверки с дефолтами надо куда-то вынести
-		$parentId = $this->defaultParams['parentId'];
+		$ids = $this->defaultParams['ids'];
 		
-		if(isset($providerParams['parentId'])){
-			$parentId = $providerParams['parentId'];
+		if(isset($providerParams['ids'])){
+			$ids = (string) $providerParams['ids'];
 		}
 		
-		$depth = $this->defaultParams['depth'];
+		$filter = null;
 		
-		if(isset($providerParams['depth'])){
-			$depth = $providerParams['depth'];
+		if(isset($snippetParams['filter'])){
+			$filter = $snippetParams['filter'];
 		}
 		
 		if(isset($snippetParams['offset'])){
@@ -42,12 +35,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		if(isset($snippetParams['orderBy'])){
 			$orderBy = $snippetParams['orderBy'];
-		}
-		
-		$filter = $this->defaultParams['filter'];
-		
-		if(isset($snippetParams['filter'])){
-			$filter = $snippetParams['filter'];
 		}
 		
 		//By default, the required data is just fetched from the site_content table
@@ -67,8 +54,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filterQuery = "AND ($filter)";
 		}
 		
-		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds(array($parentId), $depth));
-		
 		$orderByQuery = '';
 		
 		if(!empty($orderBy)){
@@ -85,37 +70,18 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$limitQuery = "LIMIT $offset,".PHP_INT_MAX;
 		}
 		
+		$idsWhereQuery = '';
+		if(!empty($ids)){
+			$idsWhereQuery = "WHERE `documents`.`id` IN ($ids)";
+		}
+		
 		$data = $modx->db->makeArray($modx->db->query("
 			SELECT `documents`.`id` FROM $fromQuery AS `documents`
-			WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
+			$idsWhereQuery $filterQuery $orderByQuery $limitQuery
 		"));
 		
 		if(is_array($data)){
 			$output = $data;
-		}
-		
-		return $output;
-	}
-	
-	protected function getAllChildrenIds(array $parentIds, $depth){
-		global $modx;
-		$output = array();
-		
-		$parentIdsStr = implode(',', $parentIds);
-		
-		$outputArray = $modx->db->makeArray($modx->db->query("
-			SELECT `id` FROM {$this->siteContentTableName}
-			WHERE `parent` IN ($parentIdsStr)
-		"));
-		
-		if(is_array($outputArray) && !empty($outputArray)){
-			foreach($outputArray as $document){
-				$output[] = $document['id'];
-			}
-			
-			if($depth > 1){
-				$output = array_merge($output, $this->getAllChildrenIds($output, $depth - 1));
-			}
 		}
 		
 		return $output;
