@@ -51,7 +51,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				$fromQuery = "(".$this->buildTVsSubQuery($usedFields['tvs']).")";
 			}
 			
-			$filterQuery = "AND ($filter)";
+			$filterQuery = "$filter";
 		}
 		
 		$orderByQuery = '';
@@ -72,12 +72,22 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		$idsWhereQuery = '';
 		if(!empty($ids)){
-			$idsWhereQuery = "WHERE `documents`.`id` IN ($ids)";
+			$idsWhereQuery = "`documents`.`id` IN ($ids)";
+		}
+		
+		$whereQuery = '';
+		if(!empty($idsWhereQuery) || !empty($filterQuery)){
+			$whereQuery = "WHERE ";
+			if(!empty($idsWhereQuery)){
+				$whereQuery .= "$idsWhereQuery AND $filterQuery";
+			}else{
+				$whereQuery .= $filterQuery;
+			}
 		}
 		
 		$data = $modx->db->makeArray($modx->db->query("
 			SELECT `documents`.`id` FROM $fromQuery AS `documents`
-			$idsWhereQuery $filterQuery $orderByQuery $limitQuery
+			$whereQuery $orderByQuery $limitQuery
 		"));
 		
 		if(is_array($data)){
