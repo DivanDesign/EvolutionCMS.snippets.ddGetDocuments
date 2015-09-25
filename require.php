@@ -1,5 +1,6 @@
 <?php
 require_once('src/ddGetDocuments.php');
+require_once('src/DataProvider/Output.php');
 require_once('src/Output.php');
 require_once('src/Extender/Extender.php');
 require_once('src/Extender/Pagination/Extender.php');

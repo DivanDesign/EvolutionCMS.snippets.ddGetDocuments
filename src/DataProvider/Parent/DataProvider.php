@@ -2,6 +2,8 @@
 namespace ddGetDocuments\DataProvider\Parent;
 
 
+use ddGetDocuments\DataProvider\Output;
+
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	public $defaultParams = array(
@@ -17,7 +19,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getDataFromSource(array $providerParams, array $snippetParams){
 		global $modx;
-		$output = array();
+		$output = new Output(array(), 0);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
 		$parentId = $this->defaultParams['parentId'];
@@ -86,12 +88,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		}
 		
 		$data = $modx->db->makeArray($modx->db->query("
-			SELECT `documents`.`id` FROM $fromQuery AS `documents`
+			SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
 			WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
 		"));
 		
+		$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
+		$totalFound = $totalFoundArray[0]['totalFound'];
+		
 		if(is_array($data)){
-			$output = $data;
+			$output = new Output($data, $totalFound);
 		}
 		
 		return $output;

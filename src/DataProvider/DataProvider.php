@@ -2,6 +2,8 @@
 namespace ddGetDocuments\DataProvider;
 
 
+use ddGetDocuments\Output;
+
 abstract class DataProvider
 {
 	//Delimiter used in the “filter” parameter to distinct fields/tvs
@@ -43,7 +45,7 @@ abstract class DataProvider
 	/**
 	 * @param array $providerParams
 	 * @param array $snippetParams
-	 * @return mixed
+	 * @return \ddGetDocuments\DataProvider\Output
 	 */
 	abstract protected function getDataFromSource(array $providerParams, array $snippetParams);
 	
