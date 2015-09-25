@@ -23,15 +23,16 @@ class Format extends \ddGetDocuments\Format\Format
 		$output = '';
 		$dataArray = $data->toArray();
 		
-		$total = count($dataArray['items']);
+		$total = count($dataArray['provider']['items']);
 		$generalPlaceholders = array(
-			'total' => $total
+			'total' => $total,
+			'totalFound' => $dataArray['provider']['totalFound']
 		);
 		
-		if(is_array($dataArray['items']) && isset($formatParameters['itemTpl'])){
+		if(is_array($dataArray['provider']['items']) && isset($formatParameters['itemTpl'])){
 			$maxIndex = $total - 1;
 			
-			foreach($dataArray['items'] as $index => $item){
+			foreach($dataArray['provider']['items'] as $index => $item){
 				if(isset($formatParameters['itemTplFirst']) && $index == 0){
 					$chunkName = $formatParameters['itemTplFirst'];
 				}elseif(isset($formatParameters['itemTplFirst']) && $index == $maxIndex){
