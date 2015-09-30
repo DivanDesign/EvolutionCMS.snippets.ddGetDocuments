@@ -12,6 +12,7 @@
  * @param integer $total - The maximum number of the resources that will be returned.
  * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1';
  * Notice that all fields/tvs names specified in the filter parameter must be wrapped in back quotes (`).
+ * @param string $filterFieldDelimiter - The field delimiter to be used in the passed filter query. Default: '`';
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
  * 
@@ -38,6 +39,7 @@ $total = isset($total)? $total: null;
 $offset = isset($offset)? $offset: 0;
 $orderBy = isset($orderBy)? $orderBy: '`id` ASC';
 $filter = isset($filter)? $filter: null;
+$filterFieldDelimiter = isset($filterFieldDelimiter)? $filterFieldDelimiter: '`';
 
 $format = isset($format)? $format: 'string';
 $formatParams = isset($formatParams)? $formatParams: '';
@@ -50,7 +52,8 @@ if(class_exists($providerClass)){
 		'offset' => $offset,
 		'total' => $total,
 		'orderBy' => $orderBy,
-		'filter' => $filter
+		'filter' => $filter,
+		'filterFieldDelimiter' => $filterFieldDelimiter
 	)));
 	
 //	if(isset($extenders)){

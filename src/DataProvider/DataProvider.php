@@ -6,8 +6,6 @@ use ddGetDocuments\Output;
 
 abstract class DataProvider
 {
-	//Delimiter used in the “filter” parameter to distinct fields/tvs
-	protected $filterFieldDelimiter = '`';
 	public $defaultParams = array();
 	
 	protected
@@ -64,13 +62,14 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * @param string $filterStr
+	 * @param $filterStr
+	 * @param string $filterFieldDelimiter
 	 * @return array
 	 */
-	public final function getUsedFieldsFromFilter($filterStr){
+	public final function getUsedFieldsFromFilter($filterStr, $filterFieldDelimiter = '`'){
 		$output = array();
 		//Try to find all fields/tvs used in filter by the pattern
-		preg_match_all("/{$this->filterFieldDelimiter}(\w+){$this->filterFieldDelimiter}/", $filterStr, $fields);
+		preg_match_all("/$filterFieldDelimiter(\w+)$filterFieldDelimiter/", $filterStr, $fields);
 		
 		if(!empty($fields[1])){
 			//Sort out fields from tvs

@@ -32,6 +32,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filter = $snippetParams['filter'];
 		}
 		
+		$filterFieldDelimiter = '`';
+		
+		if(isset($snippetParams['filterFieldDelimiter'])){
+			$filterFieldDelimiter = $snippetParams['filterFieldDelimiter'];
+		}
+		
 		if(isset($snippetParams['offset'])){
 			$offset = $snippetParams['offset'];
 		}
@@ -50,7 +56,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filter)){
-			$usedFields = $this->getUsedFieldsFromFilter($filter);
+			$usedFields = $this->getUsedFieldsFromFilter($filter, $filterFieldDelimiter);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
@@ -59,6 +65,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			}
 			
 			$filterQuery = "$filter";
+			$filterQuery = str_replace($filterFieldDelimiter, '`', $filterQuery);
 		}
 		
 		$orderByQuery = '';
