@@ -2,8 +2,6 @@
 namespace ddGetDocuments\DataProvider;
 
 
-use ddGetDocuments\Output;
-
 abstract class DataProvider
 {
 	public $defaultParams = array();
