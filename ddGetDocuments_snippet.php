@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.2.0 (2015-09-25)
+ * @version 0.3.0 (2015-10-11)
  * 
  * A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -12,6 +12,7 @@
  * @param integer $total - The maximum number of the resources that will be returned.
  * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1';
  * Notice that all fields/tvs names specified in the filter parameter must be wrapped in back quotes (`).
+ * @param string $filterFieldDelimiter - The field delimiter to be used in the passed filter query. Default: '`';
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
  * 
@@ -27,8 +28,17 @@
 global $modx;
 $output = false;
 
-require_once($modx->config['base_path'].'assets/snippets/ddTools/modx.ddtools.class.php');
-require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
+if(is_file($modx->config['base_path'].'vendor/autoload.php')){
+	require_once($modx->config['base_path'].'vendor/autoload.php');
+}
+
+if(!class_exists('\ddTools')){
+	require_once($modx->config['base_path'].'assets/snippets/ddTools/modx.ddtools.class.php');
+}
+
+if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
+	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
+}
 
 $provider = isset($provider)? $provider: 'parent';
 $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
@@ -38,6 +48,7 @@ $total = isset($total)? $total: null;
 $offset = isset($offset)? $offset: 0;
 $orderBy = isset($orderBy)? $orderBy: '`id` ASC';
 $filter = isset($filter)? $filter: null;
+$filterFieldDelimiter = isset($filterFieldDelimiter)? $filterFieldDelimiter: '`';
 
 $format = isset($format)? $format: 'string';
 $formatParams = isset($formatParams)? $formatParams: '';
@@ -50,7 +61,8 @@ if(class_exists($providerClass)){
 		'offset' => $offset,
 		'total' => $total,
 		'orderBy' => $orderBy,
-		'filter' => $filter
+		'filter' => $filter,
+		'filterFieldDelimiter' => $filterFieldDelimiter
 	)));
 	
 //	if(isset($extenders)){
