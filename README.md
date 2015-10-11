@@ -2,6 +2,9 @@
 A snippet for fetching and parsing resources from the document tree by a custom rule.
 
 ## Changelog
+### Version 0.3.1 (2015-10-11)
+* \+ Added composer/installers dependency.
+
 ### Version 0.3.0 (2015-10-11)
 * \+ Added Composer support.
 * \+ The new $filterFieldDelimiter parameter has been added to the snippet to make possible to override the default '`' in filter queries
