@@ -28,8 +28,17 @@
 global $modx;
 $output = false;
 
-require_once($modx->config['base_path'].'assets/snippets/ddTools/modx.ddtools.class.php');
-require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
+if(is_file($modx->config['base_path'].'vendor/autoload.php')){
+	require_once($modx->config['base_path'].'vendor/autoload.php');
+}
+
+if(!class_exists('\ddTools')){
+	require_once($modx->config['base_path'].'assets/snippets/ddTools/modx.ddtools.class.php');
+}
+
+if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
+	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
+}
 
 $provider = isset($provider)? $provider: 'parent';
 $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
