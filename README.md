@@ -2,6 +2,9 @@
 A snippet for fetching and parsing resources from the document tree by a custom rule.
 
 ## Changelog
+### Version 0.3.2 (2015-10-11)
+* \+ Added dd/composer-plugin-modxevo-library-ddtools-installer dependency.
+
 ### Version 0.3.1 (2015-10-11)
 * \+ Added composer/installers dependency.
 
