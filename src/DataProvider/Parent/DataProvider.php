@@ -94,16 +94,19 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$limitQuery = "LIMIT $offset,".PHP_INT_MAX;
 		}
 		
-		$data = $modx->db->makeArray($modx->db->query("
-			SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
-			WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
-		"));
-		
-		$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
-		$totalFound = $totalFoundArray[0]['totalFound'];
-		
-		if(is_array($data)){
-			$output = new Output($data, $totalFound);
+		//Check if child documents were found
+		if($allChildrenIdsStr !== ''){
+			$data = $modx->db->makeArray($modx->db->query("
+				SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
+				WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
+			"));
+			
+			$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
+			$totalFound = $totalFoundArray[0]['totalFound'];
+			
+			if(is_array($data)){
+				$output = new Output($data, $totalFound);
+			}
 		}
 		
 		return $output;
@@ -115,18 +118,20 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		$parentIdsStr = implode(',', $parentIds);
 		
-		$outputArray = $modx->db->makeArray($modx->db->query("
-			SELECT `id` FROM {$this->siteContentTableName}
-			WHERE `parent` IN ($parentIdsStr)
-		"));
-		
-		if(is_array($outputArray) && !empty($outputArray)){
-			foreach($outputArray as $document){
-				$output[] = $document['id'];
-			}
+		if($parentIdsStr !== ''){
+			$outputArray = $modx->db->makeArray($modx->db->query("
+				SELECT `id` FROM {$this->siteContentTableName}
+				WHERE `parent` IN ($parentIdsStr)
+			"));
 			
-			if($depth > 1){
-				$output = array_merge($output, $this->getAllChildrenIds($output, $depth - 1));
+			if(is_array($outputArray) && !empty($outputArray)){
+				foreach($outputArray as $document){
+					$output[] = $document['id'];
+				}
+				
+				if($depth > 1){
+					$output = array_merge($output, $this->getAllChildrenIds($output, $depth - 1));
+				}
 			}
 		}
 		
