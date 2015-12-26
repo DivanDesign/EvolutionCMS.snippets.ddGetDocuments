@@ -44,7 +44,14 @@ class Format extends \ddGetDocuments\Format\Format
 				$document = \ddTools::getTemplateVarOutput('*', $item['id']);
 				
 				if(!empty($document)){
-					$output .= \ddTools::parseSource($modx->parseChunk($chunkName, array_merge($document, $generalPlaceholders), '[+', '+]'));
+					$output .= \ddTools::parseSource($modx->parseChunk($chunkName, array_merge(
+						$document,
+						$generalPlaceholders,
+						array(
+							'itemNumber' => $index + 1,
+							'itemNumberZeroBased' => $index
+						)
+					), '[+', '+]'));
 				}
 			}
 		}
