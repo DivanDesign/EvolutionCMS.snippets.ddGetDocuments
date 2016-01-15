@@ -112,10 +112,11 @@ if(class_exists($providerClass)){
 		$input = $extender->applyToInput($input);
 	}
 	
-	$data = new \ddGetDocuments\Output($dataProvider->get($input));
+	$providerResult = $dataProvider->get($input);
+	$data = new \ddGetDocuments\Output($providerResult);
 	
 	foreach($extendersStorage as $extenderName => $extender){
-		$data->extenders[$extenderName] = $extender->applyToProvider($data);
+		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
 	switch($format){
