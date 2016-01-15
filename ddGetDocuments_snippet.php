@@ -60,7 +60,11 @@ if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	parse_str($providerParams, $providerParamsArray);
 	
-	$extendersNamesArray = explode(',', $extenders);
+	$extendersNamesArray = array();
+	
+	if($extenders != ''){
+		$extendersNamesArray = explode(',', $extenders);
+	}
 	parse_str($extendersParams, $extendersParamsArray);
 	
 	if(!empty($extendersNamesArray) && !empty($extendersParamsArray)){
@@ -98,19 +102,19 @@ if(class_exists($providerClass)){
 	);
 	
 	//Extenders storage
-	$extenders = array();
+	$extendersStorage = array();
 	
 	foreach($extendersNamesArray as $extenderName){
 		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
 		$extender = new $extenderClass;
-		$extenders[$extenderName] = $extender;
+		$extendersStorage[$extenderName] = $extender;
 		
 		$input = $extender->applyToInput($input);
 	}
 	
 	$data = new \ddGetDocuments\Output($dataProvider->get($input));
 	
-	foreach($extenders as $extenderName => $extender){
+	foreach($extendersStorage as $extenderName => $extender){
 		$data->extenders[$extenderName] = $extender->applyToProvider($data);
 	}
 	
