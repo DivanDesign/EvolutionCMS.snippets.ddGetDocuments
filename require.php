@@ -1,6 +1,7 @@
 <?php
 require_once('src/DataProvider/Output.php');
 require_once('src/Output.php');
+require_once('src/Input.php');
 require_once('src/Extender/Extender.php');
 require_once('src/Extender/Pagination/Extender.php');
 require_once('src/Format/Format.php');

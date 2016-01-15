@@ -53,50 +53,69 @@ $filterFieldDelimiter = isset($filterFieldDelimiter)? $filterFieldDelimiter: '`'
 $format = isset($format)? $format: 'string';
 $formatParams = isset($formatParams)? $formatParams: '';
 
+$extenders = isset($extenders)? $extenders: '';
+$extendersParams = isset($extendersParams)? $extendersParams: '';
+
 if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	parse_str($providerParams, $providerParamsArray);
 	
+	$extendersNamesArray = explode(',', $extenders);
+	parse_str($extendersParams, $extendersParamsArray);
+	
+	if(!empty($extendersNamesArray) && !empty($extendersParamsArray)){
+		//If we have a single extender then make sure that extender params set as an array
+		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
+		if(count($extendersNamesArray) === 1){
+			if(!isset($extendersParamsArray[$extendersNamesArray[0]])){
+				$extendersParamsArray = array(
+					$extendersNamesArray[0] => $extendersParamsArray
+				);
+			}
+		}else{
+			//Make sure that for each extender there is an item in $extendersParamsArray 
+			foreach($extendersNamesArray as $extenderName){
+				if(!isset($extendersParamsArray[$extenderName])){
+					$extendersParamsArray[$extenderName] = array();
+				}
+			}
+		}
+	}
+	
+	parse_str($formatParams, $formatParamsArray);
+	
 	$input = new \ddGetDocuments\Input(
-		$providerParamsArray,
 		array(
 			'offset' => $offset,
 			'total' => $total,
 			'orderBy' => $orderBy,
 			'filter' => $filter,
 			'filterFieldDelimiter' => $filterFieldDelimiter
-		)
+		),
+		$providerParamsArray,
+		$extendersParamsArray,
+		$formatParamsArray
 	);
+	
+	//Extenders storage
+	$extenders = array();
+	
+	foreach($extendersNamesArray as $extenderName){
+		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
+		$extender = new $extenderClass;
+		$extenders[$extenderName] = $extender;
+		
+		$input = $extender->applyToInput($input);
+	}
 	
 	$data = new \ddGetDocuments\Output($dataProvider->get($input));
 	
-//	if(isset($extenders)){
-//		$extendersOutputArray = array();
-//		$extendersNamesArray = explode(',', (string) $extenders);
-//		
-//		foreach($extendersNamesArray as $extenderName){
-//			$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
-//			$extender = new $extenderClass;
-//			
-//			$extendersOutputArray[$extenderName] = $extender->apply($data);
-//		}
-//		
-//		if(!empty($extendersOutputArray)){
-//			$data['extenders'] = $extendersOutputArray;
-//		}
-//	}else{
-//		$data = new \ddGetDocuments\Output($dataProvider->get($providerParamsArray, array(
-//			'offset' => $offset,
-//			'total' => $total,
-//			'orderBy' => $orderBy,
-//			'filter' => $filter
-//		)));
-//	}
+	foreach($extenders as $extenderName => $extender){
+		$data->extenders[$extenderName] = $extender->applyToProvider($data);
+	}
 	
 	switch($format){
 		default:
-			parse_str($formatParams, $formatParamsArray);
-			
 			$parserClass = \ddGetDocuments\Format\Format::includeFormatByName($format);
 			$parser = new $parserClass;
 			

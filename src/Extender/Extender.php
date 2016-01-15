@@ -10,6 +10,7 @@ namespace ddGetDocuments\Extender;
 
 
 use ddGetDocuments\DataProvider\DataProvider;
+use ddGetDocuments\Input;
 use ddGetDocuments\Output;
 
 abstract class Extender
@@ -32,8 +33,18 @@ abstract class Extender
 	}
 	
 	/**
-	 * @param array $data
-	 * @return Output
+	 * applyToInput
+	 * 
+	 * @return Input
 	 */
-	abstract public function apply(DataProvider $dataProvider, array $providerParams, array $extenderParams, array $snippetParams);
+	abstract public function applyToInput(Input $input);
+	
+	/**
+	 * applyToProvider
+	 * 
+	 * @param DataProvider $provider
+	 * 
+	 * @return mixed
+	 */
+	abstract public function applyToProvider(DataProvider $provider);
 }
