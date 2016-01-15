@@ -9,7 +9,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
 		$input,
-		$pageNumber,
+		$pageIndex,
 		$pageGetParamName,
 		$zeroBasedPageIndex;
 	
@@ -31,7 +31,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				(bool) $input->extenderParams['pagination']['zeroBasedPageIndex']:
 				$this->defaultParams['zeroBasedPageIndex'];
 			
-			$this->pageNumber =
+			$this->pageIndex =
 				isset($_REQUEST[$this->pageGetParamName])?
 				(int) $_REQUEST[$this->pageGetParamName]:
 				($this->zeroBasedPageIndex? 0: 1);
@@ -40,8 +40,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				$input->snippetParams['offset'] = 
 					(
 						$this->zeroBasedPageIndex?
-						$this->pageNumber:
-						$this->pageNumber - 1
+						$this->pageIndex:
+						$this->pageIndex - 1
 					)
 					* $input->snippetParams['total'];
 			}
@@ -71,16 +71,16 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		if($this->input->snippetParams['total'] != 0){
 			$pagesTotal = ceil($outputArray['totalFound']/$this->input->snippetParams['total']);
 			
-			if($this->pageNumber > $pagesTotal){
-				$this->pageNumber = ($this->zeroBasedPageIndex)? 0: 1;
+			if($this->pageIndex > $pagesTotal){
+				$this->pageIndex = ($this->zeroBasedPageIndex)? 0: 1;
 			}
 			
 			for($pageIndex = 0; $pageIndex < $pagesTotal; $pageIndex++){
 				$pageChunk = $this->input->extenderParams['pagination']['pageTpl'];
 				
 				if(
-					($this->zeroBasedPageIndex && $pageIndex == $this->pageNumber) ||
-					(!$this->zeroBasedPageIndex && $pageIndex == ($this->pageNumber - 1))
+					($this->zeroBasedPageIndex && $pageIndex == $this->pageIndex) ||
+					(!$this->zeroBasedPageIndex && $pageIndex == ($this->pageIndex - 1))
 				){
 					$pageChunk = $this->input->extenderParams['pagination']['currentPageTpl'];
 				}
@@ -97,15 +97,15 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			}
 			
 			$previousLinkChunk = (
-					($this->zeroBasedPageIndex && $this->pageNumber == 0) ||
-					(!$this->zeroBasedPageIndex && $this->pageNumber == 1)
+					($this->zeroBasedPageIndex && $this->pageIndex == 0) ||
+					(!$this->zeroBasedPageIndex && $this->pageIndex == 1)
 				)?
 				$this->input->extenderParams['pagination']['previousOff']:
 				$this->input->extenderParams['pagination']['previous'];
 			
 			$nextLinkChunk = (
-					($this->zeroBasedPageIndex && $this->pageNumber == ($pagesTotal - 1)) ||
-					(!$this->zeroBasedPageIndex && $this->pageNumber == $pagesTotal)
+					($this->zeroBasedPageIndex && $this->pageIndex == ($pagesTotal - 1)) ||
+					(!$this->zeroBasedPageIndex && $this->pageIndex == $pagesTotal)
 				)?
 				$this->input->extenderParams['pagination']['nextOff']:
 				$this->input->extenderParams['pagination']['next'];
