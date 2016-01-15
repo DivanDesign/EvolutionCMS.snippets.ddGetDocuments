@@ -67,7 +67,7 @@ if(class_exists($providerClass)){
 	}
 	parse_str($extendersParams, $extendersParamsArray);
 	
-	if(!empty($extendersNamesArray) && !empty($extendersParamsArray)){
+	if(!empty($extendersNamesArray)){
 		//If we have a single extender then make sure that extender params set as an array
 		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
 		if(count($extendersNamesArray) === 1){
