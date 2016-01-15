@@ -18,6 +18,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		'zeroBasedPageIndex' => false
 	);
 	
+	/**
+	 * applyToInput
+	 * 
+	 * @param Input $input
+	 * 
+	 * @return Input
+	 */
 	public function applyToInput(Input $input)
 	{
 		if(isset($input->extenderParams['pagination'])){
@@ -51,7 +58,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		
 		return $input;
 	}
-
+	
 	/**
 	 * applyToOutput
 	 * 
@@ -68,16 +75,21 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$pagesOutputText = '';
 		$outputText = '';
 		
+		//Check to prevent division by zero
 		if($this->input->snippetParams['total'] != 0){
 			$pagesTotal = ceil($outputArray['totalFound']/$this->input->snippetParams['total']);
 			
+			//If the current page index is greater than the total number of pages
+			//then it has to be reset
 			if($this->pageIndex > $pagesTotal){
 				$this->pageIndex = ($this->zeroBasedPageIndex)? 0: 1;
 			}
 			
+			//Iterating through pages
 			for($pageIndex = 0; $pageIndex < $pagesTotal; $pageIndex++){
 				$pageChunk = $this->input->extenderParams['pagination']['pageTpl'];
 				
+				//Check if the page we're iterating through is current
 				if(
 					($this->zeroBasedPageIndex && $pageIndex == $this->pageIndex) ||
 					(!$this->zeroBasedPageIndex && $pageIndex == ($this->pageIndex - 1))
