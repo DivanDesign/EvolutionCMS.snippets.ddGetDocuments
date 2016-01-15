@@ -4,50 +4,53 @@ namespace ddGetDocuments\DataProvider\Select;
 
 
 use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	public $defaultParams = array(
 		'ids' => null
 	);
-
+	
 	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
+	 * getDataFromSource
+	 * 
+	 * @param Input $input
+	 * 
 	 * @return Output
 	 */
-	protected function getDataFromSource(array $providerParams, array $snippetParams){
+	protected function getDataFromSource(Input $input){
 		global $modx;
 		$output = new Output(array(), 0);
 		
 		$ids = $this->defaultParams['ids'];
 		
-		if(isset($providerParams['ids'])){
-			$ids = (string) $providerParams['ids'];
+		if(isset($input->providerParams)){
+			$ids = (string) $input->providerParams;
 		}
 		
 		$filter = null;
 		
-		if(isset($snippetParams['filter'])){
-			$filter = $snippetParams['filter'];
+		if(isset($input->snippetParams['filter'])){
+			$filter = $input->snippetParams['filter'];
 		}
 		
 		$filterFieldDelimiter = '`';
 		
-		if(isset($snippetParams['filterFieldDelimiter'])){
-			$filterFieldDelimiter = $snippetParams['filterFieldDelimiter'];
+		if(isset($input->snippetParams['filterFieldDelimiter'])){
+			$filterFieldDelimiter = $input->snippetParams['filterFieldDelimiter'];
 		}
 		
-		if(isset($snippetParams['offset'])){
-			$offset = $snippetParams['offset'];
+		if(isset($input->snippetParams['offset'])){
+			$offset = $input->snippetParams['offset'];
 		}
 		
-		if(isset($snippetParams['total'])){
-			$total = $snippetParams['total'];
+		if(isset($input->snippetParams['total'])){
+			$total = $input->snippetParams['total'];
 		}
 		
-		if(isset($snippetParams['orderBy'])){
-			$orderBy = $snippetParams['orderBy'];
+		if(isset($input->snippetParams['orderBy'])){
+			$orderBy = $input->snippetParams['orderBy'];
 		}
 		
 		//By default, the required data is just fetched from the site_content table

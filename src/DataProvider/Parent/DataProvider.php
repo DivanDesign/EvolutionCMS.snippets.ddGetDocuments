@@ -3,6 +3,7 @@ namespace ddGetDocuments\DataProvider\Parent;
 
 
 use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
@@ -13,49 +14,51 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	);
 	
 	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
-	 * @return array
+	 * getDataFromSource
+	 * 
+	 * @param Input $input
+	 * 
+	 * @return Output
 	 */
-	protected function getDataFromSource(array $providerParams, array $snippetParams){
+	protected function getDataFromSource(Input $input){
 		global $modx;
 		$output = new Output(array(), 0);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
 		$parentId = $this->defaultParams['parentId'];
 		
-		if(isset($providerParams['parentId'])){
-			$parentId = $providerParams['parentId'];
+		if(isset($input->providerParams['parentId'])){
+			$parentId = $input->providerParams['parentId'];
 		}
 		
 		$depth = $this->defaultParams['depth'];
 		
-		if(isset($providerParams['depth'])){
-			$depth = $providerParams['depth'];
+		if(isset($input->providerParams['depth'])){
+			$depth = $input->providerParams['depth'];
 		}
 		
-		if(isset($snippetParams['offset'])){
-			$offset = $snippetParams['offset'];
+		if(isset($input->snippetParams['offset'])){
+			$offset = $input->snippetParams['offset'];
 		}
 		
-		if(isset($snippetParams['total'])){
-			$total = $snippetParams['total'];
+		if(isset($input->snippetParams['total'])){
+			$total = $input->snippetParams['total'];
 		}
 		
-		if(isset($snippetParams['orderBy'])){
-			$orderBy = $snippetParams['orderBy'];
+		if(isset($input->snippetParams['orderBy'])){
+			$orderBy = $input->snippetParams['orderBy'];
 		}
 		
 		$filter = $this->defaultParams['filter'];
 		
-		if(isset($snippetParams['filter'])){
-			$filter = $snippetParams['filter'];
+		if(isset($input->snippetParams['filter'])){
+			$filter = $input->snippetParams['filter'];
 		}
 		
 		$filterFieldDelimiter = '`';
 		
-		if(isset($snippetParams['filterFieldDelimiter'])){
-			$filterFieldDelimiter = $snippetParams['filterFieldDelimiter'];
+		if(isset($input->snippetParams['filterFieldDelimiter'])){
+			$filterFieldDelimiter = $input->snippetParams['filterFieldDelimiter'];
 		}
 		
 		//By default, the required data is just fetched from the site_content table

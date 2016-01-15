@@ -57,13 +57,18 @@ if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	parse_str($providerParams, $providerParamsArray);
 	
-	$data = new \ddGetDocuments\Output($dataProvider->get($providerParamsArray, array(
-		'offset' => $offset,
-		'total' => $total,
-		'orderBy' => $orderBy,
-		'filter' => $filter,
-		'filterFieldDelimiter' => $filterFieldDelimiter
-	)));
+	$input = new \ddGetDocuments\Input(
+		$providerParamsArray,
+		array(
+			'offset' => $offset,
+			'total' => $total,
+			'orderBy' => $orderBy,
+			'filter' => $filter,
+			'filterFieldDelimiter' => $filterFieldDelimiter
+		)
+	);
+	
+	$data = new \ddGetDocuments\Output($dataProvider->get($input));
 	
 //	if(isset($extenders)){
 //		$extendersOutputArray = array();
