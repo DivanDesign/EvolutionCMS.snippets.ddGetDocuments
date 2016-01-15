@@ -29,6 +29,17 @@ class Format extends \ddGetDocuments\Format\Format
 			'totalFound' => $dataArray['provider']['totalFound']
 		);
 		
+		if(isset($dataArray['extenders'])){
+			$generalPlaceholders = array_merge(
+				$generalPlaceholders,
+				array(
+					'extenders' => $dataArray['extenders']
+				)
+			);
+			
+			$generalPlaceholders = \ddTools::unfoldArray($generalPlaceholders);
+		}
+		
 		if(is_array($dataArray['provider']['items']) && isset($formatParameters['itemTpl'])){
 			$maxIndex = $total - 1;
 			
