@@ -26,7 +26,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$ids = $this->defaultParams['ids'];
 		
 		if(isset($input->providerParams)){
-			$ids = (string) $input->providerParams;
+			$ids = (string) $input->providerParams['ids'];
 		}
 		
 		$filter = null;
@@ -96,7 +96,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		if(!empty($idsWhereQuery) || !empty($filterQuery)){
 			$whereQuery = "WHERE ";
 			if(!empty($idsWhereQuery)){
-				$whereQuery .= "$idsWhereQuery AND $filterQuery";
+				$whereQuery .= $idsWhereQuery;
+				
+				if(!empty($filterQuery)){
+					$whereQuery .= " AND $filterQuery";
+				}
 			}else{
 				$whereQuery .= $filterQuery;
 			}
