@@ -11,10 +11,10 @@ class Format extends \ddGetDocuments\Format\Format
 	 * 
 	 * @param Output $data
 	 * @param array $formatParameters
-	 * $parserParameters['itemTpl']. Available placeholders: [+any field or tv name+]. @required
-	 * $parserParameters['itemTplFirst']. Available placeholders: [+any field or tv name+].
-	 * $parserParameters['itemTplLast']. Available placeholders: [+any field or tv name+].
-	 * $parserParameters['wrapperTpl']. Available placeholders: [+ddGetDocuments_items+].
+	 * $formatParameters['itemTpl']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+	 * $formatParameters['itemTplFirst']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+	 * $formatParameters['itemTplLast']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+	 * $formatParameters['wrapperTpl']. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
 	 * 
 	 * @return string
 	 */

@@ -11,7 +11,7 @@
  * 
  * @param integer $total - The maximum number of the resources that will be returned.
  * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1';
- * Notice that all fields/tvs names specified in the filter parameter must be wrapped in back quotes (`).
+ * Notice that all fields/tvs names specified in the filter parameter must be wrapped in $filterFieldDelimiter.
  * @param string $filterFieldDelimiter - The field delimiter to be used in the passed filter query. Default: '`';
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
@@ -20,10 +20,11 @@
  * @param string $formatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
  * e.g. $formatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2'.
  * 
+ * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
+ * Be aware that the order of extender names can affect the output.
+ * @param string $extendersParams - Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
+ * e.g. $extendersParams = 'wrapperTpl=pagination&next=pagination_next&previous=pagination_previous&nextOff=pagination_nextOff&previousOff=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
  **/
-
-//TODO: Extenders support with parameters like $extenders = 'pagination', $extendersParams = 'pagination[paginationWrapperTpl]=wrapperChunk&pagination[paginationPageTpl]=pageChunk...'
-//TODO: parameters for the pagination extender $wrapperTpl, $pageTpl, $nextTpl, $nextInactiveTpl, $previousTpl, $previousInactiveTpl, $currentPageTpl
 
 global $modx;
 $output = false;
