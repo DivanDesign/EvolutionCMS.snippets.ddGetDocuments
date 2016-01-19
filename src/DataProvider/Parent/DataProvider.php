@@ -55,11 +55,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filter = $input->snippetParams['filter'];
 		}
 		
-		$filterFieldDelimiter = '`';
-		
-		if(isset($input->snippetParams['filterFieldDelimiter'])){
-			$filterFieldDelimiter = $input->snippetParams['filterFieldDelimiter'];
-		}
+		$fieldDelimiter = $input->snippetParams['fieldDelimiter'];
 		
 		//By default, the required data is just fetched from the site_content table
 		$fromQuery = "{$this->siteContentTableName}";
@@ -67,7 +63,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filter)){
-			$usedFields = $this->getUsedFieldsFromFilter($filter, $filterFieldDelimiter);
+			$usedFields = $this->getUsedFieldsFromFilter($filter, $fieldDelimiter);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
@@ -76,7 +72,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			}
 			
 			$filterQuery = "AND ($filter)";
-			$filterQuery = str_replace($filterFieldDelimiter, '`', $filterQuery);
+			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
 		}
 		
 		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds(array($parentId), $depth));
