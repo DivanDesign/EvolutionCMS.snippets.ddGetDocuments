@@ -15,6 +15,7 @@ class Format extends \ddGetDocuments\Format\Format
 	 * $formatParameters['itemTplFirst']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
 	 * $formatParameters['itemTplLast']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
 	 * $formatParameters['wrapperTpl']. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
+	 * $formatParameters['noResults']. A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
 	 * 
 	 * @return string
 	 */
@@ -67,7 +68,22 @@ class Format extends \ddGetDocuments\Format\Format
 			}
 		}
 		
-		if(isset($formatParameters['wrapperTpl'])){
+		//If no items found and “noResults” is not empty
+		if($total == 0 && isset($formatParameters['noResults']) && $formatParameters['noResults'] != ''){
+			$chunkContent = $modx->getChunk($formatParameters['noResults']);
+			
+			if(!is_null($chunkContent)){
+				$output = \ddTools::parseSource(
+					$modx->parseChunk(
+						$formatParameters['noResults'],
+						$generalPlaceholders,
+						'[+', '+]'
+					)
+				);
+			}else{
+				$output = $formatParameters['noResults'];
+			}
+		}elseif(isset($formatParameters['wrapperTpl'])){
 			$output = (string) $modx->parseChunk($formatParameters['wrapperTpl'],
 				array_merge($generalPlaceholders, array(
 					'ddGetDocuments_items' => $output

@@ -18,7 +18,7 @@
  * 
  * @param 'string'|'raw' $format - Format of the output. Default: 'string'.
  * @param string $formatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
- * e.g. $formatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2'.
+ * e.g. $formatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * 
  * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
