@@ -111,10 +111,10 @@ if(class_exists($providerClass)){
 	
 	foreach($extendersNamesArray as $extenderName){
 		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
-		$extender = new $extenderClass;
+		$extender = new $extenderClass($extendersParamsArray[$extenderName]);
 		$extendersStorage[$extenderName] = $extender;
 		
-		$input = $extender->applyToInput($input);
+		$input = $extender->applyToSnippetParams($input);
 	}
 	
 	$providerResult = $dataProvider->get($input);
