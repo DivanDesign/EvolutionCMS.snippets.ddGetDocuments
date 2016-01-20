@@ -109,17 +109,22 @@ if(class_exists($providerClass)){
 	//Extenders storage
 	$extendersStorage = array();
 	
+	//Iterate through all extenders to create their instances
 	foreach($extendersNamesArray as $extenderName){
 		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
+		//Passing parameters to extender's constructor
 		$extender = new $extenderClass($extendersParamsArray[$extenderName]);
+		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extender;
 		
+		//Overwrite the snippet parameters with the result of applying them to the current extender
 		$input->snippetParams = $extender->applyToSnippetParams($input->snippetParams);
 	}
 	
 	$providerResult = $dataProvider->get($input);
 	$data = new \ddGetDocuments\Output($providerResult);
 	
+	//Iterate through all extenders again to apply them to the output
 	foreach($extendersStorage as $extenderName => $extender){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}

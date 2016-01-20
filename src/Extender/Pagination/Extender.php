@@ -8,17 +8,26 @@ class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
 		$snippetParams,
+		//Current page index
 		$pageIndex,
-		
+		//The parameter in $_REQUEST to get the current page index from
 		$pageIndexRequestParamName = 'page',
+		//Whether page index is zero based
 		$zeroBasedPageIndex = false,
 		
+		//Chunk to be used to output pages within the pagination
 		$pageTpl,
+		//Chunk to be used to output the current page within the pagination
 		$currentPageTpl,
+		//Chunk to be used to output the pagination
 		$wrapperTpl,
+		//Chunk to be used to output the navigation block to the next page
 		$nextTpl,
+		//Chunk to be used to output the navigation block to the next page if there are no more pages after
 		$nextOffTpl,
+		//Chunk to be used to output the navigation block to the previous page
 		$previousTpl,
+		//Chunk to be used to output the navigation block to the previous page if there are no more pages before
 		$previousOffTpl;
 	
 	public function __construct(array $extenderParams)
@@ -74,6 +83,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 */
 	public function applyToSnippetParams(array $snippetParams)
 	{
+		//If “total” is set then we need to override “offset” according to the current page index
 		if(isset($snippetParams['total'])){
 			$snippetParams['offset'] =
 				(
