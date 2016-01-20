@@ -3,12 +3,11 @@ namespace ddGetDocuments\Extender\Pagination;
 
 
 use ddGetDocuments\DataProvider\Output;
-use ddGetDocuments\Input;
 
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
-		$input,
+		$snippetParams,
 		$pageIndex,
 		
 		$pageIndexRequestParamName = 'page',
@@ -69,9 +68,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	/**
 	 * applyToSnippetParams
 	 * 
-	 * @param Input $input
+	 * @param array $snippetParams
 	 * 
-	 * @return Input
+	 * @return array
 	 */
 	public function applyToSnippetParams(array $snippetParams)
 	{
@@ -85,6 +84,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				* $snippetParams['total'];
 		}
 		
+		$this->snippetParams = $snippetParams;
 		return $snippetParams;
 	}
 	
@@ -105,8 +105,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$outputText = '';
 		
 		//Check to prevent division by zero
-		if($this->input->snippetParams['total'] != 0){
-			$pagesTotal = ceil($outputArray['totalFound']/$this->input->snippetParams['total']);
+		if($this->snippetParams['total'] != 0){
+			$pagesTotal = ceil($outputArray['totalFound']/$this->snippetParams['total']);
 			
 			//If the current page index is greater than the total number of pages
 			//then it has to be reset

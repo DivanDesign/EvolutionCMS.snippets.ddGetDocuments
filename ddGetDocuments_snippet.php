@@ -24,7 +24,7 @@
  * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
  * @param string $extendersParams - Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
- * e.g. $extendersParams = 'wrapperTpl=pagination&next=pagination_next&previous=pagination_previous&nextOff=pagination_nextOff&previousOff=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
+ * e.g. $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
  **/
 
 global $modx;
@@ -114,7 +114,7 @@ if(class_exists($providerClass)){
 		$extender = new $extenderClass($extendersParamsArray[$extenderName]);
 		$extendersStorage[$extenderName] = $extender;
 		
-		$input = $extender->applyToSnippetParams($input);
+		$input->snippetParams = $extender->applyToSnippetParams($input->snippetParams);
 	}
 	
 	$providerResult = $dataProvider->get($input);
