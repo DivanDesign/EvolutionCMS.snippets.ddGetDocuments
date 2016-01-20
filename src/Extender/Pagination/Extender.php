@@ -10,53 +10,82 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	private
 		$input,
 		$pageIndex,
-		$pageGetParamName,
-		$zeroBasedPageIndex;
+		
+		$pageIndexRequestParamName = 'page',
+		$zeroBasedPageIndex = false,
+		
+		$pageTpl,
+		$currentPageTpl,
+		$wrapperTpl,
+		$nextTpl,
+		$nextOffTpl,
+		$previousTpl,
+		$previousOffTpl;
 	
-	protected $defaultParams = array(
-		'pageGetParamName' => 'page',
-		'zeroBasedPageIndex' => false
-	);
+	public function __construct(array $extenderParams)
+	{
+		if(isset($extenderParams['pageIndexRequestParamName'])){
+			$this->pageIndexRequestParamName = (string) $extenderParams['pageIndexRequestParamName'];
+		}
+		
+		if(isset($extenderParams['zeroBasedPageIndex'])){
+			$this->zeroBasedPageIndex = (bool) $extenderParams['zeroBasedPageIndex'];
+		}
+		
+		$this->pageIndex =
+			isset($_REQUEST[$this->pageIndexRequestParamName])?
+				(int) $_REQUEST[$this->pageIndexRequestParamName]:
+				($this->zeroBasedPageIndex? 0: 1);
+		
+		if(isset($extenderParams['pageTpl'])){
+			$this->pageTpl = (string) $extenderParams['pageTpl'];
+		}
+		
+		if(isset($extenderParams['currentPageTpl'])){
+			$this->currentPageTpl = (string) $extenderParams['currentPageTpl'];
+		}
+		
+		if(isset($extenderParams['wrapperTpl'])){
+			$this->wrapperTpl = (string) $extenderParams['wrapperTpl'];
+		}
+		
+		if(isset($extenderParams['nextTpl'])){
+			$this->nextTpl = (string) $extenderParams['nextTpl'];
+		}
+		
+		if(isset($extenderParams['nextOffTpl'])){
+			$this->nextOffTpl = (string) $extenderParams['nextOffTpl'];
+		}
+		
+		if(isset($extenderParams['previousTpl'])){
+			$this->previousTpl = (string) $extenderParams['previousTpl'];
+		}
+		
+		if(isset($extenderParams['previousOffTpl'])){
+			$this->previousOffTpl = (string) $extenderParams['previousOffTpl'];
+		}
+	}
 	
 	/**
-	 * applyToInput
+	 * applyToSnippetParams
 	 * 
 	 * @param Input $input
 	 * 
 	 * @return Input
 	 */
-	public function applyToInput(Input $input)
+	public function applyToSnippetParams(array $snippetParams)
 	{
-		if(isset($input->extenderParams['pagination'])){
-			$this->pageGetParamName =
-				isset($input->extenderParams['pagination']['pageGetParamName'])?
-				(string) $input->extenderParams['pagination']['pageGetParamName']:
-				$this->pageGetParamName = $this->defaultParams['pageGetParamName'];
-			
-			$this->zeroBasedPageIndex =
-				isset($input->extenderParams['pagination']['zeroBasedPageIndex'])?
-				(bool) $input->extenderParams['pagination']['zeroBasedPageIndex']:
-				$this->defaultParams['zeroBasedPageIndex'];
-			
-			$this->pageIndex =
-				isset($_REQUEST[$this->pageGetParamName])?
-				(int) $_REQUEST[$this->pageGetParamName]:
-				($this->zeroBasedPageIndex? 0: 1);
-			
-			if(isset($input->snippetParams['total'])){
-				$input->snippetParams['offset'] = 
-					(
-						$this->zeroBasedPageIndex?
+		if(isset($snippetParams['total'])){
+			$snippetParams['offset'] =
+				(
+					$this->zeroBasedPageIndex?
 						$this->pageIndex:
 						$this->pageIndex - 1
-					)
-					* $input->snippetParams['total'];
-			}
+				)
+				* $snippetParams['total'];
 		}
 		
-		$this->input = $input;
-		
-		return $input;
+		return $snippetParams;
 	}
 	
 	/**
@@ -87,20 +116,20 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			
 			//Iterating through pages
 			for($pageIndex = 0; $pageIndex < $pagesTotal; $pageIndex++){
-				$pageChunk = $this->input->extenderParams['pagination']['pageTpl'];
+				$pageChunk = $this->pageTpl;
 				
 				//Check if the page we're iterating through is current
 				if(
 					($this->zeroBasedPageIndex && $pageIndex == $this->pageIndex) ||
 					(!$this->zeroBasedPageIndex && $pageIndex == ($this->pageIndex - 1))
 				){
-					$pageChunk = $this->input->extenderParams['pagination']['currentPageTpl'];
+					$pageChunk = $this->currentPageTpl;
 				}
 				
 				$pagesOutputText .= \ddTools::parseSource(
 					$modx->parseChunk(
 						$pageChunk, array(
-							'url' => "?{$this->pageGetParamName}=".($this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1),
+							'url' => "?{$this->pageIndexRequestParamName}=".($this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1),
 							'page' => $this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1
 						),
 						'[+', '+]'
@@ -112,19 +141,19 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					($this->zeroBasedPageIndex && $this->pageIndex == 0) ||
 					(!$this->zeroBasedPageIndex && $this->pageIndex == 1)
 				)?
-				$this->input->extenderParams['pagination']['previousOff']:
-				$this->input->extenderParams['pagination']['previous'];
+				$this->previousOffTpl:
+				$this->previousTpl;
 			
 			$nextLinkChunk = (
 					($this->zeroBasedPageIndex && $this->pageIndex == ($pagesTotal - 1)) ||
 					(!$this->zeroBasedPageIndex && $this->pageIndex == $pagesTotal)
 				)?
-				$this->input->extenderParams['pagination']['nextOff']:
-				$this->input->extenderParams['pagination']['next'];
+				$this->nextOffTpl:
+				$this->nextTpl;
 			
 			$outputText = \ddTools::parseSource(
 				$modx->parseChunk(
-					$this->input->extenderParams['pagination']['wrapperTpl'],
+					$this->wrapperTpl,
 					array(
 						'previous' => \ddTools::parseSource(
 							$modx->parseChunk(

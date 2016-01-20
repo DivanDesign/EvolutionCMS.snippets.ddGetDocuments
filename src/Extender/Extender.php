@@ -30,11 +30,13 @@ abstract class Extender
 	}
 	
 	/**
-	 * applyToInput
+	 * applyToSnippetParams
 	 * 
-	 * @return Input
+	 * @param array $snippetParams
+	 * 
+	 * @return array
 	 */
-	abstract public function applyToInput(Input $input);
+	abstract public function applyToSnippetParams(array $snippetParams);
 	
 	/**
 	 * applyToOutput
