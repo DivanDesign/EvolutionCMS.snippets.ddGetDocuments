@@ -2,8 +2,20 @@
 A snippet for fetching and parsing resources from the document tree by a custom rule.
 
 ## Changelog
+### Version 0.4.0 (2016-01-20)
+#### General
+* \+ Added extenders support.
+* \- The “filterFieldDelimiter” parameter was removed.
+* \+ The “fieldDelimiter” parameter was added to replace “filterFieldDelimiter”. It has absolutely the same purpose but it's more global. It affects all snippet parameters that can contain SQL queries.
+* \* Fixed a plenty of bugs.
+
+#### Format\String
+* \* Extenders data are now available via placeholders.
+* \+ A new parameter called “noResults” has been added. It can be set as string or name of a chunk which will be used as output if no items are found.
+
 ### Version 0.3.2 (2015-10-11)
 * \+ Added dd/composer-plugin-modxevo-library-ddtools-installer dependency.
+* \+ The “itemNumber” and “itemNumberZeroBased” placeholders are now available within an item template.
 
 ### Version 0.3.1 (2015-10-11)
 * \+ Added composer/installers dependency.
