@@ -4,50 +4,49 @@ namespace ddGetDocuments\DataProvider\Select;
 
 
 use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	public $defaultParams = array(
 		'ids' => null
 	);
-
+	
 	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
+	 * getDataFromSource
+	 * 
+	 * @param Input $input
+	 * 
 	 * @return Output
 	 */
-	protected function getDataFromSource(array $providerParams, array $snippetParams){
+	protected function getDataFromSource(Input $input){
 		global $modx;
 		$output = new Output(array(), 0);
 		
 		$ids = $this->defaultParams['ids'];
 		
-		if(isset($providerParams['ids'])){
-			$ids = (string) $providerParams['ids'];
+		if(isset($input->providerParams)){
+			$ids = (string) $input->providerParams['ids'];
 		}
 		
 		$filter = null;
 		
-		if(isset($snippetParams['filter'])){
-			$filter = $snippetParams['filter'];
+		if(isset($input->snippetParams['filter'])){
+			$filter = $input->snippetParams['filter'];
 		}
 		
-		$filterFieldDelimiter = '`';
+		$fieldDelimiter = $input->snippetParams['fieldDelimiter'];
 		
-		if(isset($snippetParams['filterFieldDelimiter'])){
-			$filterFieldDelimiter = $snippetParams['filterFieldDelimiter'];
+		if(isset($input->snippetParams['offset'])){
+			$offset = $input->snippetParams['offset'];
 		}
 		
-		if(isset($snippetParams['offset'])){
-			$offset = $snippetParams['offset'];
+		if(isset($input->snippetParams['total'])){
+			$total = $input->snippetParams['total'];
 		}
 		
-		if(isset($snippetParams['total'])){
-			$total = $snippetParams['total'];
-		}
-		
-		if(isset($snippetParams['orderBy'])){
-			$orderBy = $snippetParams['orderBy'];
+		if(isset($input->snippetParams['orderBy'])){
+			$orderBy = $input->snippetParams['orderBy'];
 		}
 		
 		//By default, the required data is just fetched from the site_content table
@@ -56,7 +55,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filter)){
-			$usedFields = $this->getUsedFieldsFromFilter($filter, $filterFieldDelimiter);
+			$usedFields = $this->getUsedFieldsFromFilter($filter, $fieldDelimiter);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
@@ -65,7 +64,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			}
 			
 			$filterQuery = "$filter";
-			$filterQuery = str_replace($filterFieldDelimiter, '`', $filterQuery);
+			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
 		}
 		
 		$orderByQuery = '';
@@ -93,7 +92,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		if(!empty($idsWhereQuery) || !empty($filterQuery)){
 			$whereQuery = "WHERE ";
 			if(!empty($idsWhereQuery)){
-				$whereQuery .= "$idsWhereQuery AND $filterQuery";
+				$whereQuery .= $idsWhereQuery;
+				
+				if(!empty($filterQuery)){
+					$whereQuery .= " AND $filterQuery";
+				}
 			}else{
 				$whereQuery .= $filterQuery;
 			}

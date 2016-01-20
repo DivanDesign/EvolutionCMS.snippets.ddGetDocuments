@@ -8,9 +8,7 @@
 
 namespace ddGetDocuments\Extender;
 
-
-use ddGetDocuments\DataProvider\DataProvider;
-use ddGetDocuments\Output;
+use ddGetDocuments\Input;
 
 abstract class Extender
 {
@@ -32,8 +30,20 @@ abstract class Extender
 	}
 	
 	/**
-	 * @param array $data
-	 * @return Output
+	 * applyToSnippetParams
+	 * 
+	 * @param array $snippetParams
+	 * 
+	 * @return array
 	 */
-	abstract public function apply(DataProvider $dataProvider, array $providerParams, array $extenderParams, array $snippetParams);
+	abstract public function applyToSnippetParams(array $snippetParams);
+	
+	/**
+	 * applyToOutput
+	 * 
+	 * @param \ddGetDocuments\DataProvider\Output $output
+	 * 
+	 * @return mixed
+	 */
+	abstract public function applyToOutput(\ddGetDocuments\DataProvider\Output $output);
 }

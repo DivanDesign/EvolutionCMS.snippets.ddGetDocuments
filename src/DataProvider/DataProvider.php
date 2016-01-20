@@ -2,6 +2,8 @@
 namespace ddGetDocuments\DataProvider;
 
 
+use ddGetDocuments\Input;
+
 abstract class DataProvider
 {
 	public $defaultParams = array();
@@ -39,24 +41,28 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
+	 * getDataFromSource
+	 * 
+	 * @param Input $input
+	 * 
 	 * @return \ddGetDocuments\DataProvider\Output
 	 */
-	abstract protected function getDataFromSource(array $providerParams, array $snippetParams);
+	abstract protected function getDataFromSource(Input $input);
 	
 	/**
-	 * @param array $providerParams
-	 * @param array $snippetParams
-	 * @return array
+	 * get
+	 * 
+	 * @param Input $input
+	 * 
+	 * @return Output
 	 */
-	public final function get(array $providerParams = array(), array $snippetParams){
+	public final function get(Input $input){
 		
-		if(empty($providerParams)){
-			$providerParams = $this->defaultParams;
+		if(empty($input->providerParams)){
+			$input->providerParams = $this->defaultParams;
 		}
 		
-		return $this->getDataFromSource($providerParams, $snippetParams);
+		return $this->getDataFromSource($input);
 	}
 	
 	/**
