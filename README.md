@@ -2,6 +2,9 @@
 A snippet for fetching and parsing resources from the document tree by a custom rule.
 
 ## Changelog
+### Version 0.4.1 (2016-01-29)
+* \+ ddGetDocuments\DataProvider\DataProvider → getUsedFieldsFromFilter: Added an additional check for tv names to prevent adverse joins in the query that could cause an irrelevant output.
+
 ### Version 0.4.0 (2016-01-20)
 #### General
 * \+ Added extenders support.
