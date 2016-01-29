@@ -83,8 +83,21 @@ abstract class DataProvider
 				$output['fields'] = array_keys($fieldsArray[0]);
 			}
 			
-			if(!empty($fieldsArray[1])){
-				$output['tvs'] = array_keys($fieldsArray[1]);
+			//If there were tv names in the passed filter string
+			if(is_array($fieldsArray[1])){
+				$output['tvs'] = array();
+				
+				//Check whether the current tv name is an actual tv name
+				foreach($fieldsArray[1] as $tvName => $tvData){
+					if(isset($tvData['id'])){
+						//Pupulate the array with the current tv name
+						$output['tvs'][] = $tvName;
+					}
+				}
+				
+				if(empty($output['tvs'])){
+					unset($output['tvs']);
+				}
 			}
 		}
 		
