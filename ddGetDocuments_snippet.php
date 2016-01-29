@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.4.0 (2016-01-20)
+ * @version 0.4.1 (2016-01-29)
  * 
  * A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
