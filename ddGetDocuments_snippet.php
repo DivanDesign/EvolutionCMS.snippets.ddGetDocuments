@@ -12,7 +12,7 @@
  * parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * 
  * @param integer $total - The maximum number of the resources that will be returned.
- * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1';
+ * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1 AND `deleted` = 0';
  * Notice that all fields/tvs names specified in the filter parameter must be wrapped in $fieldDelimiter.
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
@@ -42,24 +42,29 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
 }
 
-$provider = isset($provider)? $provider: 'parent';
+//General
+$total = isset($total) ? $total : null;
+$offset = isset($offset) ? $offset : 0;
+$orderBy = isset($orderBy) ? $orderBy : '`id` ASC';
+$filter = isset($filter) ? $filter : null;
+$fieldDelimiter = isset($fieldDelimiter) ? $fieldDelimiter : '`';
+
+//Data provider
+$provider = isset($provider) ? $provider : 'parent';
 $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
-$providerParams = isset($providerParams)? $providerParams: '';
-$fieldDelimiter = isset($fieldDelimiter)? $fieldDelimiter: '`';
+$providerParams = isset($providerParams) ? $providerParams : '';
 
-$total = isset($total)? $total: null;
-$offset = isset($offset)? $offset: 0;
-$orderBy = isset($orderBy)? $orderBy: '`id` ASC';
-$filter = isset($filter)? $filter: null;
+//Output format
+$outputFormat = isset($outputFormat) ? $outputFormat : 'string';
+$outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
 
-$outputFormat = isset($outputFormat)? $outputFormat: 'string';
-$outputFormatParams = isset($outputFormatParams)? $outputFormatParams: '';
-
-$extenders = isset($extenders)? $extenders: '';
-$extendersParams = isset($extendersParams)? $extendersParams: '';
+//Extenders
+$extenders = isset($extenders) ? $extenders : '';
+$extendersParams = isset($extendersParams) ? $extendersParams : '';
 
 if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
+	//Prepare provider params
 	parse_str($providerParams, $providerParamsArray);
 	
 	$extendersNamesArray = array();
@@ -67,6 +72,7 @@ if(class_exists($providerClass)){
 	if($extenders != ''){
 		$extendersNamesArray = explode(',', $extenders);
 	}
+	//Prepare extender params
 	parse_str($extendersParams, $extendersParamsArray);
 	
 	if(!empty($extendersNamesArray)){
@@ -94,6 +100,7 @@ if(class_exists($providerClass)){
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
 	
 	$input = new \ddGetDocuments\Input(
+		//Snippet params
 		array(
 			'offset' => $offset,
 			'total' => $total,
@@ -136,10 +143,10 @@ if(class_exists($providerClass)){
 			
 			$output = $parser->parse($data, $outputFormatParamsArray);
 			
-			break;
+		break;
 		case 'raw':
 			$output = $data;
-			break;
+		break;
 	}
 }
 

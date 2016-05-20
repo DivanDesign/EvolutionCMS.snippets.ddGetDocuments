@@ -96,7 +96,8 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		//Check if child documents were found
 		if($allChildrenIdsStr !== ''){
 			$data = $modx->db->makeArray($modx->db->query("
-				SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
+				SELECT SQL_CALC_FOUND_ROWS `documents`.`id`
+				FROM $fromQuery AS `documents`
 				WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
 			"));
 			
@@ -118,10 +119,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$parentIdsStr = implode(',', $parentIds);
 		
 		if($parentIdsStr !== ''){
-			$outputArray = $modx->db->makeArray($modx->db->query("
-				SELECT `id` FROM {$this->siteContentTableName}
-				WHERE `parent` IN ($parentIdsStr)
-			"));
+			$outputArray = $modx->db->makeArray($modx->db->query('
+				SELECT `id`
+				FROM '.$this->siteContentTableName.'
+				WHERE `parent` IN ('.$parentIdsStr.')
+			'));
 			
 			if(is_array($outputArray) && !empty($outputArray)){
 				foreach($outputArray as $document){

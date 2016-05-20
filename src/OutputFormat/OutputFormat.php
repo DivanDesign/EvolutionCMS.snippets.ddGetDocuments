@@ -13,13 +13,13 @@ abstract class OutputFormat
 	 */
 	public final static function includeOutputFormatByName($parserName){
 		$parserName = ucfirst(strtolower($parserName));
-		$parserPath = $parserName.DIRECTORY_SEPARATOR.'OutputFormat'.".php";
+		$parserPath = $parserName.DIRECTORY_SEPARATOR.'OutputFormat'.'.php';
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$parserPath)){
 			require_once($parserPath);
 			return __NAMESPACE__.'\\'.$parserName.'\\'.'OutputFormat';
 		}else{
-			throw new \Exception("Parser $parserName not found.", 500);
+			throw new \Exception('Parser '.$parserName.' not found.', 500);
 		}
 	}
 	
