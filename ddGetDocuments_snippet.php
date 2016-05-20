@@ -17,9 +17,9 @@
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
  * 
- * @param 'string'|'raw' $format - Format of the output. Default: 'string'.
- * @param string $formatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
- * e.g. $formatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
+ * @param 'string'|'raw' $outputFormat - Format of the output. Default: 'string'.
+ * @param string $outputFormatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
+ * e.g. $outputFormatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * 
  * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
@@ -52,8 +52,8 @@ $offset = isset($offset)? $offset: 0;
 $orderBy = isset($orderBy)? $orderBy: '`id` ASC';
 $filter = isset($filter)? $filter: null;
 
-$format = isset($format)? $format: 'string';
-$formatParams = isset($formatParams)? $formatParams: '';
+$outputFormat = isset($outputFormat)? $outputFormat: 'string';
+$outputFormatParams = isset($outputFormatParams)? $outputFormatParams: '';
 
 $extenders = isset($extenders)? $extenders: '';
 $extendersParams = isset($extendersParams)? $extendersParams: '';
@@ -88,7 +88,7 @@ if(class_exists($providerClass)){
 		}
 	}
 	
-	parse_str($formatParams, $formatParamsArray);
+	parse_str($outputFormatParams, $outputFormatParamsArray);
 	
 	//Make sure orderBy looks like SQL
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
@@ -103,7 +103,7 @@ if(class_exists($providerClass)){
 		),
 		$providerParamsArray,
 		$extendersParamsArray,
-		$formatParamsArray
+		$outputFormatParamsArray
 	);
 	
 	//Extenders storage
@@ -129,12 +129,12 @@ if(class_exists($providerClass)){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
-	switch($format){
+	switch($outputFormat){
 		default:
-			$parserClass = \ddGetDocuments\Format\Format::includeFormatByName($format);
+			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$parser = new $parserClass;
 			
-			$output = $parser->parse($data, $formatParamsArray);
+			$output = $parser->parse($data, $outputFormatParamsArray);
 			
 			break;
 		case 'raw':
