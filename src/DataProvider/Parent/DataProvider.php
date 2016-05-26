@@ -8,7 +8,7 @@ use ddGetDocuments\Input;
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	public $defaultParams = array(
-		'parentId' => 0,
+		'parentIds' => array(0),
 		'depth' => 1,
 		'filter' => '`published` = 1 AND `deleted` = 0'
 	);
@@ -25,10 +25,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$output = new Output(array(), 0);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
-		$parentId = $this->defaultParams['parentId'];
+		$parentIds = $this->defaultParams['parentIds'];
 		
-		if(isset($input->providerParams['parentId'])){
-			$parentId = $input->providerParams['parentId'];
+		if(isset($input->providerParams['parentIds'])){
+			$parentIds = $input->providerParams['parentIds'];
+			
+			//Comma separated strings
+			if (!is_array($parentIds)){
+				$parentIds = explode(',', $parentIds);
+			}
 		}
 		
 		$depth = $this->defaultParams['depth'];
@@ -75,7 +80,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
 		}
 		
-		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds(array($parentId), $depth));
+		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds($parentIds, $depth));
 		
 		$orderByQuery = '';
 		

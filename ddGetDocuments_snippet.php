@@ -7,7 +7,7 @@
  * 
  * @param string $provider - Name of the provider that will be used to fetch documents.
  * @param string $providerParams - Parameters to be passed to the provider. The parameter must be set as a query string,
- * e.g. $providerParams = 'parentId=1&depth=2'.
+ * e.g. $providerParams = 'parentIds=1&depth=2'.
  * @param string $fieldDelimiter - The field delimiter to be used in order to distinct data base column names in those
  * parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * 
