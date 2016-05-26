@@ -1,25 +1,25 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.4.1 (2016-01-29)
+ * @version 0.5 (2016-05-26)
  * 
  * A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @param string $provider - Name of the provider that will be used to fetch documents.
  * @param string $providerParams - Parameters to be passed to the provider. The parameter must be set as a query string,
- * e.g. $providerParams = 'parentId=1&depth=2'.
+ * e.g. $providerParams = 'parentIds=1&depth=2'.
  * @param string $fieldDelimiter - The field delimiter to be used in order to distinct data base column names in those
  * parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * 
  * @param integer $total - The maximum number of the resources that will be returned.
- * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1';
+ * @param string $filter - The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1 AND `deleted` = 0';
  * Notice that all fields/tvs names specified in the filter parameter must be wrapped in $fieldDelimiter.
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
  * 
- * @param 'string'|'raw' $format - Format of the output. Default: 'string'.
- * @param string $formatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
- * e.g. $formatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
+ * @param 'string'|'raw' $outputFormat - Format of the output. Default: 'string'.
+ * @param string $outputFormatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
+ * e.g. $outputFormatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * 
  * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
@@ -42,24 +42,29 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
 }
 
-$provider = isset($provider)? $provider: 'parent';
+//General
+$total = isset($total) ? $total : null;
+$offset = isset($offset) ? $offset : 0;
+$orderBy = isset($orderBy) ? $orderBy : '`id` ASC';
+$filter = isset($filter) ? $filter : null;
+$fieldDelimiter = isset($fieldDelimiter) ? $fieldDelimiter : '`';
+
+//Data provider
+$provider = isset($provider) ? $provider : 'parent';
 $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
-$providerParams = isset($providerParams)? $providerParams: '';
-$fieldDelimiter = isset($fieldDelimiter)? $fieldDelimiter: '`';
+$providerParams = isset($providerParams) ? $providerParams : '';
 
-$total = isset($total)? $total: null;
-$offset = isset($offset)? $offset: 0;
-$orderBy = isset($orderBy)? $orderBy: '`id` ASC';
-$filter = isset($filter)? $filter: null;
+//Output format
+$outputFormat = isset($outputFormat) ? $outputFormat : 'string';
+$outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
 
-$format = isset($format)? $format: 'string';
-$formatParams = isset($formatParams)? $formatParams: '';
-
-$extenders = isset($extenders)? $extenders: '';
-$extendersParams = isset($extendersParams)? $extendersParams: '';
+//Extenders
+$extenders = isset($extenders) ? $extenders : '';
+$extendersParams = isset($extendersParams) ? $extendersParams : '';
 
 if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
+	//Prepare provider params
 	parse_str($providerParams, $providerParamsArray);
 	
 	$extendersNamesArray = array();
@@ -67,6 +72,7 @@ if(class_exists($providerClass)){
 	if($extenders != ''){
 		$extendersNamesArray = explode(',', $extenders);
 	}
+	//Prepare extender params
 	parse_str($extendersParams, $extendersParamsArray);
 	
 	if(!empty($extendersNamesArray)){
@@ -88,12 +94,13 @@ if(class_exists($providerClass)){
 		}
 	}
 	
-	parse_str($formatParams, $formatParamsArray);
+	parse_str($outputFormatParams, $outputFormatParamsArray);
 	
 	//Make sure orderBy looks like SQL
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
 	
 	$input = new \ddGetDocuments\Input(
+		//Snippet params
 		array(
 			'offset' => $offset,
 			'total' => $total,
@@ -103,7 +110,7 @@ if(class_exists($providerClass)){
 		),
 		$providerParamsArray,
 		$extendersParamsArray,
-		$formatParamsArray
+		$outputFormatParamsArray
 	);
 	
 	//Extenders storage
@@ -129,17 +136,17 @@ if(class_exists($providerClass)){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
-	switch($format){
+	switch($outputFormat){
 		default:
-			$parserClass = \ddGetDocuments\Format\Format::includeFormatByName($format);
+			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$parser = new $parserClass;
 			
-			$output = $parser->parse($data, $formatParamsArray);
+			$output = $parser->parse($data, $outputFormatParamsArray);
 			
-			break;
+		break;
 		case 'raw':
 			$output = $data;
-			break;
+		break;
 	}
 }
 

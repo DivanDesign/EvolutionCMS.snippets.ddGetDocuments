@@ -36,7 +36,7 @@ abstract class DataProvider
 			require_once($providerPath);
 			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
 		}else{
-			throw new \Exception("Data provider $providerName not found.", 500);
+			throw new \Exception('Data provider '.$providerName.' not found.', 500);
 		}
 	}
 	
@@ -57,7 +57,6 @@ abstract class DataProvider
 	 * @return Output
 	 */
 	public final function get(Input $input){
-		
 		if(empty($input->providerParams)){
 			$input->providerParams = $this->defaultParams;
 		}
