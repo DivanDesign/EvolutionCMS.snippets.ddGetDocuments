@@ -1,4 +1,11 @@
 # ddGetDocuments changelog
+## Version 0.5 (2016-05-26)
+* \* Warning! Backward compatibility is broken.
+* \* The “format” parameter was renamed as “otuputFormat”.
+* \* The “formatParams” parameter was renamed as “otuputFormatParams”.
+* \+ ddGetDocuments\DataProvider\Parent\DataProvider: Support for multiple parent ids was added (issue #1).
+* \* ddGetDocuments\DataProvider\Parent\DataProvider: The “parentId” parameter was renamed as “parentIds”.
+
 ## Version 0.4.1 (2016-01-29)
 * \+ ddGetDocuments\DataProvider\DataProvider → getUsedFieldsFromFilter: Added an additional check for tv names to prevent adverse joins in the query that could cause an irrelevant output.
 
