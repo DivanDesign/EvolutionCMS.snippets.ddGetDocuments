@@ -17,9 +17,13 @@
  * @param integer $offset - Resources offset.
  * @param string $orderBy - A string representing the sorting rule. Default: '`id` ASC'.
  * 
- * @param 'string'|'raw' $outputFormat - Format of the output. Default: 'string'.
+ * @param 'string'|'raw'|'json'  $outputFormat - Format of the output. Default: 'string'.
  * @param string $outputFormatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
  * e.g. $outputFormatParams = 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
+ * @param json $outputFormatParams - Parameters to be passed to the specified formatter. The parameter must be set as a query string,
+ * e.g. $outputFormatParams = 'TVtoJson=pagetitle,introtext&wrapResult=[||]'.
+ * TVtoJson - TV которые попадут в json массив. @Default: 'id'
+ * wrapResult - Оборачивает результат в качестве разделителя используется «||». @Default: ''
  * 
  * @param string $extenders - Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
