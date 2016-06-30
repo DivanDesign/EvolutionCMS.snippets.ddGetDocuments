@@ -19,7 +19,7 @@ abstract class OutputFormat
 			require_once($parserPath);
 			return __NAMESPACE__.'\\'.$parserName.'\\'.'OutputFormat';
 		}else{
-			throw new \Exception('Parser '.$parserName.' not found.', 500);
+			throw new \Exception('Parser “'.$parserName.'” not found.', 500);
 		}
 	}
 	
