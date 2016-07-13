@@ -59,7 +59,7 @@ $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByNam
 $providerParams = isset($providerParams) ? $providerParams : '';
 
 //Output format
-$outputFormat = isset($outputFormat) ? $outputFormat : 'string';
+$outputFormat = isset($outputFormat) ? strtolower($outputFormat) : 'string';
 $outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
 
 //Extenders
@@ -151,7 +151,7 @@ if(class_exists($providerClass)){
 		case 'raw':
 			$output = $data;
 		break;
-		case 'JSON':
+		case 'json':
 			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$parser = new $parserClass;
 			
