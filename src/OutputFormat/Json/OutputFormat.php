@@ -11,12 +11,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * 
 	 * @param Output $data
 	 * @param array $outputFormatParameters
-	 * $outputFormatParameters['docFields']. Document fields to output. Default: 'id'.
+	 * @param array|string_commaSeparated $outputFormatParameters['docFields'] — Document fields to output. Default: 'id'.
 	 * 
-	 * @return json array
+	 * @return string_json_array
 	 */
 	public function parse(Output $data, array $outputFormatParameters){
-		global $modx;
 		$output = array();
 		$dataArray = $data->toArray();
 		
