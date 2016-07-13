@@ -11,7 +11,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * 
 	 * @param Output $data
 	 * @param array $outputFormatParameters
-	 * $outputFormatParameters['docFields']. Document fields to output. @Default: 'id'
+	 * $outputFormatParameters['docFields']. Document fields to output. Default: 'id'.
 	 * 
 	 * @return json array
 	 */
@@ -21,7 +21,13 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$dataArray = $data->toArray();
 		
 		//Проверим заполнен ли параметр
-		$docFields = (isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '') ? explode(',', $outputFormatParameters['docFields']) : 'id';
+		$docFields = isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '' ? $outputFormatParameters['docFields'] : array('id');
+		
+		//Comma separated strings
+		if (!is_array($docFields)){
+			$docFields = explode(',', $docFields);
+		}
+		
 		//Пройдемся по полученным данным
 		foreach($dataArray['provider']['items'] as $key => $value){
 			//Для каждого найденого id найдем необходимые TV

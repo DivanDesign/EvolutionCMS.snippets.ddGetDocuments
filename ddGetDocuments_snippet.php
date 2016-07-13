@@ -30,7 +30,7 @@
  * @param string|string_chunkName $outputFormatParams['noResults'] - A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
  * e.g. 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * When $outputFormat == 'json' =>
- * @param string_commaSeparated $outputFormatParams['docFields'] - Document fields to output (including TVs). Default: 'id'.
+ * @param array|string_commaSeparated $outputFormatParams['docFields'] - Document fields to output (including TVs). Default: 'id'.
  * e.g. 'docFields=id,pagetitle,introtext'.
  * 
  * @param string_commaSeparated $extenders - Comma-separated string determining which extenders should be applied to the snippet.
