@@ -12,7 +12,6 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * @param Output $data
 	 * @param array $outputFormatParameters
 	 * $outputFormatParameters['TVtoJson']. TV из которых будет состоять json. @Default: 'id'
-	 * $outputFormatParameters['wrapResult']. Оборачивает результат. В качестве разделителя используется «||». @Default: ''
 	 * 
 	 * @return json array
 	 */
@@ -32,13 +31,6 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			$result = implode(",", $output);
 		}
 		
-		//Обернем если надо
-		if (isset($outputFormatParameters['wrapResult']) && $outputFormatParameters['wrapResult'] != ''){
-			$wrap = explode('||',$outputFormatParameters['wrapResult']);
-			return $wrap[0] .$result. $wrap[1];
-		}else{
-			//Не обернем если не надо
-			return $result;
-		};
+		return $result;
 	}
 }
