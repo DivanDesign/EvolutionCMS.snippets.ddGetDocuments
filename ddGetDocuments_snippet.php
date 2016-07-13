@@ -162,16 +162,10 @@ if(class_exists($providerClass)){
 			$parser = new $parserClass;
 			
 			$output = $parser->parse($data, $outputFormatParamsArray);
-			
 		break;
+		
 		case 'raw':
 			$output = $data;
-		break;
-		case 'json':
-			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
-			$parser = new $parserClass;
-			
-			$output = $parser->parse($data, $outputFormatParamsArray);
 		break;
 	}
 }
