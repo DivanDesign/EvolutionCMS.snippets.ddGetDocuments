@@ -11,7 +11,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * 
 	 * @param Output $data
 	 * @param array $outputFormatParameters
-	 * $outputFormatParameters['TVtoJson']. TV из которых будет состоять json. @Default: 'id'
+	 * $outputFormatParameters['docFields']. Document fields to output. @Default: 'id'
 	 * 
 	 * @return json array
 	 */
@@ -21,11 +21,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$dataArray = $data->toArray();
 		
 		//Проверим заполнен ли параметр
-		$TVtoJson = (isset($outputFormatParameters['TVtoJson']) && $outputFormatParameters['TVtoJson'] != '') ? explode(',',$outputFormatParameters['TVtoJson']) : 'id';
+		$docFields = (isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '') ? explode(',', $outputFormatParameters['docFields']) : 'id';
 		//Пройдемся по полученным данным
 		foreach($dataArray['provider']['items'] as $key => $value){
 			//Для каждого найденого id найдем необходимые TV
-			$output[] = \ddTools::getTemplateVarOutput($TVtoJson, $value['id']);
+			$output[] = \ddTools::getTemplateVarOutput($docFields, $value['id']);
 		}
 		
 		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
