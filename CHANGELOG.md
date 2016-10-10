@@ -1,4 +1,9 @@
 # ddGetDocuments changelog
+## Version 0.6 (2016-10-10)
+* \* ddGetDocuments\OutputFormat\Json\OutputFormat:
+	* \+ Added the ability to output in Json format with the required TV.
+	* \* The “$outputFormatParameters['docFields']” parameter can be set as an array (&outputFormatParams=`docFields=id,pagetitle,template` == &outputFormatParams=`docFields[]=id&docFields[]=pagetitle&docFields[]=template`).
+
 ## Version 0.5 (2016-05-26)
 * \* Warning! Backward compatibility is broken.
 * \* The “format” parameter was renamed as “otuputFormat”.
