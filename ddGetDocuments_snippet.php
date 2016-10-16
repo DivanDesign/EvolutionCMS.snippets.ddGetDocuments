@@ -27,6 +27,7 @@
  * @param $outputFormatParams['itemTplLast'] {string_chunkName} — Last item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
  * @param $outputFormatParams['wrapperTpl'] {string_chunkName} — Wrapper template. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
  * @param $outputFormatParams['noResults'] {string|string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
+ * @param $outputFormatParams['resultToPlaceholder'] {string} - The name of the global MODX placeholder that holds the snippet result. The result will be returned in a regular manner if the parameter is empty. Default: ''.
  * e.g. 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * When $outputFormat == 'json' =>
  * @param $outputFormatParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
