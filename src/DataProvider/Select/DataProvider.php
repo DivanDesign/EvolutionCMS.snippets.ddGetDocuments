@@ -86,32 +86,34 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$idsWhereQuery = '';
 		if(!empty($ids)){
 			$idsWhereQuery = "`documents`.`id` IN ($ids)";
-		}
-		
-		$whereQuery = '';
-		if(!empty($idsWhereQuery) || !empty($filterQuery)){
-			$whereQuery = "WHERE ";
-			if(!empty($idsWhereQuery)){
-				$whereQuery .= $idsWhereQuery;
-				
-				if(!empty($filterQuery)){
-					$whereQuery .= " AND $filterQuery";
+			
+			$whereQuery = '';
+			if(!empty($idsWhereQuery) || !empty($filterQuery)){
+				$whereQuery = "WHERE ";
+				if(!empty($idsWhereQuery)){
+					$whereQuery .= $idsWhereQuery;
+					
+					if(!empty($filterQuery)){
+						$whereQuery .= " AND $filterQuery";
+					}
+				}else{
+					$whereQuery .= $filterQuery;
 				}
-			}else{
-				$whereQuery .= $filterQuery;
 			}
-		}
-		
-		$data = $modx->db->makeArray($modx->db->query("
-			SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
-			$whereQuery $orderByQuery $limitQuery
-		"));
-		
-		$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
-		$totalFound = $totalFoundArray[0]['totalFound'];
-		
-		if(is_array($data)){
-			$output = new Output($data, $totalFound);
+			
+			$data = $modx->db->makeArray($modx->db->query("
+				SELECT SQL_CALC_FOUND_ROWS `documents`.`id` FROM $fromQuery AS `documents`
+				$whereQuery $orderByQuery $limitQuery
+			"));
+			
+			$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
+			$totalFound = $totalFoundArray[0]['totalFound'];
+			
+			if(is_array($data)){
+				$output = new Output($data, $totalFound);
+			}
+		}else{
+			$output = new Output(array(), '0');
 		}
 		
 		return $output;
