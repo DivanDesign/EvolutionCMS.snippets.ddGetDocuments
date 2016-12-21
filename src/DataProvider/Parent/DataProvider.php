@@ -15,10 +15,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
+	 * @version 1.0.1 (2016-12-21)
 	 * 
-	 * @param Input $input
+	 * @param $input {ddGetDocuments\Input}
 	 * 
-	 * @return Output
+	 * @return {ddGetDocuments\DataProvider\Output}
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
@@ -63,7 +64,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$fieldDelimiter = $input->snippetParams['fieldDelimiter'];
 		
 		//By default, the required data is just fetched from the site_content table
-		$fromQuery = "{$this->siteContentTableName}";
+		$fromQuery = $this->siteContentTableName;
 		$filterQuery = '';
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
@@ -73,10 +74,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
 				//complete from query
-				$fromQuery = "(".$this->buildTVsSubQuery($usedFields['tvs']).")";
+				$fromQuery = '('.$this->buildTVsSubQuery($usedFields['tvs']).')';
 			}
 			
-			$filterQuery = "AND ($filter)";
+			$filterQuery = 'AND ('.$filter.')';
 			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
 		}
 		
@@ -85,28 +86,37 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$orderByQuery = '';
 		
 		if(!empty($orderBy)){
-			$orderByQuery = "ORDER BY $orderBy";
+			$orderByQuery = 'ORDER BY '.$orderBy;
 		}
 		
 		$limitQuery = '';
 		
-		if(!empty($offset) && !empty($total)){
-			$limitQuery = "LIMIT $offset,$total";
-		}elseif(empty($offset) && !empty($total)){
-			$limitQuery = "LIMIT $total";
-		}elseif(!empty($offset) && empty($total)){
-			$limitQuery = "LIMIT $offset,".PHP_INT_MAX;
+		if(
+			!empty($offset) &&
+			!empty($total)
+		){
+			$limitQuery = 'LIMIT '.$offset.','.$total;
+		}elseif(
+			empty($offset) &&
+			!empty($total)
+		){
+			$limitQuery = 'LIMIT '.$total;
+		}elseif(
+			!empty($offset) &&
+			empty($total)
+		){
+			$limitQuery = 'LIMIT '.$offset.','.PHP_INT_MAX;
 		}
 		
 		//Check if child documents were found
 		if($allChildrenIdsStr !== ''){
-			$data = $modx->db->makeArray($modx->db->query("
+			$data = $modx->db->makeArray($modx->db->query('
 				SELECT SQL_CALC_FOUND_ROWS `documents`.`id`
-				FROM $fromQuery AS `documents`
-				WHERE `documents`.`id` IN ($allChildrenIdsStr) $filterQuery $orderByQuery $limitQuery
-			"));
+				FROM '.$fromQuery.' AS `documents`
+				WHERE `documents`.`id` IN ('.$allChildrenIdsStr.') '.$filterQuery.' '.$orderByQuery.' '.$limitQuery.'
+			'));
 			
-			$totalFoundArray = $modx->db->makeArray($modx->db->query("SELECT FOUND_ROWS() as `totalFound`"));
+			$totalFoundArray = $modx->db->makeArray($modx->db->query('SELECT FOUND_ROWS() as `totalFound`'));
 			$totalFound = $totalFoundArray[0]['totalFound'];
 			
 			if(is_array($data)){
