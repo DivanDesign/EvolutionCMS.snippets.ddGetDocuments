@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.2 (2016-12-21)
+	 * @version 1.0.3 (2016-12-21)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -72,6 +72,9 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		if(!empty($orderBy)){
 			$orderByQuery = 'ORDER BY '.$orderBy;
+		//Order by selected IDs sequence
+		}elseif(!empty($ids)){
+			$orderByQuery = 'ORDER BY FIELD (`documents`.`id`,'.$ids.')';
 		}
 		
 		$limitQuery = '';
