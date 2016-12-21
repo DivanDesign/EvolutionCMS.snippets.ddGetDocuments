@@ -7,11 +7,11 @@ use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
-	public $defaultParams = array(
-		'parentIds' => array(0),
+	public $defaultParams = [
+		'parentIds' => [0],
 		'depth' => 1,
 		'filter' => '`published` = 1 AND `deleted` = 0'
-	);
+	];
 	
 	/**
 	 * getDataFromSource
@@ -22,7 +22,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$output = new Output(array(), 0);
+		$output = new Output([], 0);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
 		$parentIds = $this->defaultParams['parentIds'];
@@ -119,7 +119,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	protected function getAllChildrenIds(array $parentIds, $depth){
 		global $modx;
-		$output = array();
+		$output = [];
 		
 		$parentIdsStr = implode(',', $parentIds);
 		

@@ -8,9 +8,9 @@ use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
-	public $defaultParams = array(
+	public $defaultParams = [
 		'ids' => null
-	);
+	];
 	
 	/**
 	 * getDataFromSource
@@ -21,7 +21,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$output = new Output(array(), 0);
+		$output = new Output([], 0);
 		
 		$ids = $this->defaultParams['ids'];
 		

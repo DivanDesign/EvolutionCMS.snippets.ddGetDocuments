@@ -136,10 +136,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				
 				$pagesOutputText .= \ddTools::parseSource(
 					$modx->parseChunk(
-						$pageChunk, array(
+						$pageChunk, [
 							'url' => "?{$this->pageIndexRequestParamName}=".($this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1),
 							'page' => $this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1
-						),
+						],
 						'[+', '+]'
 					)
 				);
@@ -162,11 +162,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			$outputText = \ddTools::parseSource(
 				$modx->parseChunk(
 					$this->wrapperTpl,
-					array(
+					[
 						'previous' => \ddTools::parseSource(
 							$modx->parseChunk(
 								$previousLinkChunk,
-								array(),
+								[],
 								'[+', '+]'
 							)
 						),
@@ -174,11 +174,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'next' => \ddTools::parseSource(
 							$modx->parseChunk(
 								$nextLinkChunk,
-								array(),
+								[],
 								'[+', '+]'
 							)
 						)
-					),
+					],
 					'[+', '+]'
 				)
 			);
