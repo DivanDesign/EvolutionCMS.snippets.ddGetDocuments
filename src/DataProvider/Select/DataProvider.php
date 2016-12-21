@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.1 (2016-12-21)
+	 * @version 1.0.2 (2016-12-21)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -122,8 +122,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
 		'));
 		
-		$totalFoundArray = $modx->db->makeArray($modx->db->query('SELECT FOUND_ROWS() as `totalFound`'));
-		$totalFound = $totalFoundArray[0]['totalFound'];
+		$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
 		
 		if(is_array($data)){
 			$output = new Output($data, $totalFound);
