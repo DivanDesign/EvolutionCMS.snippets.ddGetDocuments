@@ -16,11 +16,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * @return string_json_array
 	 */
 	public function parse(Output $data, array $outputFormatParameters){
-		$output = array();
+		$output = [];
 		$dataArray = $data->toArray();
 		
 		//Проверим заполнен ли параметр
-		$docFields = isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '' ? $outputFormatParameters['docFields'] : array('id');
+		$docFields = isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '' ? $outputFormatParameters['docFields'] : ['id'];
 		
 		//Comma separated strings
 		if (!is_array($docFields)){

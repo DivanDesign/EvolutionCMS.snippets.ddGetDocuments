@@ -1,4 +1,16 @@
 # ddGetDocuments changelog
+## Version 0.6.1 (2016-12-21)
+* \* ddGetDocuments\DataProvider\Select\DataProvider → getDataFromSource:
+	* \+ If “$orderBy” is empty results will be ordered by selected IDs sequence.
+	* \* Refactoring: “$modx->db->getValue” is used instead of “$modx->db->makeArray”.
+* \* ddGetDocuments\DataProvider\Parent\DataProvider → getDataFromSource: Refactoring: “$modx->db->getValue” is used instead of “$modx->db->makeArray”.
+* \* Short array syntax is used because it's more convenient.
+* \* Minor changes:
+	* \* Code style.
+	* \* Comments.
+* \* Attention! PHP >= 5.4 is required.
+* \* Attention! MODXEvo.library.ddTools >= 0.16.2 is required.
+
 ## Version 0.6 (2016-10-10)
 * \* ddGetDocuments\OutputFormat\Json\OutputFormat:
 	* \+ Added the ability to output in Json format with the required TV.

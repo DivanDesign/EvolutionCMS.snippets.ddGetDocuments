@@ -7,16 +7,16 @@ class Output
 	private
 		$provider;
 	
-	public $extenders = array();
+	public $extenders = [];
 	
 	public final function __construct(\ddGetDocuments\DataProvider\Output $providerOutput){
 		$this->provider = $providerOutput;
 	}
 	
 	public final function toArray(){
-		return array(
+		return [
 			'provider' => $this->provider->toArray(),
 			'extenders' => $this->extenders
-		);
+		];
 	}
 }

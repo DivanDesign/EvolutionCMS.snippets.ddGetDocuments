@@ -6,7 +6,7 @@ use ddGetDocuments\Input;
 
 abstract class DataProvider
 {
-	public $defaultParams = array();
+	public $defaultParams = [];
 	
 	protected
 		$siteContentTableName,
@@ -70,7 +70,7 @@ abstract class DataProvider
 	 * @return array
 	 */
 	public final function getUsedFieldsFromFilter($filterStr, $filterFieldDelimiter = '`'){
-		$output = array();
+		$output = [];
 		//Try to find all fields/tvs used in filter by the pattern
 		preg_match_all("/$filterFieldDelimiter(\w+)$filterFieldDelimiter/", $filterStr, $fields);
 		
@@ -84,7 +84,7 @@ abstract class DataProvider
 			
 			//If there were tv names in the passed filter string
 			if(is_array($fieldsArray[1])){
-				$output['tvs'] = array();
+				$output['tvs'] = [];
 				
 				//Check whether the current tv name is an actual tv name
 				foreach($fieldsArray[1] as $tvName => $tvData){

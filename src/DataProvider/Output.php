@@ -12,9 +12,9 @@ class Output
 	}
 	
 	public function toArray(){
-		return array(
+		return [
 			'items' => $this->items,
 			'totalFound' => $this->totalFound
-		);
+		];
 	}
 }

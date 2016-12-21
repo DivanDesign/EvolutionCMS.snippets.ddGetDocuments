@@ -25,17 +25,17 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$dataArray = $data->toArray();
 		
 		$total = count($dataArray['provider']['items']);
-		$generalPlaceholders = array(
+		$generalPlaceholders = [
 			'total' => $total,
 			'totalFound' => $dataArray['provider']['totalFound']
-		);
+		];
 		
 		if(isset($dataArray['extenders'])){
 			$generalPlaceholders = array_merge(
 				$generalPlaceholders,
-				array(
+				[
 					'extenders' => $dataArray['extenders']
-				)
+				]
 			);
 			
 			$generalPlaceholders = \ddTools::unfoldArray($generalPlaceholders);
@@ -59,10 +59,10 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 					$output .= \ddTools::parseSource($modx->parseChunk($chunkName, array_merge(
 						$document,
 						$generalPlaceholders,
-						array(
+						[
 							'itemNumber' => $index + 1,
 							'itemNumberZeroBased' => $index
-						)
+						]
 					), '[+', '+]'));
 				}
 			}
@@ -85,9 +85,9 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			}
 		}elseif(isset($outputFormatParameters['wrapperTpl'])){
 			$output = (string) $modx->parseChunk($outputFormatParameters['wrapperTpl'],
-				array_merge($generalPlaceholders, array(
+				array_merge($generalPlaceholders, [
 					'ddGetDocuments_items' => $output
-				)), '[+', '+]');
+				]), '[+', '+]');
 		}
 		
 		return $output;
