@@ -11,11 +11,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * 
 	 * @param Output $data
 	 * @param array $outputFormatParameters
-	 * $outputFormatParameters['itemTpl']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
-	 * $outputFormatParameters['itemTplFirst']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
-	 * $outputFormatParameters['itemTplLast']. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
-	 * $outputFormatParameters['wrapperTpl']. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
-	 * $outputFormatParameters['noResults']. A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
+	 * @param $outputFormatParameters['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+	 * @param $outputFormatParameters['itemTplFirst'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+	 * @param $outputFormatParameters['itemTplLast'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+	 * @param $outputFormatParameters['wrapperTpl'] {string_chunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
+	 * @param $outputFormatParameters['noResults'] {string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
 	 * 
 	 * @return string
 	 */
