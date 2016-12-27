@@ -16,6 +16,8 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * @param $outputFormatParameters['itemTplLast'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
 	 * @param $outputFormatParameters['wrapperTpl'] {string_chunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
 	 * @param $outputFormatParameters['noResults'] {string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
+	 * @param $outputFormatParameters['placeholders'] {array_associative}. Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Default: [].
+	 * @param $outputFormatParameters['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required
 	 * 
 	 * @return string
 	 */
@@ -29,6 +31,10 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			'total' => $total,
 			'totalFound' => $dataArray['provider']['totalFound']
 		];
+		
+		if(!empty($outputFormatParameters['placeholders'])){
+			$generalPlaceholders = array_merge($generalPlaceholders, $outputFormatParameters['placeholders']);			
+		}
 		
 		if(isset($dataArray['extenders'])){
 			$generalPlaceholders = array_merge(

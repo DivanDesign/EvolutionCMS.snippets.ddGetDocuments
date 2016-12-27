@@ -28,7 +28,9 @@
  * @param $outputFormatParams['itemTpl'] {string_chunkName} — Item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
  * @param $outputFormatParams['itemTplFirst'] {string_chunkName} — First item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
  * @param $outputFormatParams['itemTplLast'] {string_chunkName} — Last item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputFormatParams['wrapperTpl'] {string_chunkName} — Wrapper template. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
+ * @param $outputFormatParams['wrapperTpl'] {string_chunkName} — Wrapper template. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
+ * @param $outputFormatParams['placeholders'] {array_associative} — Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Е.g. 'placeholders[alias]=test&placeholders[pagetitle]=Some title'. Default: []. 
+ * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
  * @param $outputFormatParams['noResults'] {string|string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
  * e.g. 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
  * When $outputFormat == 'json' =>
