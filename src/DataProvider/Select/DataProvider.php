@@ -101,7 +101,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$idsWhereQuery = '`documents`.`id` IN ('.$ids.')';
 		}
 		
-		$whereQuery = '';
 		if(
 			!empty($idsWhereQuery) ||
 			!empty($filterQuery)
@@ -116,19 +115,19 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			}else{
 				$whereQuery .= $filterQuery;
 			}
-		}
-		
-		$data = $modx->db->makeArray($modx->db->query('
-			SELECT
-				SQL_CALC_FOUND_ROWS `documents`.`id`
-			FROM '.$fromQuery.' AS `documents`
-			'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
-		'));
-		
-		$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
-		
-		if(is_array($data)){
-			$output = new Output($data, $totalFound);
+			
+			$data = $modx->db->makeArray($modx->db->query('
+				SELECT
+					SQL_CALC_FOUND_ROWS `documents`.`id`
+				FROM '.$fromQuery.' AS `documents`
+				'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
+			'));
+			
+			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
+			
+			if(is_array($data)){
+				$output = new Output($data, $totalFound);
+			}
 		}
 		
 		return $output;
