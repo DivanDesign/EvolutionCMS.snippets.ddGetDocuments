@@ -91,36 +91,34 @@ $extendersParams = isset($extendersParams) ? $extendersParams : '';
 if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	//Prepare provider params
-	parse_str($providerParams, $providerParamsArray);
+	parse_str($providerParams, $providerParams);
 	
-	$extendersNamesArray = [];
+	$extenders = explode(',', $extenders);
 	
-	if($extenders != ''){
-		$extendersNamesArray = explode(',', $extenders);
-	}
 	//Prepare extender params
-	parse_str($extendersParams, $extendersParamsArray);
+	parse_str($extendersParams, $extendersParams);
 	
-	if(!empty($extendersNamesArray)){
+	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
 		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
-		if(count($extendersNamesArray) === 1){
-			if(!isset($extendersParamsArray[$extendersNamesArray[0]])){
-				$extendersParamsArray = [
-					$extendersNamesArray[0] => $extendersParamsArray
+		if(count($extenders) === 1){
+			if(!isset($extendersParams[$extenders[0]])){
+				$extendersParams = [
+					$extenders[0] => $extendersParams
 				];
 			}
 		}else{
-			//Make sure that for each extender there is an item in $extendersParamsArray 
-			foreach($extendersNamesArray as $extenderName){
-				if(!isset($extendersParamsArray[$extenderName])){
-					$extendersParamsArray[$extenderName] = [];
+			//Make sure that for each extender there is an item in $extendersParams 
+			foreach($extenders as $extenderName){
+				if(!isset($extendersParams[$extenderName])){
+					$extendersParams[$extenderName] = [];
 				}
 			}
 		}
 	}
 	
-	parse_str($outputFormatParams, $outputFormatParamsArray);
+	//Prepare output format params
+	parse_str($outputFormatParams, $outputFormatParams);
 	
 	//Make sure orderBy looks like SQL
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
@@ -134,19 +132,19 @@ if(class_exists($providerClass)){
 			'filter' => $filter,
 			'fieldDelimiter' => $fieldDelimiter
 		],
-		$providerParamsArray,
-		$extendersParamsArray,
-		$outputFormatParamsArray
+		$providerParams,
+		$extendersParams,
+		$outputFormatParams
 	);
 	
 	//Extenders storage
 	$extendersStorage = [];
 	
 	//Iterate through all extenders to create their instances
-	foreach($extendersNamesArray as $extenderName){
+	foreach($extenders as $extenderName){
 		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
 		//Passing parameters to extender's constructor
-		$extender = new $extenderClass($extendersParamsArray[$extenderName]);
+		$extender = new $extenderClass($extendersParams[$extenderName]);
 		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extender;
 		
@@ -167,7 +165,7 @@ if(class_exists($providerClass)){
 			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$parser = new $parserClass;
 			
-			$output = $parser->parse($data, $outputFormatParamsArray);
+			$output = $parser->parse($data, $outputFormatParams);
 		break;
 		
 		case 'raw':
