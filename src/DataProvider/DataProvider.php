@@ -153,4 +153,39 @@ abstract class DataProvider
 		//complete from query
 		return "$selectTvsQuery $fromTvsQuery $joinTvsQuery $whereTvsQuery";
 	}
+	
+	/**
+	 * prepareFromAndFilterQueries
+	 * @version 1.0 (2017-01-04)
+	 * 
+	 * @param $filterStr {string} — Filter string. @required
+	 * @param $fieldDelimiter {string} — Field delimiter. Default: '`'.
+	 * 
+	 * @return $result {array_associative}
+	 * @return $result['from'] {string}
+	 * @return $result['filter'] {string}
+	 */
+	protected final function prepareFromAndFilterQueries($filterStr, $fieldDelimiter = '`'){
+		$result = [
+			//By default, the required data is just fetched from the site_content table
+			'from' => $this->siteContentTableName,
+			'filter' => ''
+		];
+		
+		//If a filter is set, it is needed to check which TVs are used in the filter query
+		if(!empty($filterStr)){
+			$usedFields = $this->getUsedFieldsFromFilter($filterStr, $fieldDelimiter);
+			
+			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
+			if(!empty($usedFields['tvs'])){
+				//complete from query
+				$result['from'] = '('.$this->buildTVsSubQuery($usedFields['tvs']).')';
+			}
+			
+			$result['filter'] = '('.$filterStr.')';
+			$result['filter'] = str_replace($fieldDelimiter, '`', $result['filter']);
+		}
+		
+		return $result;
+	}
 }
