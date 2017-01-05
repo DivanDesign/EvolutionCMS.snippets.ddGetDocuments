@@ -48,6 +48,12 @@
  * @param $extendersParams['nextOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page if there are no more pages after. @required
  * @param $extendersParams['previousTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page. @required
  * @param $extendersParams['previousOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page if there are no more pages before. @required
+ * @param $extendersParams['pageIndexRequestParamName'] {string} — The parameter in $_REQUEST to get the current page index from. Default: 'page'.
+ * @param $extendersParams['zeroBasedPageIndex'] {boolean} — Whether page index is zero based. Default: false.
+ * When $extenders == 'tagging' =>
+ * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
+ * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
+ * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
  * e.g. $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
  * 
  * @copyright 2015–2016 DivanDesign {@link http://www.DivanDesign.biz }
