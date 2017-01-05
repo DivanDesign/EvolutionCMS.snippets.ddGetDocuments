@@ -92,11 +92,12 @@ if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	//Prepare provider params
 	parse_str($providerParams, $providerParams);
-	
-	$extenders = explode(',', $extenders);
-	
 	//Prepare extender params
 	parse_str($extendersParams, $extendersParams);
+	//Prepare output format params
+	parse_str($outputFormatParams, $outputFormatParams);
+	
+	$extenders = explode(',', $extenders);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
@@ -116,9 +117,6 @@ if(class_exists($providerClass)){
 			}
 		}
 	}
-	
-	//Prepare output format params
-	parse_str($outputFormatParams, $outputFormatParams);
 	
 	//Make sure orderBy looks like SQL
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
@@ -162,10 +160,10 @@ if(class_exists($providerClass)){
 	
 	switch($outputFormat){
 		default:
-			$parserClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
-			$parser = new $parserClass;
+			$outputFormatClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
+			$outputFormatObject = new $outputFormatClass;
 			
-			$output = $parser->parse($data, $outputFormatParams);
+			$output = $outputFormatObject->parse($data, $outputFormatParams);
 		break;
 		
 		case 'raw':
