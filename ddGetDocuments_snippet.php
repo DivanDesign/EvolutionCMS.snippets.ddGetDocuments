@@ -118,8 +118,9 @@ if(class_exists($providerClass)){
 		}
 	}
 	
-	//Make sure orderBy looks like SQL
+	//Make sure orderBy and filter looks like SQL
 	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
+	$filter = str_replace($fieldDelimiter, '`', $filter);
 	
 	$input = new \ddGetDocuments\Input(
 		//Snippet params
@@ -127,8 +128,7 @@ if(class_exists($providerClass)){
 			'offset' => $offset,
 			'total' => $total,
 			'orderBy' => $orderBy,
-			'filter' => $filter,
-			'fieldDelimiter' => $fieldDelimiter
+			'filter' => $filter
 		],
 		$providerParams,
 		$extendersParams,

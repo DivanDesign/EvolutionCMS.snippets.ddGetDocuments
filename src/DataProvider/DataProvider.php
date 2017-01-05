@@ -65,14 +65,21 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * @param $filterStr
-	 * @param string $filterFieldDelimiter
-	 * @return array
+	 * getUsedFieldsFromFilter
+	 * @version 1.0.1 (2017-01-05)
+	 * 
+	 * @param $filterStr {string}
+	 * 
+	 * @return $result {array_associative}
+	 * @return $result['fields'] {array_associative} — Document fields.
+	 * @return $result['fields'][] {string} — Field name.
+	 * @return $result['tvs'] {array_associative} — Template variables.
+	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
-	public final function getUsedFieldsFromFilter($filterStr, $filterFieldDelimiter = '`'){
+	public final function getUsedFieldsFromFilter($filterStr){
 		$output = [];
 		//Try to find all fields/tvs used in filter by the pattern
-		preg_match_all("/$filterFieldDelimiter(\w+)$filterFieldDelimiter/", $filterStr, $fields);
+		preg_match_all("/`(\w+)`/", $filterStr, $fields);
 		
 		if(!empty($fields[1])){
 			//Sort out fields from tvs
@@ -156,16 +163,15 @@ abstract class DataProvider
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0 (2017-01-04)
+	 * @version 1.0.1 (2017-01-05)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
-	 * @param $fieldDelimiter {string} — Field delimiter. Default: '`'.
 	 * 
 	 * @return $result {array_associative}
 	 * @return $result['from'] {string}
 	 * @return $result['filter'] {string}
 	 */
-	protected final function prepareFromAndFilterQueries($filterStr, $fieldDelimiter = '`'){
+	protected final function prepareFromAndFilterQueries($filterStr){
 		$result = [
 			//By default, the required data is just fetched from the site_content table
 			'from' => $this->siteContentTableName,
@@ -174,7 +180,7 @@ abstract class DataProvider
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filterStr)){
-			$usedFields = $this->getUsedFieldsFromFilter($filterStr, $fieldDelimiter);
+			$usedFields = $this->getUsedFieldsFromFilter($filterStr);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
@@ -183,7 +189,6 @@ abstract class DataProvider
 			}
 			
 			$result['filter'] = '('.$filterStr.')';
-			$result['filter'] = str_replace($fieldDelimiter, '`', $result['filter']);
 		}
 		
 		return $result;

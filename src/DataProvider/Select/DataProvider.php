@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.4 (2017-01-04)
+	 * @version 1.0.5 (2017-01-05)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -48,7 +48,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$orderBy = $input->snippetParams['orderBy'];
 		}
 		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter, $input->snippetParams['fieldDelimiter']);
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter);
 		
 		$fromQuery = $fromAndFilterQueries['from'];
 		$filterQuery = $fromAndFilterQueries['filter'];
