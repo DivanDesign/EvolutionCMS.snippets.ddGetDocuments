@@ -40,10 +40,13 @@ abstract class Extender
 	
 	/**
 	 * applyToOutput
+	 * @version 1.1 (2017-01-04)
 	 * 
-	 * @param \ddGetDocuments\DataProvider\Output $output
+	 * @param $output {\ddGetDocuments\DataProvider\Output}
 	 * 
-	 * @return mixed
+	 * @return {string}
 	 */
-	abstract public function applyToOutput(\ddGetDocuments\DataProvider\Output $output);
+	public function applyToOutput(\ddGetDocuments\DataProvider\Output $output){
+		return '';
+	}
 }

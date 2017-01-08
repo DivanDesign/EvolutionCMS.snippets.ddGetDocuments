@@ -15,7 +15,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.2 (2016-12-21)
+	 * @version 1.0.4 (2017-01-05)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -61,24 +61,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filter = $input->snippetParams['filter'];
 		}
 		
-		$fieldDelimiter = $input->snippetParams['fieldDelimiter'];
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter);
 		
-		//By default, the required data is just fetched from the site_content table
-		$fromQuery = $this->siteContentTableName;
-		$filterQuery = '';
-		
-		//If a filter is set, it is needed to check which TVs are used in the filter query
-		if(!empty($filter)){
-			$usedFields = $this->getUsedFieldsFromFilter($filter, $fieldDelimiter);
-			
-			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
-			if(!empty($usedFields['tvs'])){
-				//complete from query
-				$fromQuery = '('.$this->buildTVsSubQuery($usedFields['tvs']).')';
-			}
-			
-			$filterQuery = 'AND ('.$filter.')';
-			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
+		$fromQuery = $fromAndFilterQueries['from'];
+		$filterQuery = $fromAndFilterQueries['filter'];
+		if (!empty($filterQuery)){
+			$filterQuery = 'AND '.$filterQuery;
 		}
 		
 		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds($parentIds, $depth));

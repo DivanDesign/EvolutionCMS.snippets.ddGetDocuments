@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.3 (2016-12-21)
+	 * @version 1.0.5 (2017-01-05)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -36,8 +36,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filter = $input->snippetParams['filter'];
 		}
 		
-		$fieldDelimiter = $input->snippetParams['fieldDelimiter'];
-		
 		if(isset($input->snippetParams['offset'])){
 			$offset = $input->snippetParams['offset'];
 		}
@@ -50,23 +48,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$orderBy = $input->snippetParams['orderBy'];
 		}
 		
-		//By default, the required data is just fetched from the site_content table
-		$fromQuery = $this->siteContentTableName;
-		$filterQuery = '';
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter);
 		
-		//If a filter is set, it is needed to check which TVs are used in the filter query
-		if(!empty($filter)){
-			$usedFields = $this->getUsedFieldsFromFilter($filter, $fieldDelimiter);
-			
-			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
-			if(!empty($usedFields['tvs'])){
-				//complete from query
-				$fromQuery = '('.$this->buildTVsSubQuery($usedFields['tvs']).')';
-			}
-			
-			$filterQuery = $filter;
-			$filterQuery = str_replace($fieldDelimiter, '`', $filterQuery);
-		}
+		$fromQuery = $fromAndFilterQueries['from'];
+		$filterQuery = $fromAndFilterQueries['filter'];
 		
 		$orderByQuery = '';
 		
@@ -101,7 +86,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$idsWhereQuery = '`documents`.`id` IN ('.$ids.')';
 		}
 		
-		$whereQuery = '';
 		if(
 			!empty($idsWhereQuery) ||
 			!empty($filterQuery)
@@ -116,19 +100,19 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			}else{
 				$whereQuery .= $filterQuery;
 			}
-		}
-		
-		$data = $modx->db->makeArray($modx->db->query('
-			SELECT
-				SQL_CALC_FOUND_ROWS `documents`.`id`
-			FROM '.$fromQuery.' AS `documents`
-			'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
-		'));
-		
-		$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
-		
-		if(is_array($data)){
-			$output = new Output($data, $totalFound);
+			
+			$data = $modx->db->makeArray($modx->db->query('
+				SELECT
+					SQL_CALC_FOUND_ROWS `documents`.`id`
+				FROM '.$fromQuery.' AS `documents`
+				'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
+			'));
+			
+			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
+			
+			if(is_array($data)){
+				$output = new Output($data, $totalFound);
+			}
 		}
 		
 		return $output;
