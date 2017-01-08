@@ -1,4 +1,15 @@
 # ddGetDocuments changelog
+## Version 0.7 (2017-01-08)
+* \+ Added the “Tagging” extender.
+* \+ ddGetDocuments\OutputFormat\String\OutputFormat → parse: Added parameter “placeholders” to transfer custom placeholders.
+* \* ddGetDocuments\DataProvider\Select\DataProvider → getDataFromSource: If incoming ids is empty, output nothing.
+* \* Refactoring:
+	* \* The “filter” string is prepared in the snippet (like “orderBy”).
+	* \* ddGetDocuments\DataProvider\:
+		* \+ DataProvider → prepareFromAndFilterQueries: The method has been added.
+		* \* Parent\DataProvider → getDataFromSource: “prepareFromAndFilterQueries” is used for prepare queries.
+		* \* Select\DataProvider → getDataFromSource: “prepareFromAndFilterQueries” is used for prepare queries.
+
 ## Version 0.6.1 (2016-12-21)
 * \* ddGetDocuments\DataProvider\Select\DataProvider → getDataFromSource:
 	* \+ If “$orderBy” is empty results will be ordered by selected IDs sequence.

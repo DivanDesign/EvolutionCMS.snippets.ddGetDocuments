@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.6.1 (2016-12-21)
+ * @version 0.7 (2017-01-08)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -56,7 +56,7 @@
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
  * e.g. $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
  * 
- * @copyright 2015–2016 DivanDesign {@link http://www.DivanDesign.biz }
+ * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
  **/
 
 global $modx;
