@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.7 (2017-01-08)
+ * @version 0.7.1 (2017-01-09)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -91,7 +91,7 @@ $outputFormat = isset($outputFormat) ? strtolower($outputFormat) : 'string';
 $outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
 
 //Extenders
-$extenders = isset($extenders) ? $extenders : '';
+$extenders = isset($extenders) ? explode(',', trim($extenders)) : [];
 $extendersParams = isset($extendersParams) ? $extendersParams : '';
 
 if(class_exists($providerClass)){
@@ -102,8 +102,6 @@ if(class_exists($providerClass)){
 	parse_str($extendersParams, $extendersParams);
 	//Prepare output format params
 	parse_str($outputFormatParams, $outputFormatParams);
-	
-	$extenders = explode(',', $extenders);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
