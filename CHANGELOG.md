@@ -1,4 +1,7 @@
 # ddGetDocuments changelog
+## Version 0.7.1 (2017-01-09)
+* \* Bug with empty extenders fixed.
+
 ## Version 0.7 (2017-01-08)
 * \+ Added the “Tagging” extender.
 * \+ ddGetDocuments\OutputFormat\String\OutputFormat → parse: Added parameter “placeholders” to transfer custom placeholders.
