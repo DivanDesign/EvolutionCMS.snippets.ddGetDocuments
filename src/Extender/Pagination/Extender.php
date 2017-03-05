@@ -104,7 +104,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			}
 			
 			//Iterating through pages
-			for($pageIndex = 1; $pageIndex < $pagesTotal - 1; $pageIndex++){
+			for($pageIndex = 1; $pageIndex <= $pagesTotal; $pageIndex++){
 				$pageChunk = $this->pageTpl;
 				
 				//Check if the page we're iterating through is current
@@ -135,7 +135,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 							$modx->parseChunk(
 								$previousLinkChunk,
 								[
-									'url' => $this->pageIndex == 1 ? '' : '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+									'url' => $this->pageIndex == 1 ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
+									'totalPages' => $pagesTotal
 								],
 								'[+', '+]'
 							)
@@ -145,7 +146,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 							$modx->parseChunk(
 								$nextLinkChunk,
 								[
-									'url' => $this->pageIndex == $pagesTotal ? '' : '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+									'url' => $this->pageIndex == $pagesTotal ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
+									'totalPages' => $pagesTotal
 								],
 								'[+', '+]'
 							)
