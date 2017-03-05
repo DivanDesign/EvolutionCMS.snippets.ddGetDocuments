@@ -134,7 +134,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'previous' => \ddTools::parseSource(
 							$modx->parseChunk(
 								$previousLinkChunk,
-								[],
+								[
+									'url' => $this->pageIndex == 1 ? '' : '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+								],
 								'[+', '+]'
 							)
 						),
@@ -142,7 +144,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'next' => \ddTools::parseSource(
 							$modx->parseChunk(
 								$nextLinkChunk,
-								[],
+								[
+									'url' => $this->pageIndex == $pagesTotal ? '' : '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+								],
 								'[+', '+]'
 							)
 						)

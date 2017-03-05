@@ -45,10 +45,10 @@
  * @param $extendersParams['wrapperTpl'] {string_chunkName} — Chunk to be used to output the pagination. @required
  * @param $extendersParams['pageTpl'] {string_chunkName} — Chunk to be used to output pages within the pagination. @required
  * @param $extendersParams['currentPageTpl'] {string_chunkName} — Chunk to be used to output the current page within the pagination. @required
- * @param $extendersParams['nextTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page. @required
- * @param $extendersParams['nextOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page if there are no more pages after. @required
- * @param $extendersParams['previousTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page. @required
- * @param $extendersParams['previousOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page if there are no more pages before. @required
+ * @param $extendersParams['nextTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page. Available placeholders: [+url+]. @required
+ * @param $extendersParams['nextOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page if there are no more pages after. Available placeholders: [+url+]. @required
+ * @param $extendersParams['previousTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page. Available placeholders: [+url+]. @required
+ * @param $extendersParams['previousOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page if there are no more pages before. Available placeholders: [+url+]. @required
  * When $extenders == 'tagging' =>
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
