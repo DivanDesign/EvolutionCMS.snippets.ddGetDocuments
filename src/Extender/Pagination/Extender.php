@@ -12,8 +12,6 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$pageIndex,
 		//The parameter in $_REQUEST to get the current page index from
 		$pageIndexRequestParamName = 'page',
-		//Whether page index is zero based
-		$zeroBasedPageIndex = false,
 		
 		//Chunk to be used to output pages within the pagination
 		$pageTpl,
@@ -31,18 +29,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$previousOffTpl;
 	
 	public function __construct(array $extenderParams){
-		if(isset($extenderParams['pageIndexRequestParamName'])){
-			$this->pageIndexRequestParamName = (string) $extenderParams['pageIndexRequestParamName'];
-		}
-		
-		if(isset($extenderParams['zeroBasedPageIndex'])){
-			$this->zeroBasedPageIndex = (bool) $extenderParams['zeroBasedPageIndex'];
-		}
-		
-		$this->pageIndex =
-			isset($_REQUEST[$this->pageIndexRequestParamName]) ?
-				(int) $_REQUEST[$this->pageIndexRequestParamName] :
-				($this->zeroBasedPageIndex ? 0 : 1);
+		$this->pageIndex = isset($_REQUEST[$this->pageIndexRequestParamName]) ? (int) $_REQUEST[$this->pageIndexRequestParamName] :	1;
 		
 		if(isset($extenderParams['pageTpl'])){
 			$this->pageTpl = (string) $extenderParams['pageTpl'];
@@ -83,13 +70,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	public function applyToSnippetParams(array $snippetParams){
 		//If “total” is set then we need to override “offset” according to the current page index
 		if(isset($snippetParams['total'])){
-			$snippetParams['offset'] =
-				(
-					$this->zeroBasedPageIndex ?
-						$this->pageIndex :
-						$this->pageIndex - 1
-				)
-				* $snippetParams['total'];
+			$snippetParams['offset'] = ($this->pageIndex - 1) * $snippetParams['total'];
 		}
 		
 		$this->snippetParams = $snippetParams;
@@ -119,45 +100,32 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			//If the current page index is greater than the total number of pages
 			//then it has to be reset
 			if($this->pageIndex > $pagesTotal){
-				$this->pageIndex = ($this->zeroBasedPageIndex) ? 0 : 1;
+				$this->pageIndex = 1;
 			}
 			
 			//Iterating through pages
-			for($pageIndex = 0; $pageIndex < $pagesTotal; $pageIndex++){
+			for($pageIndex = 1; $pageIndex < $pagesTotal - 1; $pageIndex++){
 				$pageChunk = $this->pageTpl;
 				
 				//Check if the page we're iterating through is current
-				if(
-					($this->zeroBasedPageIndex && $pageIndex == $this->pageIndex) ||
-					(!$this->zeroBasedPageIndex && $pageIndex == ($this->pageIndex - 1))
-				){
+				if($pageIndex == $this->pageIndex){
 					$pageChunk = $this->currentPageTpl;
 				}
 				
 				$pagesOutputText .= \ddTools::parseSource(
 					$modx->parseChunk(
 						$pageChunk, [
-							'url' => "?{$this->pageIndexRequestParamName}=".($this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1),
-							'page' => $this->zeroBasedPageIndex? $pageIndex: $pageIndex + 1
+							'url' => '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+							'page' => $pageIndex
 						],
 						'[+', '+]'
 					)
 				);
 			}
 			
-			$previousLinkChunk = (
-					($this->zeroBasedPageIndex && $this->pageIndex == 0) ||
-					(!$this->zeroBasedPageIndex && $this->pageIndex == 1)
-				) ?
-				$this->previousOffTpl :
-				$this->previousTpl;
+			$previousLinkChunk = $this->pageIndex == 1 ? $this->previousOffTpl : $this->previousTpl;
 			
-			$nextLinkChunk = (
-					($this->zeroBasedPageIndex && $this->pageIndex == ($pagesTotal - 1)) ||
-					(!$this->zeroBasedPageIndex && $this->pageIndex == $pagesTotal)
-				) ?
-				$this->nextOffTpl :
-				$this->nextTpl;
+			$nextLinkChunk = $this->pageIndex == $pagesTotal ? $this->nextOffTpl : $this->nextTpl;
 			
 			$outputText = \ddTools::parseSource(
 				$modx->parseChunk(
