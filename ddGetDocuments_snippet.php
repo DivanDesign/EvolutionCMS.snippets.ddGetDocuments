@@ -55,6 +55,8 @@
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
  * @example $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'
  * or '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}'.
+ * When $extenders == 'search' =>
+ * @param $extendersParams['docFieldsToSearch'] {'string_commaSepareted'} — Document fields to search in. Default: 'pagetitle,content'.
  * 
  * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
  **/
