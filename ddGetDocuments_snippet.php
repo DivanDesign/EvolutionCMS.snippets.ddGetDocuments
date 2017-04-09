@@ -6,14 +6,14 @@
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @uses PHP >= 5.4.
- * @uses MODXEvo.library.ddTools >= 0.16.2.
+ * @uses MODXEvo.library.ddTools >= 0.18.
  * 
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
- * @param $providerParams {string_queryFormated} — Parameters to be passed to the provider. The parameter must be set as a query string,
+ * @param $providerParams {stirng_json|string_queryFormated} — Parameters to be passed to the provider. The parameter must be set as a query string,
  * When $provider == 'parent' =>
  * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent IDs. Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
- * e.g. $providerParams = 'parentIds=1&depth=2'.
+ * @example $providerParams = 'parentIds=1&depth=2' or '{"parentIds": 1, "depth": 2}'.
  * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * 
  * @param $total {integer} — The maximum number of the resources that will be returned. Default: —.
@@ -23,7 +23,7 @@
  * @param $orderBy {string} — A string representing the sorting rule. Default: '`id` ASC'.
  * 
  * @param $outputFormat {'string'|'json'|'raw'} — Format of the output. Default: 'string'.
- * @param $outputFormatParams {string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
+ * @param $outputFormatParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
  * When $outputFormat == 'string' =>
  * @param $outputFormatParams['itemTpl'] {string_chunkName} — Item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
  * @param $outputFormatParams['itemTplFirst'] {string_chunkName} — First item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
@@ -33,14 +33,14 @@
  * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
  * @param $outputFormatParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
  * @param $outputFormatParams['noResults'] {string|string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
- * e.g. 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'.
+ * @example 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found' or '{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}'.
  * When $outputFormat == 'json' =>
  * @param $outputFormatParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
- * e.g. 'docFields=id,pagetitle,introtext'.
+ * @example 'docFields=id,pagetitle,introtext' or '{"docFields": "id,pagetitle,introtext"}'.
  * 
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
- * @param $extendersParams {string_queryFormated} — Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
+ * @param $extendersParams {stirng_json|string_queryFormated} — Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
  * When $extenders == 'pagination' =>
  * @param $extendersParams['wrapperTpl'] {string_chunkName} — Chunk to be used to output the pagination. @required
  * @param $extendersParams['pageTpl'] {string_chunkName} — Chunk to be used to output pages within the pagination. @required
@@ -53,7 +53,8 @@
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
- * e.g. $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'.
+ * @example $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'
+ * or '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}'.
  * 
  * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
  **/
@@ -96,11 +97,11 @@ $extendersParams = isset($extendersParams) ? $extendersParams : '';
 if(class_exists($providerClass)){
 	$dataProvider = new $providerClass;
 	//Prepare provider params
-	parse_str($providerParams, $providerParams);
+	$providerParams = ddTools::encodedStringToArray($providerParams);
 	//Prepare extender params
-	parse_str($extendersParams, $extendersParams);
+	$extendersParams = ddTools::encodedStringToArray($extendersParams);
 	//Prepare output format params
-	parse_str($outputFormatParams, $outputFormatParams);
+	$outputFormatParams = ddTools::encodedStringToArray($outputFormatParams);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
