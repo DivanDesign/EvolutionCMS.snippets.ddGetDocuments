@@ -18,13 +18,17 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * @param $outputFormatParameters['noResults'] {string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
 	 * @param $outputFormatParameters['placeholders'] {array_associative}. Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Default: [].
 	 * @param $outputFormatParameters['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required
+	 * @param $outputFormatParameters['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
 	 * 
 	 * @return string
 	 */
 	public function parse(Output $data, array $outputFormatParameters){
 		global $modx;
 		$output = '';
+		$outputItems = [];
 		$dataArray = $data->toArray();
+		
+		$itemGlue = isset($outputFormatParameters['itemGlue']) ? $outputFormatParameters['itemGlue'] : '';
 		
 		$total = count($dataArray['provider']['items']);
 		$generalPlaceholders = [
@@ -62,7 +66,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				$document = \ddTools::getTemplateVarOutput('*', $item['id']);
 				
 				if(!empty($document)){
-					$output .= \ddTools::parseSource($modx->parseChunk($chunkName, array_merge(
+					$outputItems[] = \ddTools::parseSource($modx->parseChunk($chunkName, array_merge(
 						$document,
 						$generalPlaceholders,
 						[
@@ -73,6 +77,8 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				}
 			}
 		}
+		
+		$output = implode($itemGlue, $outputItems);
 		
 		//If no items found and “noResults” is not empty
 		if($total == 0 && isset($outputFormatParameters['noResults']) && $outputFormatParameters['noResults'] != ''){

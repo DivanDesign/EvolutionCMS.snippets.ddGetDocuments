@@ -1,4 +1,17 @@
 # ddGetDocuments changelog
+## Version 0.8 (2017-04-15)
+* \+ Added the “Search” extender.
+* \+ Added JSON format support for the “providerParams”, “outputFormatParams” and “extendersParams” parameters.
+* \+ ddGetDocuments\OutputFormat\String\OutputFormat: Added the “itemGlue” parameter. It allows you to set a custom string between items in output.
+* \* ddGetDocuments\Extender\Pagination\Extender:
+	* \- The following paramenters were removed:
+		* \- “pageIndexRequestParamName”, the GET-parameter is always called “page”.
+		* \- “zeroBasedPageIndex”, the index is always start from 1.
+	* \+ URLs of next and previous pages are passing to the appropriate chunks.
+	* \+ Total number of pages is passing to the preveous and next page link templates.
+	* \* Pagination is only displayed if more than one page exists.
+* \* Attention! MODXEvo.library.ddTools >= 0.18 is required.
+
 ## Version 0.7.1 (2017-01-09)
 * \* Bug with empty extenders fixed.
 
