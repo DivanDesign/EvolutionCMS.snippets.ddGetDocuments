@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.7.1 (2017-01-09)
+ * @version 0.8 (2017-04-15)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -13,7 +13,8 @@
  * When $provider == 'parent' =>
  * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent IDs. Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
- * @example $providerParams = 'parentIds=1&depth=2' or '{"parentIds": 1, "depth": 2}'.
+ * @example $providerParams = '{"parentIds": 1, "depth": 2}' or
+ * @example $providerParams = 'parentIds=1&depth=2'
  * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * 
  * @param $total {integer} — The maximum number of the resources that will be returned. Default: —.
@@ -33,10 +34,12 @@
  * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
  * @param $outputFormatParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
  * @param $outputFormatParams['noResults'] {string|string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
- * @example 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found' or '{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}'.
+ * @example '{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}' or
+ * @example 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'
  * When $outputFormat == 'json' =>
  * @param $outputFormatParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
- * @example 'docFields=id,pagetitle,introtext' or '{"docFields": "id,pagetitle,introtext"}'.
+ * @example '{"docFields": "id,pagetitle,introtext"}' or
+ * @example 'docFields=id,pagetitle,introtext'
  * 
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
@@ -53,8 +56,8 @@
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
+ * @example $extendersParams = '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}' or
  * @example $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'
- * or '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}'.
  * When $extenders == 'search' =>
  * @param $extendersParams['docFieldsToSearch'] {'string_commaSepareted'} — Document fields to search in. Default: 'pagetitle,content'.
  * 
