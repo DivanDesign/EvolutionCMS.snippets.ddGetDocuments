@@ -67,10 +67,6 @@
 global $modx;
 $output = false;
 
-if(is_file($modx->config['base_path'].'vendor/autoload.php')){
-	require_once($modx->config['base_path'].'vendor/autoload.php');
-}
-
 if(!class_exists('\ddTools')){
 	require_once($modx->config['base_path'].'assets/libs/ddTools/modx.ddtools.class.php');
 }
