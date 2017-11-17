@@ -1,12 +1,12 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.8 (2017-04-15)
+ * @version 0.8.1 (2017-11-17)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @uses PHP >= 5.4.
- * @uses MODXEvo.library.ddTools >= 0.18.
+ * @uses MODXEvo.library.ddTools >= 0.20.
  * 
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
  * @param $providerParams {stirng_json|string_queryFormated} — Parameters to be passed to the provider. The parameter must be set as a query string,
@@ -66,10 +66,6 @@
 
 global $modx;
 $output = false;
-
-if(is_file($modx->config['base_path'].'vendor/autoload.php')){
-	require_once($modx->config['base_path'].'vendor/autoload.php');
-}
 
 if(!class_exists('\ddTools')){
 	require_once($modx->config['base_path'].'assets/libs/ddTools/modx.ddtools.class.php');
