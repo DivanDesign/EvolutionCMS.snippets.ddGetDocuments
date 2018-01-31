@@ -46,11 +46,11 @@ abstract class Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1 (2017-01-04)
+	 * @version 1.2 (2018-01-31)
 	 * 
 	 * @param $output {\ddGetDocuments\DataProvider\Output}
 	 * 
-	 * @return {string}
+	 * @return {string|array}
 	 */
 	public function applyToOutput(\ddGetDocuments\DataProvider\Output $output){
 		return '';

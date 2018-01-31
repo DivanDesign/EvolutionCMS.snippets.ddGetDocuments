@@ -81,4 +81,18 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		
 		return $snippetParams;
 	}
+	
+	/**
+	 * applyToOutput
+	 * @version 1.0 (2018-01-31)
+	 * 
+	 * @param $output {Output}
+	 * 
+	 * @return {array}
+	 */
+	public function applyToOutput(Output $output){
+		return [
+			'currentTags' => $this->currentTags
+		];
+	}
 }
