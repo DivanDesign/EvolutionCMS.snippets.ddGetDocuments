@@ -80,11 +80,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-01-31)
 	 * 
-	 * @param Output $output
+	 * @param $output {Output}
 	 * 
-	 * @return string
+	 * @return {string}
 	 */
 	public function applyToOutput(Output $output){
 		global $modx;
@@ -98,6 +98,29 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			$pagesTotal = ceil($outputArray['totalFound'] / $this->snippetParams['total']);
 			
 			if($pagesTotal > 1){
+				$urlPrefix = '?';
+				
+				if (!empty($_SERVER['QUERY_STRING'])){
+					parse_str(
+						htmlspecialchars_decode($_SERVER['QUERY_STRING']),
+						$currentQuery
+					);
+					
+					//Remove MODX internal parameter
+					if (isset($currentQuery['q'])){
+						unset($currentQuery['q']);
+					}
+					
+					//Remove the “page” parameter
+					if (isset($currentQuery[$this->pageIndexRequestParamName])){
+						unset($currentQuery[$this->pageIndexRequestParamName]);
+					}
+					
+					if (count($currentQuery) > 0){
+						$urlPrefix .= http_build_query($currentQuery).'&';
+					}
+				}
+				
 				$pagesOutputText = '';
 				
 				//If the current page index is greater than the total number of pages
@@ -123,7 +146,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						$modx->parseChunk(
 							$pageChunk,
 							[
-								'url' => '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
+								'url' => $urlPrefix.$this->pageIndexRequestParamName.'='.$pageIndex,
 								'page' => $pageIndex
 							],
 							'[+',
@@ -144,7 +167,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 								$modx->parseChunk(
 									$previousLinkChunk,
 									[
-										'url' => $this->pageIndex == 1 ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
+										'url' => $this->pageIndex == 1 ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
 										'totalPages' => $pagesTotal
 									],
 									'[+',
@@ -156,7 +179,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 								$modx->parseChunk(
 									$nextLinkChunk,
 									[
-										'url' => $this->pageIndex == $pagesTotal ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
+										'url' => $this->pageIndex == $pagesTotal ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
 										'totalPages' => $pagesTotal
 									],
 									'[+',
