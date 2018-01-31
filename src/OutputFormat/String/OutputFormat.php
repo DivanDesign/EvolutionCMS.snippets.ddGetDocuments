@@ -8,6 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
+	 * @version 1.0.1 (2018-01-31)
 	 * 
 	 * @param Output $data
 	 * @param array $outputFormatParameters
@@ -37,7 +38,10 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		];
 		
 		if(!empty($outputFormatParameters['placeholders'])){
-			$generalPlaceholders = array_merge($generalPlaceholders, $outputFormatParameters['placeholders']);			
+			$generalPlaceholders = array_merge(
+				$generalPlaceholders,
+				$outputFormatParameters['placeholders']
+			);			
 		}
 		
 		if(isset($dataArray['extenders'])){
@@ -51,13 +55,22 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			$generalPlaceholders = \ddTools::unfoldArray($generalPlaceholders);
 		}
 		
-		if(is_array($dataArray['provider']['items']) && isset($outputFormatParameters['itemTpl'])){
+		if(
+			is_array($dataArray['provider']['items']) &&
+			isset($outputFormatParameters['itemTpl'])
+		){
 			$maxIndex = $total - 1;
 			
 			foreach($dataArray['provider']['items'] as $index => $item){
-				if(isset($outputFormatParameters['itemTplFirst']) && $index == 0){
+				if(
+					isset($outputFormatParameters['itemTplFirst']) &&
+					$index == 0
+				){
 					$chunkName = $outputFormatParameters['itemTplFirst'];
-				}elseif(isset($outputFormatParameters['itemTplFirst']) && $index == $maxIndex){
+				}elseif(
+					isset($outputFormatParameters['itemTplFirst']) &&
+					$index == $maxIndex
+				){
 					$chunkName = $outputFormatParameters['itemTplLast'];
 				}else{
 					$chunkName = $outputFormatParameters['itemTpl'];
@@ -66,14 +79,19 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				$document = \ddTools::getTemplateVarOutput('*', $item['id']);
 				
 				if(!empty($document)){
-					$outputItems[] = \ddTools::parseSource($modx->parseChunk($chunkName, array_merge(
-						$document,
-						$generalPlaceholders,
-						[
-							'itemNumber' => $index + 1,
-							'itemNumberZeroBased' => $index
-						]
-					), '[+', '+]'));
+					$outputItems[] = \ddTools::parseSource($modx->parseChunk(
+						$chunkName,
+						array_merge(
+							$document,
+							$generalPlaceholders,
+							[
+								'itemNumber' => $index + 1,
+								'itemNumberZeroBased' => $index
+							]
+						),
+						'[+',
+						'+]'
+					));
 				}
 			}
 		}
@@ -81,25 +99,32 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$output = implode($itemGlue, $outputItems);
 		
 		//If no items found and “noResults” is not empty
-		if($total == 0 && isset($outputFormatParameters['noResults']) && $outputFormatParameters['noResults'] != ''){
+		if(
+			$total == 0 &&
+			isset($outputFormatParameters['noResults']) &&
+			$outputFormatParameters['noResults'] != ''
+		){
 			$chunkContent = $modx->getChunk($outputFormatParameters['noResults']);
 			
 			if(!is_null($chunkContent)){
-				$output = \ddTools::parseSource(
-					$modx->parseChunk(
-						$outputFormatParameters['noResults'],
-						$generalPlaceholders,
-						'[+', '+]'
-					)
-				);
+				$output = \ddTools::parseSource($modx->parseChunk(
+					$outputFormatParameters['noResults'],
+					$generalPlaceholders,
+					'[+',
+					'+]'
+				));
 			}else{
 				$output = $outputFormatParameters['noResults'];
 			}
 		}elseif(isset($outputFormatParameters['wrapperTpl'])){
-			$output = (string) $modx->parseChunk($outputFormatParameters['wrapperTpl'],
+			$output = (string) $modx->parseChunk(
+				$outputFormatParameters['wrapperTpl'],
 				array_merge($generalPlaceholders, [
 					'ddGetDocuments_items' => $output
-				]), '[+', '+]');
+				]),
+				'[+',
+				'+]'
+			);
 		}
 		
 		return $output;

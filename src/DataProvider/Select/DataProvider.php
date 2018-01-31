@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.5 (2017-01-05)
+	 * @version 1.0.6 (2018-01-31)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -104,7 +104,8 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$data = $modx->db->makeArray($modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS `documents`.`id`
-				FROM '.$fromQuery.' AS `documents`
+				FROM
+					'.$fromQuery.' AS `documents`
 				'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
 			'));
 			

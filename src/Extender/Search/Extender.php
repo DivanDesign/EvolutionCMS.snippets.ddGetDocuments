@@ -15,7 +15,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		global $modx;
 		
 		if(isset($extenderParams['docFieldsToSearch'])){
-			$this->docFieldsToSearch = explode(',', (string) $extenderParams['docFieldsToSearch']);
+			$this->docFieldsToSearch = explode(
+				',',
+				(string) $extenderParams['docFieldsToSearch']
+			);
 		}
 		
 		if (isset($_REQUEST['query'])){

@@ -7,6 +7,9 @@ use ddGetDocuments\Output;
 abstract class OutputFormat
 {
 	/**
+	 * includeOutputFormatByName
+	 * @version 1.0.1 (2018-01-31)
+	 * 
 	 * @param $parserName
 	 * @return string
 	 * @throws \Exception
@@ -19,7 +22,10 @@ abstract class OutputFormat
 			require_once($parserPath);
 			return __NAMESPACE__.'\\'.$parserName.'\\'.'OutputFormat';
 		}else{
-			throw new \Exception('Parser “'.$parserName.'” not found.', 500);
+			throw new \Exception(
+				'Parser “'.$parserName.'” not found.',
+				500
+			);
 		}
 	}
 	

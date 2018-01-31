@@ -24,6 +24,9 @@ abstract class DataProvider
 	}
 	
 	/**
+	 * includeProviderByName
+	 * @version 1.0.1 (2018-01-31)
+	 * 
 	 * @param $providerName
 	 * @return string
 	 * @throws \Exception
@@ -36,7 +39,10 @@ abstract class DataProvider
 			require_once($providerPath);
 			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
 		}else{
-			throw new \Exception('Data provider '.$providerName.' not found.', 500);
+			throw new \Exception(
+				'Data provider '.$providerName.' not found.',
+				500
+			);
 		}
 	}
 	
@@ -112,6 +118,7 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
+	 * @version 1.0.1 (2018-01-31)
 	 * 
 	 * A helper method to build subquery with joined TVS to make possible
 	 * to use filter conditions for both fields and tvs.
@@ -127,8 +134,8 @@ abstract class DataProvider
 		//tvcv - site_tmplvar_contentvalues
 		
 		//select query
-		$selectTvsQuery = "SELECT `c`.*,";
-		$fromTvsQuery = "FROM {$this->siteContentTableName} as `c`";
+		$selectTvsQuery = 'SELECT `c`.*,';
+		$fromTvsQuery = 'FROM '.$this->siteContentTableName.' as `c`';
 		//join query
 		$joinTvsQuery = '';
 		//where query
@@ -138,27 +145,29 @@ abstract class DataProvider
 		
 		foreach($tvs as $tvName){
 			//alias of tmplvar_templates
-			$tvtAlias = "`tvt_$tvCounter`";
+			$tvtAlias = '`tvt_'.$tvCounter.'`';
 			//alias of tmplvars
-			$tvAlias = "`tv_$tvCounter`";
+			$tvAlias = '`tv_'.$tvCounter.'`';
 			//alias of tmplvar_contentvalues
-			$tvcvAlias = "`tvcv_$tvCounter`";
+			$tvcvAlias = '`tvcv_'.$tvCounter.'`';
 			//select not null value from either the real value column or default
-			$selectTvsQuery .= "coalesce($tvcvAlias.`value`, $tvAlias.`default_text`) as `$tvName`,";
+			$selectTvsQuery .= 'coalesce('.$tvcvAlias.'.`value`, '.$tvAlias.'.`default_text`) as `'.$tvName.'`,';
+			
 			$joinTvsQuery .=
-				" LEFT JOIN {$this->tmplvarTemplatesTableName} AS $tvtAlias ON $tvtAlias.`templateid` = `c`.`template`".
-				" LEFT JOIN {$this->tmplvarTableName} AS $tvAlias ON $tvAlias.`id` = $tvtAlias.`tmplvarid`".
-				" LEFT JOIN {$this->tmplvarContentvaluesTableName} AS $tvcvAlias ON $tvcvAlias.`contentid` = `c`.`id` AND $tvcvAlias.`tmplvarid` = $tvAlias.`id`";
-			$whereTvsQuery .= "$tvAlias.`name` = '$tvName' AND";
+				' LEFT JOIN '.$this->tmplvarTemplatesTableName.' AS '.$tvtAlias.' ON '.$tvtAlias.'.`templateid` = `c`.`template`'.
+				' LEFT JOIN '.$this->tmplvarTableName.' AS '.$tvAlias.' ON '.$tvAlias.'.`id` = '.$tvtAlias.'.`tmplvarid`'.
+				' LEFT JOIN '.$this->tmplvarContentvaluesTableName.' AS '.$tvcvAlias.' ON '.$tvcvAlias.'.`contentid` = `c`.`id` AND '.$tvcvAlias.'.`tmplvarid` = '.$tvAlias.'.`id`';
+			
+			$whereTvsQuery .= $tvAlias.'.`name` = "'.$tvName.'" AND';
 			
 			$tvCounter++;
 		}
 		
 		$selectTvsQuery = trim($selectTvsQuery, ',');
-		$whereTvsQuery = "WHERE ".trim($whereTvsQuery, ' AND');
+		$whereTvsQuery = 'WHERE '.trim($whereTvsQuery, ' AND');
 		
 		//complete from query
-		return "$selectTvsQuery $fromTvsQuery $joinTvsQuery $whereTvsQuery";
+		return $selectTvsQuery.' '.$fromTvsQuery.' '.$joinTvsQuery.' '.$whereTvsQuery;
 	}
 	
 	/**

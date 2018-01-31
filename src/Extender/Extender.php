@@ -13,6 +13,9 @@ use ddGetDocuments\Input;
 abstract class Extender
 {
 	/**
+	 * includeExtenderByName
+	 * @version 1.0.1 (2018-01-31)
+	 * 
 	 * @param $extenderName
 	 * @return string
 	 * @throws \Exception
@@ -25,7 +28,10 @@ abstract class Extender
 			require_once($extenderPath);
 			return __NAMESPACE__.'\\'.$extenderName.'\\'.'Extender';
 		}else{
-			throw new \Exception('Extender '.$extenderName.' not found.', 500);
+			throw new \Exception(
+				'Extender '.$extenderName.' not found.',
+				500
+			);
 		}
 	}
 	

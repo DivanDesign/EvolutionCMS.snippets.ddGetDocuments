@@ -38,7 +38,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			//or
 			//?tags=someTag1,someTag2
 			if (!is_array($this->currentTags)){
-				$this->currentTags = explode(',', trim($this->currentTags));
+				$this->currentTags = explode(
+					',',
+					trim($this->currentTags)
+				);
 			}
 			
 			foreach ($this->currentTags as $index => $value){

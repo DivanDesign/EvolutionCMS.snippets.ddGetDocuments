@@ -80,6 +80,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
+	 * @version 1.0.1 (2018-01-31)
 	 * 
 	 * @param Output $output
 	 * 
@@ -106,7 +107,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				}
 				
 				//Iterating through pages
-				for($pageIndex = 1; $pageIndex <= $pagesTotal; $pageIndex++){
+				for(
+					$pageIndex = 1;
+					$pageIndex <= $pagesTotal;
+					$pageIndex++
+				){
 					$pageChunk = $this->pageTpl;
 					
 					//Check if the page we're iterating through is current
@@ -116,11 +121,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					
 					$pagesOutputText .= \ddTools::parseSource(
 						$modx->parseChunk(
-							$pageChunk, [
+							$pageChunk,
+							[
 								'url' => '?'.$this->pageIndexRequestParamName.'='.$pageIndex,
 								'page' => $pageIndex
 							],
-							'[+', '+]'
+							'[+',
+							'+]'
 						)
 					);
 				}
@@ -140,7 +147,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 										'url' => $this->pageIndex == 1 ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
 										'totalPages' => $pagesTotal
 									],
-									'[+', '+]'
+									'[+',
+									'+]'
 								)
 							),
 							'pages' => $pagesOutputText,
@@ -151,11 +159,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 										'url' => $this->pageIndex == $pagesTotal ? '' : '?'.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
 										'totalPages' => $pagesTotal
 									],
-									'[+', '+]'
+									'[+',
+									'+]'
 								)
 							)
 						],
-						'[+', '+]'
+						'[+',
+						'+]'
 					)
 				);
 			}

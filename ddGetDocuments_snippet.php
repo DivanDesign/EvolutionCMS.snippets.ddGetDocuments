@@ -124,8 +124,16 @@ if(class_exists($providerClass)){
 	}
 	
 	//Make sure orderBy and filter looks like SQL
-	$orderBy = str_replace($fieldDelimiter, '`', $orderBy);
-	$filter = str_replace($fieldDelimiter, '`', $filter);
+	$orderBy = str_replace(
+		$fieldDelimiter,
+		'`',
+		$orderBy
+	);
+	$filter = str_replace(
+		$fieldDelimiter,
+		'`',
+		$filter
+	);
 	
 	$input = new \ddGetDocuments\Input(
 		//Snippet params

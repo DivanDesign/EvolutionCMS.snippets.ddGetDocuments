@@ -15,7 +15,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.4 (2017-01-05)
+	 * @version 1.0.5 (2018-01-31)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -69,7 +69,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$filterQuery = 'AND '.$filterQuery;
 		}
 		
-		$allChildrenIdsStr = implode(',', $this->getAllChildrenIds($parentIds, $depth));
+		$allChildrenIdsStr = implode(
+			',',
+			$this->getAllChildrenIds($parentIds, $depth)
+		);
 		
 		$orderByQuery = '';
 		
@@ -99,9 +102,13 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		//Check if child documents were found
 		if($allChildrenIdsStr !== ''){
 			$data = $modx->db->makeArray($modx->db->query('
-				SELECT SQL_CALC_FOUND_ROWS `documents`.`id`
-				FROM '.$fromQuery.' AS `documents`
-				WHERE `documents`.`id` IN ('.$allChildrenIdsStr.') '.$filterQuery.' '.$orderByQuery.' '.$limitQuery.'
+				SELECT
+					SQL_CALC_FOUND_ROWS `documents`.`id`
+				FROM
+					'.$fromQuery.' AS `documents`
+				WHERE
+					`documents`.`id` IN ('.$allChildrenIdsStr.')
+					'.$filterQuery.' '.$orderByQuery.' '.$limitQuery.'
 			'));
 			
 			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
@@ -114,6 +121,14 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		return $output;
 	}
 	
+	/**
+	 * getAllChildrenIds
+	 * @version 1.0.1 (2018-01-31)
+	 * 
+	 * @param $input {ddGetDocuments\Input}
+	 * 
+	 * @return {ddGetDocuments\DataProvider\Output}
+	 */
 	protected function getAllChildrenIds(array $parentIds, $depth){
 		global $modx;
 		$output = [];
@@ -127,13 +142,19 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				WHERE `parent` IN ('.$parentIdsStr.')
 			'));
 			
-			if(is_array($outputArray) && !empty($outputArray)){
+			if(
+				is_array($outputArray) &&
+				!empty($outputArray)
+			){
 				foreach($outputArray as $document){
 					$output[] = $document['id'];
 				}
 				
 				if($depth > 1){
-					$output = array_merge($output, $this->getAllChildrenIds($output, $depth - 1));
+					$output = array_merge(
+						$output,
+						$this->getAllChildrenIds($output, $depth - 1)
+					);
 				}
 			}
 		}
