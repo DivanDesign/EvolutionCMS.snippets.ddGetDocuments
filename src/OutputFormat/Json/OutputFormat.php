@@ -8,14 +8,18 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
+	 * @version 1.0.1 (2018-06-01)
 	 * 
-	 * @param Output $data
-	 * @param array $outputFormatParameters
-	 * @param array|string_commaSeparated $outputFormatParameters['docFields'] — Document fields to output. Default: 'id'.
+	 * @param $data {Output}
+	 * @param $outputFormatParameters {array}
+	 * @param $outputFormatParameters['docFields'] {array|string_commaSeparated} — Document fields to output. Default: 'id'.
 	 * 
-	 * @return string_json_array
+	 * @return {string_json_array}
 	 */
-	public function parse(Output $data, array $outputFormatParameters){
+	public function parse(
+		Output $data,
+		array $outputFormatParameters
+	){
 		$output = [];
 		$dataArray = $data->toArray();
 		
@@ -24,16 +28,25 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		
 		//Comma separated strings
 		if (!is_array($docFields)){
-			$docFields = explode(',', $docFields);
+			$docFields = explode(
+				',',
+				$docFields
+			);
 		}
 		
 		//Пройдемся по полученным данным
 		foreach($dataArray['provider']['items'] as $key => $value){
 			//Для каждого найденого id найдем необходимые TV
-			$output[] = \ddTools::getTemplateVarOutput($docFields, $value['id']);
+			$output[] = \ddTools::getTemplateVarOutput(
+				$docFields,
+				$value['id']
+			);
 		}
 		
 		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
-		return json_encode($output, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+		return json_encode(
+			$output,
+			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+		);
 	}
 }

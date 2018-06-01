@@ -8,10 +8,10 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-06-01)
 	 * 
-	 * @param Output $data
-	 * @param array $outputFormatParameters
+	 * @param $data {Output}
+	 * @param $outputFormatParameters {array_associative}
 	 * @param $outputFormatParameters['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
 	 * @param $outputFormatParameters['itemTplFirst'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
 	 * @param $outputFormatParameters['itemTplLast'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
@@ -21,10 +21,14 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	 * @param $outputFormatParameters['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required
 	 * @param $outputFormatParameters['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
 	 * 
-	 * @return string
+	 * @return {string}
 	 */
-	public function parse(Output $data, array $outputFormatParameters){
+	public function parse(
+		Output $data,
+		array $outputFormatParameters
+	){
 		global $modx;
+		
 		$output = '';
 		$outputItems = [];
 		$dataArray = $data->toArray();
@@ -32,6 +36,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$itemGlue = isset($outputFormatParameters['itemGlue']) ? $outputFormatParameters['itemGlue'] : '';
 		
 		$total = count($dataArray['provider']['items']);
+		
 		$generalPlaceholders = [
 			'total' => $total,
 			'totalFound' => $dataArray['provider']['totalFound']
@@ -57,11 +62,13 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		
 		if(
 			is_array($dataArray['provider']['items']) &&
+			//Item template is set
 			isset($outputFormatParameters['itemTpl'])
 		){
 			$maxIndex = $total - 1;
-			
+			//Foreach items
 			foreach($dataArray['provider']['items'] as $index => $item){
+				//Prepare item output template
 				if(
 					isset($outputFormatParameters['itemTplFirst']) &&
 					$index == 0
@@ -76,7 +83,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 					$chunkName = $outputFormatParameters['itemTpl'];
 				}
 				
-				$document = \ddTools::getTemplateVarOutput('*', $item['id']);
+				//Get TV values
+				$document = \ddTools::getTemplateVarOutput(
+					'*',
+					$item['id']
+				);
 				
 				if(!empty($document)){
 					$outputItems[] = \ddTools::parseSource($modx->parseChunk(

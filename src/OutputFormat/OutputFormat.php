@@ -20,6 +20,7 @@ abstract class OutputFormat
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$parserPath)){
 			require_once($parserPath);
+			
 			return __NAMESPACE__.'\\'.$parserName.'\\'.'OutputFormat';
 		}else{
 			throw new \Exception(
@@ -29,5 +30,8 @@ abstract class OutputFormat
 		}
 	}
 	
-	abstract function parse(Output $dataArray, array $outputFormatParameters);
+	abstract function parse(
+		Output $dataArray,
+		array $outputFormatParameters
+	);
 }
