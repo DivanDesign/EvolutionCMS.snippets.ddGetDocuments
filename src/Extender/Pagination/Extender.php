@@ -80,7 +80,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.0.2 (2018-01-31)
+	 * @version 1.1 (2018-06-08)
 	 * 
 	 * @param $output {Output}
 	 * 
@@ -142,55 +142,39 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						$pageChunk = $this->currentPageTpl;
 					}
 					
-					$pagesOutputText .= \ddTools::parseSource(
-						$modx->parseChunk(
-							$pageChunk,
-							[
-								'url' => $urlPrefix.$this->pageIndexRequestParamName.'='.$pageIndex,
-								'page' => $pageIndex
-							],
-							'[+',
-							'+]'
-						)
-					);
+					$pagesOutputText .= \ddTools::parseSource(\ddTools::parseText([
+						'text' => $modx->getTpl($pageChunk),
+						'data' => [
+							'url' => $urlPrefix.$this->pageIndexRequestParamName.'='.$pageIndex,
+							'page' => $pageIndex
+						]
+					]));
 				}
 				
 				$previousLinkChunk = $this->pageIndex == 1 ? $this->previousOffTpl : $this->previousTpl;
 				
 				$nextLinkChunk = $this->pageIndex == $pagesTotal ? $this->nextOffTpl : $this->nextTpl;
 				
-				$outputText = \ddTools::parseSource(
-					$modx->parseChunk(
-						$this->wrapperTpl,
-						[
-							'previous' => \ddTools::parseSource(
-								$modx->parseChunk(
-									$previousLinkChunk,
-									[
-										'url' => $this->pageIndex == 1 ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
-										'totalPages' => $pagesTotal
-									],
-									'[+',
-									'+]'
-								)
-							),
-							'pages' => $pagesOutputText,
-							'next' => \ddTools::parseSource(
-								$modx->parseChunk(
-									$nextLinkChunk,
-									[
-										'url' => $this->pageIndex == $pagesTotal ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
-										'totalPages' => $pagesTotal
-									],
-									'[+',
-									'+]'
-								)
-							)
-						],
-						'[+',
-						'+]'
-					)
-				);
+				$outputText = \ddTools::parseSource(\ddTools::parseText([
+					'text' => $modx->getTpl($this->wrapperTpl),
+					'data' => [
+						'previous' => \ddTools::parseSource(\ddTools::parseText([
+							'text' => $modx->getTpl($previousLinkChunk),
+							'data' => [
+								'url' => $this->pageIndex == 1 ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
+								'totalPages' => $pagesTotal
+							]
+						])),
+						'pages' => $pagesOutputText,
+						'next' => \ddTools::parseSource(\ddTools::parseText([
+							'text' => $modx->getTpl($nextLinkChunk),
+							'data' => [
+								'url' => $this->pageIndex == $pagesTotal ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
+								'totalPages' => $pagesTotal
+							]
+						]))
+					]
+				]));
 			}
 		}
 		

@@ -8,7 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.0.2 (2018-06-01)
+	 * @version 1.1 (2018-06-08)
 	 * 
 	 * @param $data {Output}
 	 * @param $outputFormatParameters {array_associative}
@@ -90,19 +90,17 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				);
 				
 				if(!empty($document)){
-					$outputItems[] = \ddTools::parseSource($modx->parseChunk(
-						$chunkName,
-						array_merge(
+					$outputItems[] = \ddTools::parseSource(\ddTools::parseText([
+						'text' => $modx->getTpl($chunkName),
+						'data' => array_merge(
 							$document,
 							$generalPlaceholders,
 							[
 								'itemNumber' => $index + 1,
 								'itemNumberZeroBased' => $index
 							]
-						),
-						'[+',
-						'+]'
-					));
+						)
+					]));
 				}
 			}
 		}
@@ -118,24 +116,23 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			$chunkContent = $modx->getChunk($outputFormatParameters['noResults']);
 			
 			if(!is_null($chunkContent)){
-				$output = \ddTools::parseSource($modx->parseChunk(
-					$outputFormatParameters['noResults'],
-					$generalPlaceholders,
-					'[+',
-					'+]'
-				));
+				$output = \ddTools::parseSource(\ddTools::parseText([
+					'text' => $modx->getTpl($outputFormatParameters['noResults']),
+					'data' => $generalPlaceholders
+				]));
 			}else{
 				$output = $outputFormatParameters['noResults'];
 			}
 		}elseif(isset($outputFormatParameters['wrapperTpl'])){
-			$output = (string) $modx->parseChunk(
-				$outputFormatParameters['wrapperTpl'],
-				array_merge($generalPlaceholders, [
-					'ddGetDocuments_items' => $output
-				]),
-				'[+',
-				'+]'
-			);
+			$output = \ddTools::parseText([
+				'text' => $modx->getTpl($outputFormatParameters['wrapperTpl']),
+				'data' => array_merge(
+					$generalPlaceholders,
+					[
+						'ddGetDocuments_items' => $output
+					]
+				)
+			]);
 		}
 		
 		return $output;

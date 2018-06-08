@@ -6,6 +6,7 @@
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @uses PHP >= 5.4.
+ * @uses MODXEvo >= 1.1.
  * @uses MODXEvo.library.ddTools >= 0.20.
  * 
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
@@ -26,14 +27,14 @@
  * @param $outputFormat {'string'|'json'|'raw'} — Format of the output. Default: 'string'.
  * @param $outputFormatParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
  * When $outputFormat == 'string' =>
- * @param $outputFormatParams['itemTpl'] {string_chunkName} — Item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
- * @param $outputFormatParams['itemTplFirst'] {string_chunkName} — First item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputFormatParams['itemTplLast'] {string_chunkName} — Last item template. Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputFormatParams['wrapperTpl'] {string_chunkName} — Wrapper template. Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
+ * @param $outputFormatParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+ * @param $outputFormatParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+ * @param $outputFormatParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+ * @param $outputFormatParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
  * @param $outputFormatParams['placeholders'] {array_associative} — Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Е.g. 'placeholders[alias]=test&placeholders[pagetitle]=Some title'. Default: []. 
  * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
  * @param $outputFormatParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
- * @param $outputFormatParams['noResults'] {string|string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+]. 
+ * @param $outputFormatParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
  * @example '{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}' or
  * @example 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'
  * When $outputFormat == 'json' =>
@@ -45,13 +46,13 @@
  * Be aware that the order of extender names can affect the output.
  * @param $extendersParams {stirng_json|string_queryFormated} — Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
  * When $extenders == 'pagination' =>
- * @param $extendersParams['wrapperTpl'] {string_chunkName} — Chunk to be used to output the pagination. @required
- * @param $extendersParams['pageTpl'] {string_chunkName} — Chunk to be used to output pages within the pagination. @required
- * @param $extendersParams['currentPageTpl'] {string_chunkName} — Chunk to be used to output the current page within the pagination. @required
- * @param $extendersParams['nextTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page. Available placeholders: [+url+], [+totalPages+]. @required
- * @param $extendersParams['nextOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the next page if there are no more pages after. Available placeholders: [+url+], [+totalPages+]. @required
- * @param $extendersParams['previousTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page. Available placeholders: [+url+], [+totalPages+]. @required
- * @param $extendersParams['previousOffTpl'] {string_chunkName} — Chunk to be used to output the navigation block to the previous page if there are no more pages before. Available placeholders: [+url+], [+totalPages+]. @required
+ * @param $extendersParams['wrapperTpl'] {string_chunkName|string} — Chunk to be used to output the pagination (chunk name or code via “@CODE:” prefix). @required
+ * @param $extendersParams['pageTpl'] {string_chunkName|string} — Chunk to be used to output pages within the pagination (chunk name or code via “@CODE:” prefix). @required
+ * @param $extendersParams['currentPageTpl'] {string_chunkName|string} — Chunk to be used to output the current page within the pagination (chunk name or code via “@CODE:” prefix). @required
+ * @param $extendersParams['nextTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the next page (chunk name or code via “@CODE:” prefix). Available placeholders: [+url+], [+totalPages+]. @required
+ * @param $extendersParams['nextOffTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the next page if there are no more pages after. Available placeholders: [+url+], [+totalPages+]. @required
+ * @param $extendersParams['previousTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the previous page (chunk name or code via “@CODE:” prefix). Available placeholders: [+url+], [+totalPages+]. @required
+ * @param $extendersParams['previousOffTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the previous page if there are no more pages before (chunk name or code via “@CODE:” prefix). Available placeholders: [+url+], [+totalPages+]. @required
  * When $extenders == 'tagging' =>
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
