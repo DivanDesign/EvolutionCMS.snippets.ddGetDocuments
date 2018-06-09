@@ -123,7 +123,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getAllChildrenIds
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-06-09)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -131,34 +131,34 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getAllChildrenIds(array $parentIds, $depth){
 		global $modx;
-		$output = [];
+		$result = [];
 		
 		$parentIdsStr = implode(',', $parentIds);
 		
 		if($parentIdsStr !== ''){
-			$outputArray = $modx->db->makeArray($modx->db->query('
+			$resultArray = $modx->db->makeArray($modx->db->query('
 				SELECT `id`
 				FROM '.$this->siteContentTableName.'
 				WHERE `parent` IN ('.$parentIdsStr.')
 			'));
 			
 			if(
-				is_array($outputArray) &&
-				!empty($outputArray)
+				is_array($resultArray) &&
+				!empty($resultArray)
 			){
-				foreach($outputArray as $document){
-					$output[] = $document['id'];
+				foreach($resultArray as $document){
+					$result[] = $document['id'];
 				}
 				
 				if($depth > 1){
-					$output = array_merge(
-						$output,
-						$this->getAllChildrenIds($output, $depth - 1)
+					$result = array_merge(
+						$result,
+						$this->getAllChildrenIds($result, $depth - 1)
 					);
 				}
 			}
 		}
 		
-		return $output;
+		return $result;
 	}
 }

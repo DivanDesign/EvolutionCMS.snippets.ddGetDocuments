@@ -72,7 +72,7 @@ abstract class DataProvider
 	
 	/**
 	 * getUsedFieldsFromFilter
-	 * @version 1.0.1 (2017-01-05)
+	 * @version 1.0.2 (2018-06-09)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -83,7 +83,7 @@ abstract class DataProvider
 	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
 	public final function getUsedFieldsFromFilter($filterStr){
-		$output = [];
+		$result = [];
 		//Try to find all fields/tvs used in filter by the pattern
 		preg_match_all("/`(\w+)`/", $filterStr, $fields);
 		
@@ -92,28 +92,28 @@ abstract class DataProvider
 			$fieldsArray = \ddTools::explodeFieldsArr(array_flip($fields[1]));
 			
 			if(!empty($fieldsArray[0])){
-				$output['fields'] = array_keys($fieldsArray[0]);
+				$result['fields'] = array_keys($fieldsArray[0]);
 			}
 			
 			//If there were tv names in the passed filter string
 			if(is_array($fieldsArray[1])){
-				$output['tvs'] = [];
+				$result['tvs'] = [];
 				
 				//Check whether the current tv name is an actual tv name
 				foreach($fieldsArray[1] as $tvName => $tvData){
 					if(isset($tvData['id'])){
 						//Pupulate the array with the current tv name
-						$output['tvs'][] = $tvName;
+						$result['tvs'][] = $tvName;
 					}
 				}
 				
-				if(empty($output['tvs'])){
-					unset($output['tvs']);
+				if(empty($result['tvs'])){
+					unset($result['tvs']);
 				}
 			}
 		}
 		
-		return $output;
+		return $result;
 	}
 	
 	/**

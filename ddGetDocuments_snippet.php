@@ -66,7 +66,7 @@
  **/
 
 global $modx;
-$output = false;
+$result = false;
 
 if(!class_exists('\ddTools')){
 	require_once($modx->config['base_path'].'assets/libs/ddTools/modx.ddtools.class.php');
@@ -177,14 +177,14 @@ if(class_exists($providerClass)){
 			$outputFormatClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$outputFormatObject = new $outputFormatClass;
 			
-			$output = $outputFormatObject->parse($data, $outputFormatParams);
+			$result = $outputFormatObject->parse($data, $outputFormatParams);
 		break;
 		
 		case 'raw':
-			$output = $data;
+			$result = $data;
 		break;
 	}
 }
 
-return $output;
+return $result;
 ?>

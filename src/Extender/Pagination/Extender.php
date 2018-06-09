@@ -80,7 +80,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1 (2018-06-08)
+	 * @version 1.1.1 (2018-06-09)
 	 * 
 	 * @param $output {Output}
 	 * 
@@ -91,7 +91,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		
 		$outputArray = $output->toArray();
 		
-		$outputText = '';
+		$result = '';
 		
 		//Check to prevent division by zero
 		if($this->snippetParams['total'] != 0){
@@ -155,7 +155,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				
 				$nextLinkChunk = $this->pageIndex == $pagesTotal ? $this->nextOffTpl : $this->nextTpl;
 				
-				$outputText = \ddTools::parseSource(\ddTools::parseText([
+				$result = \ddTools::parseSource(\ddTools::parseText([
 					'text' => $modx->getTpl($this->wrapperTpl),
 					'data' => [
 						'previous' => \ddTools::parseSource(\ddTools::parseText([
@@ -178,6 +178,6 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			}
 		}
 		
-		return $outputText;
+		return $result;
 	}
 }

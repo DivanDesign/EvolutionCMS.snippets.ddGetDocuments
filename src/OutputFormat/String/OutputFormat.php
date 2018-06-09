@@ -8,7 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.1 (2018-06-08)
+	 * @version 1.1.1 (2018-06-09)
 	 * 
 	 * @param $data {Output}
 	 * @param $outputFormatParameters {array_associative}
@@ -29,8 +29,8 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	){
 		global $modx;
 		
-		$output = '';
-		$outputItems = [];
+		$result = '';
+		$resultItems = [];
 		$dataArray = $data->toArray();
 		
 		$itemGlue = isset($outputFormatParameters['itemGlue']) ? $outputFormatParameters['itemGlue'] : '';
@@ -90,7 +90,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				);
 				
 				if(!empty($document)){
-					$outputItems[] = \ddTools::parseSource(\ddTools::parseText([
+					$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
 						'text' => $modx->getTpl($chunkName),
 						'data' => array_merge(
 							$document,
@@ -105,7 +105,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			}
 		}
 		
-		$output = implode($itemGlue, $outputItems);
+		$result = implode($itemGlue, $resultItems);
 		
 		//If no items found and “noResults” is not empty
 		if(
@@ -116,25 +116,25 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			$chunkContent = $modx->getChunk($outputFormatParameters['noResults']);
 			
 			if(!is_null($chunkContent)){
-				$output = \ddTools::parseSource(\ddTools::parseText([
+				$result = \ddTools::parseSource(\ddTools::parseText([
 					'text' => $modx->getTpl($outputFormatParameters['noResults']),
 					'data' => $generalPlaceholders
 				]));
 			}else{
-				$output = $outputFormatParameters['noResults'];
+				$result = $outputFormatParameters['noResults'];
 			}
 		}elseif(isset($outputFormatParameters['wrapperTpl'])){
-			$output = \ddTools::parseText([
+			$result = \ddTools::parseText([
 				'text' => $modx->getTpl($outputFormatParameters['wrapperTpl']),
 				'data' => array_merge(
 					$generalPlaceholders,
 					[
-						'ddGetDocuments_items' => $output
+						'ddGetDocuments_items' => $result
 					]
 				)
 			]);
 		}
 		
-		return $output;
+		return $result;
 	}
 }

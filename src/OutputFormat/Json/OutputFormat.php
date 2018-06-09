@@ -8,7 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.0.1 (2018-06-01)
+	 * @version 1.0.2 (2018-06-09)
 	 * 
 	 * @param $data {Output}
 	 * @param $outputFormatParameters {array}
@@ -20,7 +20,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		Output $data,
 		array $outputFormatParameters
 	){
-		$output = [];
+		$result = [];
 		$dataArray = $data->toArray();
 		
 		//Проверим заполнен ли параметр
@@ -37,7 +37,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		//Пройдемся по полученным данным
 		foreach($dataArray['provider']['items'] as $key => $value){
 			//Для каждого найденого id найдем необходимые TV
-			$output[] = \ddTools::getTemplateVarOutput(
+			$result[] = \ddTools::getTemplateVarOutput(
 				$docFields,
 				$value['id']
 			);
@@ -45,7 +45,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		
 		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
 		return json_encode(
-			$output,
+			$result,
 			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 		);
 	}
