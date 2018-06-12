@@ -8,7 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.1.2 (2018-06-12)
+	 * @version 1.1.3 (2018-06-12)
 	 * 
 	 * @param $data {Output}
 	 * @param $outputFormatParameters {array_associative}
@@ -27,8 +27,6 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		Output $data,
 		array $outputFormatParameters
 	){
-		global $modx;
-		
 		$result = '';
 		$resultItems = [];
 		$dataArray = $data->toArray();
@@ -91,7 +89,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				
 				if(!empty($document)){
 					$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
-						'text' => $modx->getTpl($chunkName),
+						'text' => \ddTools::$modx->getTpl($chunkName),
 						'data' => array_merge(
 							$document,
 							$generalPlaceholders,
@@ -116,11 +114,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			isset($outputFormatParameters['noResults']) &&
 			$outputFormatParameters['noResults'] != ''
 		){
-			$chunkContent = $modx->getChunk($outputFormatParameters['noResults']);
+			$chunkContent = \ddTools::$modx->getChunk($outputFormatParameters['noResults']);
 			
 			if(!is_null($chunkContent)){
 				$result = \ddTools::parseSource(\ddTools::parseText([
-					'text' => $modx->getTpl($outputFormatParameters['noResults']),
+					'text' => \ddTools::$modx->getTpl($outputFormatParameters['noResults']),
 					'data' => $generalPlaceholders
 				]));
 			}else{
@@ -128,7 +126,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			}
 		}elseif(isset($outputFormatParameters['wrapperTpl'])){
 			$result = \ddTools::parseText([
-				'text' => $modx->getTpl($outputFormatParameters['wrapperTpl']),
+				'text' => \ddTools::$modx->getTpl($outputFormatParameters['wrapperTpl']),
 				'data' => array_merge(
 					$generalPlaceholders,
 					[

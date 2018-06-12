@@ -8,21 +8,6 @@ abstract class DataProvider
 {
 	public $defaultParams = [];
 	
-	protected
-		$siteContentTableName,
-		$tmplvarTableName,
-		$tmplvarContentvaluesTableName,
-		$tmplvarTemplatesTableName;
-	
-	public function __construct(){
-		global $modx;
-		
-		$this->siteContentTableName = $modx->getFullTableName('site_content');
-		$this->tmplvarTableName = $modx->getFullTableName('site_tmplvars');
-		$this->tmplvarContentvaluesTableName = $modx->getFullTableName('site_tmplvar_contentvalues');
-		$this->tmplvarTemplatesTableName = $modx->getFullTableName('site_tmplvar_templates');
-	}
-	
 	/**
 	 * includeProviderByName
 	 * @version 1.0.2 (2018-06-12)
@@ -123,7 +108,7 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.2 (2018-06-12)
+	 * @version 1.0.3 (2018-06-12)
 	 * 
 	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
@@ -140,7 +125,7 @@ abstract class DataProvider
 		
 		//select query
 		$selectTvsQuery = 'SELECT `c`.*,';
-		$fromTvsQuery = 'FROM '.$this->siteContentTableName.' as `c`';
+		$fromTvsQuery = 'FROM '.\ddTools::$tables['site_content'].' as `c`';
 		//join query
 		$joinTvsQuery = '';
 		//where query
@@ -159,9 +144,9 @@ abstract class DataProvider
 			$selectTvsQuery .= 'coalesce('.$tvcvAlias.'.`value`, '.$tvAlias.'.`default_text`) as `'.$tvName.'`,';
 			
 			$joinTvsQuery .=
-				' LEFT JOIN '.$this->tmplvarTemplatesTableName.' AS '.$tvtAlias.' ON '.$tvtAlias.'.`templateid` = `c`.`template`'.
-				' LEFT JOIN '.$this->tmplvarTableName.' AS '.$tvAlias.' ON '.$tvAlias.'.`id` = '.$tvtAlias.'.`tmplvarid`'.
-				' LEFT JOIN '.$this->tmplvarContentvaluesTableName.' AS '.$tvcvAlias.' ON '.$tvcvAlias.'.`contentid` = `c`.`id` AND '.$tvcvAlias.'.`tmplvarid` = '.$tvAlias.'.`id`';
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_templates'].' AS '.$tvtAlias.' ON '.$tvtAlias.'.`templateid` = `c`.`template`'.
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvars'].' AS '.$tvAlias.' ON '.$tvAlias.'.`id` = '.$tvtAlias.'.`tmplvarid`'.
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_contentvalues'].' AS '.$tvcvAlias.' ON '.$tvcvAlias.'.`contentid` = `c`.`id` AND '.$tvcvAlias.'.`tmplvarid` = '.$tvAlias.'.`id`';
 			
 			$whereTvsQuery .= $tvAlias.'.`name` = "'.$tvName.'" AND';
 			
@@ -183,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0.1 (2017-01-05)
+	 * @version 1.0.2 (2018-06-12)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -194,7 +179,7 @@ abstract class DataProvider
 	protected final function prepareFromAndFilterQueries($filterStr){
 		$result = [
 			//By default, the required data is just fetched from the site_content table
-			'from' => $this->siteContentTableName,
+			'from' => \ddTools::$tables['site_content'],
 			'filter' => ''
 		];
 		

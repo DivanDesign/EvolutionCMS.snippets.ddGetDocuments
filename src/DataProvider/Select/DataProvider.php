@@ -14,14 +14,13 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.8 (2018-06-12)
+	 * @version 1.0.9 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	protected function getDataFromSource(Input $input){
-		global $modx;
 		$dataProviderOutput = new DataProviderOutput(
 			[],
 			0
@@ -104,7 +103,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				$whereQuery .= $filterQuery;
 			}
 			
-			$data = $modx->db->makeArray($modx->db->query('
+			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS `documents`.`id`
 				FROM
@@ -112,7 +111,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				'.$whereQuery.' '.$orderByQuery.' '.$limitQuery.'
 			'));
 			
-			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
+			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
 				$dataProviderOutput = new DataProviderOutput(

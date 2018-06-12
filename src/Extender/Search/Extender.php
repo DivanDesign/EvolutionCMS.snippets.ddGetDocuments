@@ -14,9 +14,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			'content'
 		];
 	
+	/**
+	 * __construct
+	 * @version 1.0.1 (2018-06-12)
+	 * 
+	 * @param $extenderParams {array_associative}
+	 */
 	public function __construct(array $extenderParams){
-		global $modx;
-		
 		if(isset($extenderParams['docFieldsToSearch'])){
 			$this->docFieldsToSearch = explode(
 				',',
@@ -25,7 +29,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		}
 		
 		if (isset($_REQUEST['query'])){
-			$this->currentQuery = trim($modx->db->escape($_REQUEST['query']));
+			$this->currentQuery = trim(\ddTools::$modx->db->escape($_REQUEST['query']));
 		}
 	}
 	

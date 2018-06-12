@@ -15,15 +15,13 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.7 (2018-06-12)
+	 * @version 1.0.8 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	protected function getDataFromSource(Input $input){
-		global $modx;
-		
 		$dataProviderOutput = new DataProviderOutput(
 			[],
 			0
@@ -111,7 +109,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		//Check if child documents were found
 		if($allChildrenIdsStr !== ''){
-			$data = $modx->db->makeArray($modx->db->query('
+			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS `documents`.`id`
 				FROM
@@ -121,7 +119,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 					'.$filterQuery.' '.$orderByQuery.' '.$limitQuery.'
 			'));
 			
-			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
+			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
 				$dataProviderOutput = new DataProviderOutput(
@@ -136,7 +134,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getAllChildrenIds
-	 * @version 1.0.4 (2018-06-12)
+	 * @version 1.0.5 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -146,8 +144,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		array $parentIds,
 		$depth
 	){
-		global $modx;
-		
 		$result = [];
 		
 		$parentIdsStr = implode(
@@ -156,9 +152,9 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		);
 		
 		if($parentIdsStr !== ''){
-			$resultArray = $modx->db->makeArray($modx->db->query('
+			$resultArray = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT `id`
-				FROM '.$this->siteContentTableName.'
+				FROM '.\ddTools::$tables['site_content'].'
 				WHERE `parent` IN ('.$parentIdsStr.')
 			'));
 			

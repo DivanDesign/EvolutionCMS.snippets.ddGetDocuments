@@ -16,9 +16,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		//Tags delimiter
 		$tagsDelimiter = ', ';
 	
+	/**
+	 * __construct
+	 * @version 1.0.1 (2018-06-12)
+	 * 
+	 * @param $extenderParams {array_associative}
+	 */
 	public function __construct(array $extenderParams){
-		global $modx;
-		
 		if(isset($extenderParams['tagsRequestParamName'])){
 			$this->tagsRequestParamName = (string) $extenderParams['tagsRequestParamName'];
 		}
@@ -45,7 +49,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			}
 			
 			foreach ($this->currentTags as $index => $value){
-				$this->currentTags[$index] = $modx->db->escape($value);
+				$this->currentTags[$index] = \ddTools::$modx->db->escape($value);
 			}
 		}
 	}
