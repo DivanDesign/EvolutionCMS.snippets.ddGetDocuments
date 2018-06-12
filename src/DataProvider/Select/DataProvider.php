@@ -3,7 +3,7 @@
 namespace ddGetDocuments\DataProvider\Select;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
@@ -14,15 +14,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.6 (2018-01-31)
+	 * @version 1.0.7 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
-	 * @return {ddGetDocuments\DataProvider\Output}
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$output = new Output([], 0);
+		$dataProviderOutput = new DataProviderOutput([], 0);
 		
 		$ids = $this->defaultParams['ids'];
 		
@@ -112,10 +112,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
-				$output = new Output($data, $totalFound);
+				$dataProviderOutput = new DataProviderOutput($data, $totalFound);
 			}
 		}
 		
-		return $output;
+		return $dataProviderOutput;
 	}
 }

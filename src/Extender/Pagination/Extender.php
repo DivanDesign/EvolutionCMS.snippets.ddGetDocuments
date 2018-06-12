@@ -2,7 +2,7 @@
 namespace ddGetDocuments\Extender\Pagination;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 
 class Extender extends \ddGetDocuments\Extender\Extender
 {
@@ -80,22 +80,22 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.1 (2018-06-09)
+	 * @version 1.1.2 (2018-06-12)
 	 * 
-	 * @param $output {Output}
+	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {string}
 	 */
-	public function applyToOutput(Output $output){
+	public function applyToOutput(Output $dataProviderOutput){
 		global $modx;
 		
-		$outputArray = $output->toArray();
+		$dataProviderOutputArray = $dataProviderOutput->toArray();
 		
 		$result = '';
 		
 		//Check to prevent division by zero
 		if($this->snippetParams['total'] != 0){
-			$pagesTotal = ceil($outputArray['totalFound'] / $this->snippetParams['total']);
+			$pagesTotal = ceil($dataProviderOutputArray['totalFound'] / $this->snippetParams['total']);
 			
 			if($pagesTotal > 1){
 				$urlPrefix = '?';

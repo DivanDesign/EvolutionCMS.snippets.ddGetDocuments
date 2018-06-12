@@ -2,7 +2,7 @@
 namespace ddGetDocuments\DataProvider\Parent;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
@@ -15,15 +15,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.5 (2018-01-31)
+	 * @version 1.0.6 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
-	 * @return {ddGetDocuments\DataProvider\Output}
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$output = new Output([], 0);
+		$dataProviderOutput = new DataProviderOutput([], 0);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
 		$parentIds = $this->defaultParams['parentIds'];
@@ -114,20 +114,20 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
-				$output = new Output($data, $totalFound);
+				$dataProviderOutput = new DataProviderOutput($data, $totalFound);
 			}
 		}
 		
-		return $output;
+		return $dataProviderOutput;
 	}
 	
 	/**
 	 * getAllChildrenIds
-	 * @version 1.0.2 (2018-06-09)
+	 * @version 1.0.3 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
-	 * @return {ddGetDocuments\DataProvider\Output}
+	 * @return {array}
 	 */
 	protected function getAllChildrenIds(array $parentIds, $depth){
 		global $modx;

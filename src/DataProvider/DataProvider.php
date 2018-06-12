@@ -51,7 +51,7 @@ abstract class DataProvider
 	 * 
 	 * @param Input $input
 	 * 
-	 * @return \ddGetDocuments\DataProvider\Output
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	abstract protected function getDataFromSource(Input $input);
 	
@@ -60,7 +60,7 @@ abstract class DataProvider
 	 * 
 	 * @param Input $input
 	 * 
-	 * @return Output
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public final function get(Input $input){
 		if(empty($input->providerParams)){

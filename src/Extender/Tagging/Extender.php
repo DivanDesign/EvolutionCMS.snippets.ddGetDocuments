@@ -2,7 +2,7 @@
 namespace ddGetDocuments\Extender\Tagging;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 
 class Extender extends \ddGetDocuments\Extender\Extender
 {
@@ -84,13 +84,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.0 (2018-01-31)
+	 * @version 1.0.1 (2018-06-12)
 	 * 
-	 * @param $output {Output}
+	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {array}
 	 */
-	public function applyToOutput(Output $output){
+	public function applyToOutput(Output $dataProviderOutput){
 		return [
 			'currentTags' => $this->currentTags
 		];

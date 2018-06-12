@@ -2,7 +2,7 @@
 namespace ddGetDocuments\Extender\Search;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 
 class Extender extends \ddGetDocuments\Extender\Extender
 {
