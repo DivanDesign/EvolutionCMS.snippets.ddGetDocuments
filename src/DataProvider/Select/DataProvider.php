@@ -14,7 +14,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.7 (2018-06-12)
+	 * @version 1.0.8 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -22,7 +22,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$dataProviderOutput = new DataProviderOutput([], 0);
+		$dataProviderOutput = new DataProviderOutput(
+			[],
+			0
+		);
 		
 		$ids = $this->defaultParams['ids'];
 		
@@ -112,7 +115,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
-				$dataProviderOutput = new DataProviderOutput($data, $totalFound);
+				$dataProviderOutput = new DataProviderOutput(
+					$data,
+					$totalFound
+				);
 			}
 		}
 		

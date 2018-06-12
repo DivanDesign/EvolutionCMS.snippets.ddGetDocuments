@@ -52,7 +52,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0 (2017-01-05)
+	 * @version 1.0.1 (2018-06-12)
 	 * 
 	 * @param $snippetParams {array_associative}
 	 * 
@@ -76,7 +76,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				$tagQueries[] = '`'.$this->tagsDocumentField.'` REGEXP "(^|'.$this->tagsDelimiter.')'.$currentTag.'($|'.$this->tagsDelimiter.')"';
 			}
 			
-			$snippetParams['filter'] .= ' ('.implode(' OR ', $tagQueries).')';
+			$snippetParams['filter'] .= ' ('.implode(
+				' OR ',
+				$tagQueries
+			).')';
 		}
 		
 		return $snippetParams;

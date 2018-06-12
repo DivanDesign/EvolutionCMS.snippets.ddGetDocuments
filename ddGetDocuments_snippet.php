@@ -93,7 +93,10 @@ $outputFormat = isset($outputFormat) ? strtolower($outputFormat) : 'string';
 $outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
 
 //Extenders
-$extenders = isset($extenders) ? explode(',', trim($extenders)) : [];
+$extenders = isset($extenders) ? explode(
+	',',
+	trim($extenders)
+) : [];
 $extendersParams = isset($extendersParams) ? $extendersParams : '';
 
 if(class_exists($providerClass)){
@@ -177,7 +180,10 @@ if(class_exists($providerClass)){
 			$outputFormatClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
 			$outputFormatObject = new $outputFormatClass;
 			
-			$result = $outputFormatObject->parse($data, $outputFormatParams);
+			$result = $outputFormatObject->parse(
+				$data,
+				$outputFormatParams
+			);
 		break;
 		
 		case 'raw':

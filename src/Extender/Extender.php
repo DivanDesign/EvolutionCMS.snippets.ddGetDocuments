@@ -14,11 +14,13 @@ abstract class Extender
 {
 	/**
 	 * includeExtenderByName
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-06-12)
 	 * 
 	 * @param $extenderName
-	 * @return string
+	 * 
 	 * @throws \Exception
+	 * 
+	 * @return {string}
 	 */
 	public final static function includeExtenderByName($extenderName){
 		$extenderName = ucfirst(strtolower($extenderName));
@@ -26,6 +28,7 @@ abstract class Extender
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$extenderPath)){
 			require_once($extenderPath);
+			
 			return __NAMESPACE__.'\\'.$extenderName.'\\'.'Extender';
 		}else{
 			throw new \Exception(

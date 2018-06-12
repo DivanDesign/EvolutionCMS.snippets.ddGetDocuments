@@ -8,7 +8,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
 	/**
 	 * parse
-	 * @version 1.1.1 (2018-06-09)
+	 * @version 1.1.2 (2018-06-12)
 	 * 
 	 * @param $data {Output}
 	 * @param $outputFormatParameters {array_associative}
@@ -105,7 +105,10 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			}
 		}
 		
-		$result = implode($itemGlue, $resultItems);
+		$result = implode(
+			$itemGlue,
+			$resultItems
+		);
 		
 		//If no items found and “noResults” is not empty
 		if(

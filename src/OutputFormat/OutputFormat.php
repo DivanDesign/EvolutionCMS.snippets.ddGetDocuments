@@ -10,9 +10,11 @@ abstract class OutputFormat
 	 * includeOutputFormatByName
 	 * @version 1.0.1 (2018-01-31)
 	 * 
-	 * @param $parserName
-	 * @return string
+	 * @param $parserName {string}
+	 * 
 	 * @throws \Exception
+	 * 
+	 * @return {string}
 	 */
 	public final static function includeOutputFormatByName($parserName){
 		$parserName = ucfirst(strtolower($parserName));

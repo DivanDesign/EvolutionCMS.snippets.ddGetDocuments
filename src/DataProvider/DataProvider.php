@@ -25,7 +25,7 @@ abstract class DataProvider
 	
 	/**
 	 * includeProviderByName
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-06-12)
 	 * 
 	 * @param $providerName
 	 * @return string
@@ -37,6 +37,7 @@ abstract class DataProvider
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
 			require_once($providerPath);
+			
 			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
 		}else{
 			throw new \Exception(
@@ -72,7 +73,7 @@ abstract class DataProvider
 	
 	/**
 	 * getUsedFieldsFromFilter
-	 * @version 1.0.2 (2018-06-09)
+	 * @version 1.0.3 (2018-06-12)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -85,7 +86,11 @@ abstract class DataProvider
 	public final function getUsedFieldsFromFilter($filterStr){
 		$result = [];
 		//Try to find all fields/tvs used in filter by the pattern
-		preg_match_all("/`(\w+)`/", $filterStr, $fields);
+		preg_match_all(
+			"/`(\w+)`/",
+			$filterStr,
+			$fields
+		);
 		
 		if(!empty($fields[1])){
 			//Sort out fields from tvs
@@ -118,13 +123,13 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.1 (2018-01-31)
+	 * @version 1.0.2 (2018-06-12)
 	 * 
-	 * A helper method to build subquery with joined TVS to make possible
-	 * to use filter conditions for both fields and tvs.
+	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
-	 * @param array $tvs
-	 * @return string
+	 * @param $tvs {array}
+	 * 
+	 * @return {string}
 	 */
 	protected function buildTVsSubQuery(array $tvs){
 		//Aliases:
@@ -163,8 +168,14 @@ abstract class DataProvider
 			$tvCounter++;
 		}
 		
-		$selectTvsQuery = trim($selectTvsQuery, ',');
-		$whereTvsQuery = 'WHERE '.trim($whereTvsQuery, ' AND');
+		$selectTvsQuery = trim(
+			$selectTvsQuery,
+			','
+		);
+		$whereTvsQuery = 'WHERE '.trim(
+			$whereTvsQuery,
+			' AND'
+		);
 		
 		//complete from query
 		return $selectTvsQuery.' '.$fromTvsQuery.' '.$joinTvsQuery.' '.$whereTvsQuery;

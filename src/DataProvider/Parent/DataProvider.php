@@ -15,7 +15,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.6 (2018-06-12)
+	 * @version 1.0.7 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
@@ -23,7 +23,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 */
 	protected function getDataFromSource(Input $input){
 		global $modx;
-		$dataProviderOutput = new DataProviderOutput([], 0);
+		
+		$dataProviderOutput = new DataProviderOutput(
+			[],
+			0
+		);
 		
 		//TODO: эти проверки с дефолтами надо куда-то вынести
 		$parentIds = $this->defaultParams['parentIds'];
@@ -33,7 +37,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			
 			//Comma separated strings
 			if (!is_array($parentIds)){
-				$parentIds = explode(',', $parentIds);
+				$parentIds = explode(
+					',',
+					$parentIds
+				);
 			}
 		}
 		
@@ -71,7 +78,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		$allChildrenIdsStr = implode(
 			',',
-			$this->getAllChildrenIds($parentIds, $depth)
+			$this->getAllChildrenIds(
+				$parentIds,
+				$depth
+			)
 		);
 		
 		$orderByQuery = '';
@@ -114,7 +124,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$totalFound = $modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
-				$dataProviderOutput = new DataProviderOutput($data, $totalFound);
+				$dataProviderOutput = new DataProviderOutput(
+					$data,
+					$totalFound
+				);
 			}
 		}
 		
@@ -123,17 +136,24 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getAllChildrenIds
-	 * @version 1.0.3 (2018-06-12)
+	 * @version 1.0.4 (2018-06-12)
 	 * 
 	 * @param $input {ddGetDocuments\Input}
 	 * 
 	 * @return {array}
 	 */
-	protected function getAllChildrenIds(array $parentIds, $depth){
+	protected function getAllChildrenIds(
+		array $parentIds,
+		$depth
+	){
 		global $modx;
+		
 		$result = [];
 		
-		$parentIdsStr = implode(',', $parentIds);
+		$parentIdsStr = implode(
+			',',
+			$parentIds
+		);
 		
 		if($parentIdsStr !== ''){
 			$resultArray = $modx->db->makeArray($modx->db->query('
@@ -153,7 +173,10 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				if($depth > 1){
 					$result = array_merge(
 						$result,
-						$this->getAllChildrenIds($result, $depth - 1)
+						$this->getAllChildrenIds(
+							$result,
+							$depth - 1
+						)
 					);
 				}
 			}
