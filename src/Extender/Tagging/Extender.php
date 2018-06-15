@@ -8,7 +8,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
 		//Current selected tags
-		$currentTags = [],
+		$currentTags = [];
+	
+	protected
 		//The parameter in $_REQUEST to get the tags value from
 		$tagsRequestParamName = 'tags',
 		//A document field (TV) contains tags
@@ -18,22 +20,16 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * __construct
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 1.1 (2018-06-12)
 	 * 
-	 * @param $extenderParams {array_associative}
+	 * @param $params {array_associative}
+	 * @param $params['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
+	 * @param $params['tagsDelimiter'] {string} — Tags delimiter in the document field. Default: ', '.
+	 * @param $params['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
 	 */
-	public function __construct(array $extenderParams){
-		if(isset($extenderParams['tagsRequestParamName'])){
-			$this->tagsRequestParamName = (string) $extenderParams['tagsRequestParamName'];
-		}
-		
-		if(isset($extenderParams['tagsDocumentField'])){
-			$this->tagsDocumentField = (string) $extenderParams['tagsDocumentField'];
-		}
-		
-		if(isset($extenderParams['tagsDelimiter'])){
-			$this->tagsDelimiter = (string) $extenderParams['tagsDelimiter'];
-		}
+	public function __construct(array $params = []){
+		//Call base constructor
+		parent::__construct($params);
 		
 		if (isset($_REQUEST[$this->tagsRequestParamName])){
 			$this->currentTags = $_REQUEST[$this->tagsRequestParamName];
@@ -91,13 +87,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 1.0.2 (2018-06-13)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {array}
 	 */
-	public function applyToOutput(Output $dataProviderOutput){
+	public function applyToOutput(DataProviderOutput $dataProviderOutput){
 		return [
 			'currentTags' => $this->currentTags
 		];

@@ -7,8 +7,9 @@ use ddGetDocuments\DataProvider\DataProviderOutput;
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
-		//Templates ids to search in
-		$currentQuery = '',
+		$currentQuery = '';
+	
+	protected
 		$docFieldsToSearch = [
 			'pagetitle',
 			'content'
@@ -16,15 +17,19 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * __construct
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 1.1 (2018-06-12)
 	 * 
-	 * @param $extenderParams {array_associative}
+	 * @param $params {array_associative}
+	 * @param $params['docFieldsToSearch'] {array|string_commaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
 	 */
-	public function __construct(array $extenderParams){
-		if(isset($extenderParams['docFieldsToSearch'])){
+	public function __construct(array $params){
+		//Call base constructor
+		parent::__construct($params);
+		
+		if(!is_array($this->docFieldsToSearch)){
 			$this->docFieldsToSearch = explode(
 				',',
-				(string) $extenderParams['docFieldsToSearch']
+				(string) $this->docFieldsToSearch
 			);
 		}
 		

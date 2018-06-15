@@ -11,8 +11,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		//Current page index
 		$pageIndex,
 		//The parameter in $_REQUEST to get the current page index from
-		$pageIndexRequestParamName = 'page',
-		
+		$pageIndexRequestParamName = 'page';
+	
+	protected
 		//Chunk to be used to output pages within the pagination
 		$pageTpl = '',
 		//Chunk to be used to output the current page within the pagination
@@ -30,40 +31,43 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-06-12)
+	 * @version 1.2 (2018-06-12)
 	 * 
-	 * @param $extenderParams {array_associative}
+	 * @param $params {array_associative}
 	 */
-	public function __construct(array $extenderParams){
+	public function __construct(array $params){
+		//Call base constructor
+		parent::__construct($params);
+		
+		if($this->pageTpl != ''){
+			$this->pageTpl = \ddTools::$modx->getTpl((string) $this->pageTpl);
+		}
+		
+		if($this->currentPageTpl != ''){
+			$this->currentPageTpl = \ddTools::$modx->getTpl((string) $this->currentPageTpl);
+		}
+		
+		if($this->wrapperTpl != ''){
+			$this->wrapperTpl = \ddTools::$modx->getTpl((string) $this->wrapperTpl);
+		}
+		
+		if($this->nextTpl != ''){
+			$this->nextTpl = \ddTools::$modx->getTpl((string) $this->nextTpl);
+		}
+		
+		if($this->nextOffTpl != ''){
+			$this->nextOffTpl = \ddTools::$modx->getTpl((string) $this->nextOffTpl);
+		}
+		
+		if($this->previousTpl != ''){
+			$this->previousTpl = \ddTools::$modx->getTpl((string) $this->previousTpl);
+		}
+		
+		if($this->previousOffTpl != ''){
+			$this->previousOffTpl = \ddTools::$modx->getTpl((string) $this->previousOffTpl);
+		}
+		
 		$this->pageIndex = isset($_REQUEST[$this->pageIndexRequestParamName]) ? (int) $_REQUEST[$this->pageIndexRequestParamName] :	1;
-		
-		if(isset($extenderParams['pageTpl'])){
-			$this->pageTpl = \ddTools::$modx->getTpl((string) $extenderParams['pageTpl']);
-		}
-		
-		if(isset($extenderParams['currentPageTpl'])){
-			$this->currentPageTpl = \ddTools::$modx->getTpl((string) $extenderParams['currentPageTpl']);
-		}
-		
-		if(isset($extenderParams['wrapperTpl'])){
-			$this->wrapperTpl = \ddTools::$modx->getTpl((string) $extenderParams['wrapperTpl']);
-		}
-		
-		if(isset($extenderParams['nextTpl'])){
-			$this->nextTpl = \ddTools::$modx->getTpl((string) $extenderParams['nextTpl']);
-		}
-		
-		if(isset($extenderParams['nextOffTpl'])){
-			$this->nextOffTpl = \ddTools::$modx->getTpl((string) $extenderParams['nextOffTpl']);
-		}
-		
-		if(isset($extenderParams['previousTpl'])){
-			$this->previousTpl = \ddTools::$modx->getTpl((string) $extenderParams['previousTpl']);
-		}
-		
-		if(isset($extenderParams['previousOffTpl'])){
-			$this->previousOffTpl = \ddTools::$modx->getTpl((string) $extenderParams['previousOffTpl']);
-		}
 	}
 	
 	/**
@@ -86,13 +90,13 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.4 (2018-06-12)
+	 * @version 1.1.5 (2018-06-13)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {string}
 	 */
-	public function applyToOutput(Output $dataProviderOutput){
+	public function applyToOutput(DataProviderOutput $dataProviderOutput){
 		$dataProviderOutputArray = $dataProviderOutput->toArray();
 		
 		$result = '';

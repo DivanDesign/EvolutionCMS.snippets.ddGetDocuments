@@ -6,39 +6,46 @@ use ddGetDocuments\Output;
 
 class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 {
+	protected
+		$docFields = ['id'];
+	
+	/**
+	 * __construct
+	 * @version 1.0 (2018-06-12)
+	 * 
+	 * @param $params {array_associative}
+	 * @param $params['docFields'] {array|string_commaSeparated} — Document fields to output. Default: 'id'.
+	 */
+	public function __construct(array $params = []){
+		//Call base constructor
+		parent::__construct($params);
+		
+		//Comma separated strings
+		if (!is_array($this->docFields)){
+			$this->docFields = explode(
+				',',
+				$this->docFields
+			);
+		}
+	}
+	
 	/**
 	 * parse
-	 * @version 1.0.2 (2018-06-09)
+	 * @version 2.0 (2018-06-12)
 	 * 
 	 * @param $data {Output}
-	 * @param $outputFormatParameters {array}
-	 * @param $outputFormatParameters['docFields'] {array|string_commaSeparated} — Document fields to output. Default: 'id'.
 	 * 
 	 * @return {string_json_array}
 	 */
-	public function parse(
-		Output $data,
-		array $outputFormatParameters
-	){
+	public function parse(Output $data){
 		$result = [];
 		$dataArray = $data->toArray();
-		
-		//Проверим заполнен ли параметр
-		$docFields = isset($outputFormatParameters['docFields']) && $outputFormatParameters['docFields'] != '' ? $outputFormatParameters['docFields'] : ['id'];
-		
-		//Comma separated strings
-		if (!is_array($docFields)){
-			$docFields = explode(
-				',',
-				$docFields
-			);
-		}
 		
 		//Пройдемся по полученным данным
 		foreach($dataArray['provider']['items'] as $key => $value){
 			//Для каждого найденого id найдем необходимые TV
 			$result[] = \ddTools::getTemplateVarOutput(
-				$docFields,
+				$this->docFields,
 				$value['id']
 			);
 		}

@@ -6,7 +6,11 @@ use ddGetDocuments\Input;
 
 abstract class DataProvider
 {
-	public $defaultParams = [];
+	protected
+		$total,
+		$filter,
+		$offset,
+		$orderBy;
 	
 	/**
 	 * includeProviderByName
@@ -33,27 +37,55 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * getDataFromSource
+	 * __construct
+	 * @version 1.0 (2018-06-12)
 	 * 
-	 * @param Input $input
+	 * @param $input {\ddGetDocuments\Input}
+	 */
+	function __construct(Input $input){
+		//Params from the snippet first
+		foreach (
+			[
+				'total',
+				'filter',
+				'offset',
+				'orderBy'
+			]
+			as $paramName
+		){
+			if(isset($input->snippetParams[$paramName])){
+				$this->{$paramName} = $input->snippetParams[$paramName];
+			}
+		}
+		
+		//Все параметры задают свойства объекта
+		foreach ($input->providerParams as $paramName => $paramValue){
+			//Validation
+			if (property_exists(
+				$this,
+				$paramName
+			)){
+				$this->{$paramName} = $paramValue;
+			}
+		}
+	}
+	
+	/**
+	 * getDataFromSource
+	 * @version 2.0 (2018-06-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	abstract protected function getDataFromSource(Input $input);
+	abstract protected function getDataFromSource();
 	
 	/**
 	 * get
-	 * 
-	 * @param Input $input
+	 * @version 2.0 (2018-06-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	public final function get(Input $input){
-		if(empty($input->providerParams)){
-			$input->providerParams = $this->defaultParams;
-		}
-		
-		return $this->getDataFromSource($input);
+	public final function get(){
+		return $this->getDataFromSource();
 	}
 	
 	/**

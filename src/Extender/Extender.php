@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: phm
- * Date: 14-Sep-15
- * Time: 17:22
+ * Created by phm
  */
 
 namespace ddGetDocuments\Extender;
@@ -35,6 +32,25 @@ abstract class Extender
 				'Extender '.$extenderName.' not found.',
 				500
 			);
+		}
+	}
+	
+	/**
+	 * __construct
+	 * @version 1.0 (2018-06-12)
+	 * 
+	 * @param $params {array_associative}
+	 */
+	function __construct(array $params = []){
+		//Все параметры задают свойства объекта
+		foreach ($params as $paramName => $paramValue){
+			//Validation
+			if (property_exists(
+				$this,
+				$paramName
+			)){
+				$this->{$paramName} = $paramValue;
+			}
 		}
 	}
 	

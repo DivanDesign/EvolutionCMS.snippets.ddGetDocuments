@@ -60,7 +60,7 @@
  * @example $extendersParams = '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}' or
  * @example $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'
  * When $extenders == 'search' =>
- * @param $extendersParams['docFieldsToSearch'] {'string_commaSepareted'} — Document fields to search in. Default: 'pagetitle,content'.
+ * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
  * 
  * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
  **/
@@ -100,7 +100,6 @@ $extenders = isset($extenders) ? explode(
 $extendersParams = isset($extendersParams) ? $extendersParams : '';
 
 if(class_exists($providerClass)){
-	$dataProvider = new $providerClass;
 	//Prepare provider params
 	$providerParams = ddTools::encodedStringToArray($providerParams);
 	//Prepare extender params
@@ -167,7 +166,9 @@ if(class_exists($providerClass)){
 		$input->snippetParams = $extender->applyToSnippetParams($input->snippetParams);
 	}
 	
-	$providerResult = $dataProvider->get($input);
+	$dataProvider = new $providerClass($input);
+	$providerResult = $dataProvider->get();
+	
 	$data = new \ddGetDocuments\Output($providerResult);
 	
 	//Iterate through all extenders again to apply them to the output
@@ -178,12 +179,9 @@ if(class_exists($providerClass)){
 	switch($outputFormat){
 		default:
 			$outputFormatClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
-			$outputFormatObject = new $outputFormatClass;
+			$outputFormatObject = new $outputFormatClass($outputFormatParams);
 			
-			$result = $outputFormatObject->parse(
-				$data,
-				$outputFormatParams
-			);
+			$result = $outputFormatObject->parse($data);
 		break;
 		
 		case 'raw':

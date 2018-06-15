@@ -8,84 +8,58 @@ use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
-	public $defaultParams = [
-		'ids' => null
-	];
+	protected
+		$ids = null,
+		$filter = null;
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.9 (2018-06-12)
-	 * 
-	 * @param $input {ddGetDocuments\Input}
+	 * @version 2.0 (2018-06-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getDataFromSource(Input $input){
+	protected function getDataFromSource(){
 		$dataProviderOutput = new DataProviderOutput(
 			[],
 			0
 		);
 		
-		$ids = $this->defaultParams['ids'];
-		
-		if(isset($input->providerParams)){
-			$ids = (string) $input->providerParams['ids'];
-		}
-		
-		$filter = null;
-		
-		if(isset($input->snippetParams['filter'])){
-			$filter = $input->snippetParams['filter'];
-		}
-		
-		if(isset($input->snippetParams['offset'])){
-			$offset = $input->snippetParams['offset'];
-		}
-		
-		if(isset($input->snippetParams['total'])){
-			$total = $input->snippetParams['total'];
-		}
-		
-		if(isset($input->snippetParams['orderBy'])){
-			$orderBy = $input->snippetParams['orderBy'];
-		}
-		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter);
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
 		
 		$fromQuery = $fromAndFilterQueries['from'];
 		$filterQuery = $fromAndFilterQueries['filter'];
 		
 		$orderByQuery = '';
 		
-		if(!empty($orderBy)){
-			$orderByQuery = 'ORDER BY '.$orderBy;
+		if(!empty($this->orderBy)){
+			$orderByQuery = 'ORDER BY '.$this->orderBy;
 		//Order by selected IDs sequence
-		}elseif(!empty($ids)){
-			$orderByQuery = 'ORDER BY FIELD (`documents`.`id`,'.$ids.')';
+		}elseif(!empty($this->ids)){
+			$orderByQuery = 'ORDER BY FIELD (`documents`.`id`,'.$this->ids.')';
 		}
 		
 		$limitQuery = '';
 		
 		if(
-			!empty($offset) &&
-			!empty($total)
+			!empty($this->offset) &&
+			!empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$offset.','.$total;
+			$limitQuery = 'LIMIT '.$this->offset.','.$this->total;
 		}elseif(
-			empty($offset) &&
-			!empty($total)
+			empty($this->offset) &&
+			!empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$total;
+			$limitQuery = 'LIMIT '.$this->total;
 		}elseif(
-			!empty($offset) &&
-			empty($total)
+			!empty($this->offset) &&
+			empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$offset.','.PHP_INT_MAX;
+			$limitQuery = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
 		}
 		
 		$idsWhereQuery = '';
-		if(!empty($ids)){
-			$idsWhereQuery = '`documents`.`id` IN ('.$ids.')';
+		if(!empty($this->ids)){
+			$idsWhereQuery = '`documents`.`id` IN ('.$this->ids.')';
 		}
 		
 		if(

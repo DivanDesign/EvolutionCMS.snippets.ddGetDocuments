@@ -32,8 +32,31 @@ abstract class OutputFormat
 		}
 	}
 	
-	abstract function parse(
-		Output $dataArray,
-		array $outputFormatParameters
-	);
+	/**
+	 * __construct
+	 * @version 1.0 (2018-06-12)
+	 * 
+	 * @param $params {array}
+	 */
+	function __construct(array $params = []){
+		//Все параметры задают свойства объекта
+		foreach ($params as $paramName => $paramValue){
+			//Validation
+			if (property_exists(
+				$this,
+				$paramName
+			)){
+				$this->{$paramName} = $paramValue;
+			}
+		}
+		
+	}
+	
+	/**
+	 * parse
+	 * @version 2.0 (2018-06-13)
+	 * 
+	 * @param $dataArray {\ddGetDocuments\Output}
+	 */
+	abstract function parse(Output $dataArray);
 }

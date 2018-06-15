@@ -7,66 +7,43 @@ use ddGetDocuments\Input;
 
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
-	public $defaultParams = [
-		'parentIds' => [0],
-		'depth' => 1,
-		'filter' => '`published` = 1 AND `deleted` = 0'
-	];
+	protected
+		$parentIds = [0],
+		$depth = 1,
+		$filter = '`published` = 1 AND `deleted` = 0';
+	
+	/**
+	 * __construct
+	 * @version 1.0 (2018-06-12)
+	 * 
+	 * @param $input {\ddGetDocuments\Input}
+	 */
+	public function __construct(Input $input){
+		//Call base constructor
+		parent::__construct($input);
+		
+		//Comma separated strings support
+		if (!is_array($this->parentIds)){
+			$this->parentIds = explode(
+				',',
+				$this->parentIds
+			);
+		}
+	}
 	
 	/**
 	 * getDataFromSource
-	 * @version 1.0.8 (2018-06-12)
-	 * 
-	 * @param $input {ddGetDocuments\Input}
+	 * @version 2.0 (2018-06-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getDataFromSource(Input $input){
+	protected function getDataFromSource(){
 		$dataProviderOutput = new DataProviderOutput(
 			[],
 			0
 		);
 		
-		//TODO: эти проверки с дефолтами надо куда-то вынести
-		$parentIds = $this->defaultParams['parentIds'];
-		
-		if(isset($input->providerParams['parentIds'])){
-			$parentIds = $input->providerParams['parentIds'];
-			
-			//Comma separated strings
-			if (!is_array($parentIds)){
-				$parentIds = explode(
-					',',
-					$parentIds
-				);
-			}
-		}
-		
-		$depth = $this->defaultParams['depth'];
-		
-		if(isset($input->providerParams['depth'])){
-			$depth = $input->providerParams['depth'];
-		}
-		
-		if(isset($input->snippetParams['offset'])){
-			$offset = $input->snippetParams['offset'];
-		}
-		
-		if(isset($input->snippetParams['total'])){
-			$total = $input->snippetParams['total'];
-		}
-		
-		if(isset($input->snippetParams['orderBy'])){
-			$orderBy = $input->snippetParams['orderBy'];
-		}
-		
-		$filter = $this->defaultParams['filter'];
-		
-		if(isset($input->snippetParams['filter'])){
-			$filter = $input->snippetParams['filter'];
-		}
-		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($filter);
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
 		
 		$fromQuery = $fromAndFilterQueries['from'];
 		$filterQuery = $fromAndFilterQueries['filter'];
@@ -77,34 +54,34 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$allChildrenIdsStr = implode(
 			',',
 			$this->getAllChildrenIds(
-				$parentIds,
-				$depth
+				$this->parentIds,
+				$this->depth
 			)
 		);
 		
 		$orderByQuery = '';
 		
-		if(!empty($orderBy)){
-			$orderByQuery = 'ORDER BY '.$orderBy;
+		if(!empty($this->orderBy)){
+			$orderByQuery = 'ORDER BY '.$this->orderBy;
 		}
 		
 		$limitQuery = '';
 		
 		if(
-			!empty($offset) &&
-			!empty($total)
+			!empty($this->offset) &&
+			!empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$offset.','.$total;
+			$limitQuery = 'LIMIT '.$this->offset.','.$this->total;
 		}elseif(
-			empty($offset) &&
-			!empty($total)
+			empty($this->offset) &&
+			!empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$total;
+			$limitQuery = 'LIMIT '.$this->total;
 		}elseif(
-			!empty($offset) &&
-			empty($total)
+			!empty($this->offset) &&
+			empty($this->total)
 		){
-			$limitQuery = 'LIMIT '.$offset.','.PHP_INT_MAX;
+			$limitQuery = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
 		}
 		
 		//Check if child documents were found
@@ -135,8 +112,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	/**
 	 * getAllChildrenIds
 	 * @version 1.0.5 (2018-06-12)
-	 * 
-	 * @param $input {ddGetDocuments\Input}
 	 * 
 	 * @return {array}
 	 */
