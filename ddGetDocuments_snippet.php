@@ -14,10 +14,13 @@
  * When $provider == 'parent' =>
  * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent IDs. Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
- * @example $providerParams = '{"parentIds": 1, "depth": 2}' or
- * @example $providerParams = 'parentIds=1&depth=2'
- * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
+ * @example &providerParams=`{"parentIds": 1, "depth": 2}`
+ * @example &providerParams=`parentIds=1&depth=2`
+ * When $provider == 'select' =>
+ * @param $providerParams['ids'] {string_commaSepareted} — Document IDs to output. @required
+ * @example &providerParams=`{"ids": "1,2,3"}`
  * 
+ * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * @param $total {integer} — The maximum number of the resources that will be returned. Default: —.
  * @param $filter {string} — The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1 AND `deleted` = 0';
  * Notice that all fields/tvs names specified in the filter parameter must be wrapped in $fieldDelimiter.
@@ -35,12 +38,12 @@
  * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
  * @param $outputFormatParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
  * @param $outputFormatParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
- * @example '{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}' or
- * @example 'itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found'
+ * @example &outputFormatParams=`{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}`
+ * @example &outputFormatParams=`itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found`
  * When $outputFormat == 'json' =>
  * @param $outputFormatParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
- * @example '{"docFields": "id,pagetitle,introtext"}' or
- * @example 'docFields=id,pagetitle,introtext'
+ * @example &outputFormatParams=`{"docFields": "id,pagetitle,introtext"}`
+ * @example &outputFormatParams=`docFields=id,pagetitle,introtext`
  * 
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
@@ -57,10 +60,9 @@
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
- * @example $extendersParams = '{"wrapperTpl":"pagination","nextTpl":"pagination_next","previousTpl":"pagination_previous","nextOffTpl":"pagination_nextOff","previousOffTpl":"pagination_previousOff","pageTpl":"pagination_page","currentPageTpl":"pagination_page_current"}' or
- * @example $extendersParams = 'wrapperTpl=pagination&nextTpl=pagination_next&previousTpl=pagination_previous&nextOffTpl=pagination_nextOff&previousOffTpl=pagination_previousOff&pageTpl=pagination_page&currentPageTpl=pagination_page_current'
  * When $extenders == 'search' =>
  * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
+ * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
  * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
  **/
