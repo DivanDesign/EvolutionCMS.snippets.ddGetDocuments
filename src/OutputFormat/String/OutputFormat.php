@@ -15,9 +15,12 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$placeholders = [],
 		$itemGlue = '';
 	
+	private
+		$docFields = [];
+	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.1 (2018-06-17)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
@@ -37,24 +40,35 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		if (isset($this->itemTpl)){
 			//All items
 			$this->itemTpl = \ddTools::$modx->getTpl($this->itemTpl);
+			
+			$textToGetPlaceholdersFrom = $this->itemTpl;
+			
 			//First item
 			if (isset($this->itemTplFirst)){
 				$this->itemTplFirst = \ddTools::$modx->getTpl($this->itemTplFirst);
+				$textToGetPlaceholdersFrom .= $this->itemTplFirst;
 			}else{
 				$this->itemTplFirst = $this->itemTpl;
 			}
 			//Last item
 			if (isset($this->itemTplLast)){
 				$this->itemTplLast = \ddTools::$modx->getTpl($this->itemTplLast);
+				$textToGetPlaceholdersFrom .= $this->itemTplFirst;
 			}else{
 				$this->itemTplLast = $this->itemTpl;
 			}
+			
+			$this->docFields = \ddTools::getPlaceholdersFromText(['text' => $textToGetPlaceholdersFrom]);
+		}
+		
+		if (empty($this->docFields)){
+			$this->docFields = ['id'];
 		}
 	}
 	
 	/**
 	 * parse
-	 * @version 2.0 (2018-06-12)
+	 * @version 2.0.1 (2018-06-17)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -107,7 +121,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 				
 				//Get TV values
 				$document = \ddTools::getTemplateVarOutput(
-					'*',
+					$this->docFields,
 					$item['id']
 				);
 				
