@@ -90,7 +90,7 @@ abstract class DataProvider
 	
 	/**
 	 * getUsedFieldsFromFilter
-	 * @version 1.0.3 (2018-06-12)
+	 * @version 1.0.4 (2018-06-17)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -102,6 +102,7 @@ abstract class DataProvider
 	 */
 	public final function getUsedFieldsFromFilter($filterStr){
 		$result = [];
+		
 		//Try to find all fields/tvs used in filter by the pattern
 		preg_match_all(
 			"/`(\w+)`/",
@@ -111,22 +112,24 @@ abstract class DataProvider
 		
 		if(!empty($fields[1])){
 			//Sort out fields from tvs
-			$fieldsArray = \ddTools::explodeFieldsArr(array_flip($fields[1]));
+			$fieldsArray = \ddTools::prepareDocData([
+				'data' => array_flip($fields[1]),
+				//Just something
+				'tvAdditionalFieldsToGet' => ['name']
+			]);
 			
-			if(!empty($fieldsArray[0])){
-				$result['fields'] = array_keys($fieldsArray[0]);
+			if(!empty($fieldsArray->fieldsData)){
+				$result['fields'] = array_keys($fieldsArray->fieldsData);
 			}
 			
 			//If there were tv names in the passed filter string
-			if(is_array($fieldsArray[1])){
+			if(!empty($fieldsArray->tvsAdditionalData)){
 				$result['tvs'] = [];
 				
 				//Check whether the current tv name is an actual tv name
-				foreach($fieldsArray[1] as $tvName => $tvData){
-					if(isset($tvData['id'])){
-						//Pupulate the array with the current tv name
-						$result['tvs'][] = $tvName;
-					}
+				foreach($fieldsArray->tvsAdditionalData as $tvName => $tvData){
+					//Pupulate the array with the current tv name
+					$result['tvs'][] = $tvName;
 				}
 				
 				if(empty($result['tvs'])){
