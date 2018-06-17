@@ -1,14 +1,14 @@
 <?php
-namespace ddGetDocuments\OutputFormat;
+namespace ddGetDocuments\Outputter;
 
 
 use ddGetDocuments\Output;
 
-abstract class OutputFormat
+abstract class Outputter
 {
 	/**
-	 * includeOutputFormatByName
-	 * @version 1.0.1 (2018-01-31)
+	 * includeOutputterByName
+	 * @version 1.0.2 (2018-06-17)
 	 * 
 	 * @param $parserName {string}
 	 * 
@@ -16,14 +16,14 @@ abstract class OutputFormat
 	 * 
 	 * @return {string}
 	 */
-	public final static function includeOutputFormatByName($parserName){
+	public final static function includeOutputterByName($parserName){
 		$parserName = ucfirst(strtolower($parserName));
-		$parserPath = $parserName.DIRECTORY_SEPARATOR.'OutputFormat'.'.php';
+		$parserPath = $parserName.DIRECTORY_SEPARATOR.'Outputter'.'.php';
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$parserPath)){
 			require_once($parserPath);
 			
-			return __NAMESPACE__.'\\'.$parserName.'\\'.'OutputFormat';
+			return __NAMESPACE__.'\\'.$parserName.'\\'.'Outputter';
 		}else{
 			throw new \Exception(
 				'Parser “'.$parserName.'” not found.',

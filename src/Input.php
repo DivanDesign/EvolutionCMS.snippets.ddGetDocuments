@@ -8,17 +8,17 @@ class Input
 		$snippetParams,
 		$extenderParams,
 		$providerParams,
-		$outputFormatParams;
+		$outputterParams;
 	
 	public function __construct(
 		array $snippetParams = null,
 		array $providerParams = null,
 		array $extendersParams = null,
-		array $outputFormatParams = null
+		array $outputterParams = null
 	){
 		$this->snippetParams = $snippetParams;
 		$this->providerParams = $providerParams;
 		$this->extenderParams = $extendersParams;
-		$this->outputFormatParams = $outputFormatParams;
+		$this->outputterParams = $outputterParams;
 	}
 }

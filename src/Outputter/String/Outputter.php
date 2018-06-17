@@ -1,10 +1,10 @@
 <?php
-namespace ddGetDocuments\OutputFormat\String;
+namespace ddGetDocuments\Outputter\String;
 
 
 use ddGetDocuments\Output;
 
-class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
+class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	protected
 		$itemTpl = null,

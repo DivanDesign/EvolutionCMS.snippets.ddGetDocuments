@@ -1,10 +1,10 @@
 <?php
-namespace ddGetDocuments\OutputFormat\Json;
+namespace ddGetDocuments\Outputter\Json;
 
 
 use ddGetDocuments\Output;
 
-class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
+class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	protected
 		$docFields = ['id'];

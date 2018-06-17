@@ -27,29 +27,29 @@
  * @param $offset {integer} — Resources offset. Default: 0.
  * @param $orderBy {string} — A string representing the sorting rule. Default: '`id` ASC'.
  * 
- * @param $outputFormat {'string'|'json'|'sitemap'|'raw'} — Format of the output. Default: 'string'.
- * @param $outputFormatParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
- * When $outputFormat == 'string' =>
- * @param $outputFormatParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
- * @param $outputFormatParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputFormatParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputFormatParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
- * @param $outputFormatParams['placeholders'] {array_associative} — Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Е.g. 'placeholders[alias]=test&placeholders[pagetitle]=Some title'. Default: []. 
- * @param $outputFormatParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
- * @param $outputFormatParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
- * @param $outputFormatParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
- * @example &outputFormatParams=`{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}`
- * @example &outputFormatParams=`itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found`
- * When $outputFormat == 'json' =>
- * @param $outputFormatParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
- * @example &outputFormatParams=`{"docFields": "id,pagetitle,introtext"}`
- * @example &outputFormatParams=`docFields=id,pagetitle,introtext`
- * When $outputFormat == 'sitemap' =>
- * @param $outputFormatParams['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
- * @param $outputFormatParams['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
- * @param $outputFormatParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[[ddGetDate?	&date=`[+editedon+]` &format=`Y-m-d`]]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>'.
- * @param $outputFormatParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
- * @example &outputFormatParams=`{"priorityTVName": "general_seo_sitemap_priority", "changefreqTVName": "general_seo_sitemap_changefreq"}`
+ * @param $outputter {'string'|'json'|'sitemap'|'raw'} — Format of the output. Default: 'string'.
+ * @param $outputterParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
+ * When $outputter == 'string' =>
+ * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+ * @param $outputterParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+ * @param $outputterParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+ * @param $outputterParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
+ * @param $outputterParams['placeholders'] {array_associative} — Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Е.g. 'placeholders[alias]=test&placeholders[pagetitle]=Some title'. Default: []. 
+ * @param $outputterParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
+ * @param $outputterParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
+ * @param $outputterParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
+ * @example &outputterParams=`{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}`
+ * @example &outputterParams=`itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found`
+ * When $outputter == 'json' =>
+ * @param $outputterParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
+ * @example &outputterParams=`{"docFields": "id,pagetitle,introtext"}`
+ * @example &outputterParams=`docFields=id,pagetitle,introtext`
+ * When $outputter == 'sitemap' =>
+ * @param $outputterParams['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
+ * @param $outputterParams['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
+ * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[[ddGetDate?	&date=`[+editedon+]` &format=`Y-m-d`]]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>'.
+ * @param $outputterParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
+ * @example &outputterParams=`{"priorityTVName": "general_seo_sitemap_priority", "changefreqTVName": "general_seo_sitemap_changefreq"}`
  * 
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.
@@ -84,6 +84,15 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
 }
 
+//Backward compatibility
+extract(ddTools::verifyRenamedParams(
+	$params,
+	[
+		'outputter' => 'outputFormat',
+		'outputterParams' => 'outputFormatParams'
+	]
+));
+
 //General
 $total = isset($total) ? $total : null;
 $offset = isset($offset) ? $offset : 0;
@@ -97,8 +106,8 @@ $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByNam
 $providerParams = isset($providerParams) ? $providerParams : '';
 
 //Output format
-$outputFormat = isset($outputFormat) ? strtolower($outputFormat) : 'string';
-$outputFormatParams = isset($outputFormatParams) ? $outputFormatParams : '';
+$outputter = isset($outputter) ? strtolower($outputter) : 'string';
+$outputterParams = isset($outputterParams) ? $outputterParams : '';
 
 //Extenders
 $extenders = isset($extenders) ? explode(
@@ -113,7 +122,7 @@ if(class_exists($providerClass)){
 	//Prepare extender params
 	$extendersParams = ddTools::encodedStringToArray($extendersParams);
 	//Prepare output format params
-	$outputFormatParams = ddTools::encodedStringToArray($outputFormatParams);
+	$outputterParams = ddTools::encodedStringToArray($outputterParams);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
@@ -156,7 +165,7 @@ if(class_exists($providerClass)){
 		],
 		$providerParams,
 		$extendersParams,
-		$outputFormatParams
+		$outputterParams
 	);
 	
 	//Extenders storage
@@ -184,12 +193,12 @@ if(class_exists($providerClass)){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
-	switch($outputFormat){
+	switch($outputter){
 		default:
-			$outputFormatClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName($outputFormat);
-			$outputFormatObject = new $outputFormatClass($outputFormatParams);
+			$outputterClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName($outputter);
+			$outputterObject = new $outputterClass($outputterParams);
 			
-			$result = $outputFormatObject->parse($data);
+			$result = $outputterObject->parse($data);
 		break;
 		
 		case 'raw':

@@ -1,10 +1,10 @@
 <?php
-namespace ddGetDocuments\OutputFormat\Sitemap;
+namespace ddGetDocuments\Outputter\Sitemap;
 
 
 use ddGetDocuments\Output;
 
-class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
+class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	protected 
 		$priorityTVName = 'general_seo_sitemap_priority',
@@ -13,11 +13,11 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		$wrapperTpl = '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>';
 	
 	private
-		$outputFormat_StringInstance;
+		$outputter_StringInstance;
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.0.1 (2018-06-17)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -39,9 +39,9 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 			'mergeAll' => false
 		]);
 		
-		//We use the “String” OutputFormat as base
-		$OutputFormat_StringClass = \ddGetDocuments\OutputFormat\OutputFormat::includeOutputFormatByName('String');
-		$this->outputFormat_StringInstance = new $OutputFormat_StringClass([
+		//We use the “String” Outputter as base
+		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
+		$this->outputter_StringInstance = new $outputter_StringClass([
 			'itemTpl' => $this->itemTpl,
 			'wrapperTpl' => $this->wrapperTpl
 		]);
@@ -49,7 +49,7 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 	
 	/**
 	 * parse
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.0.1 (2018-06-17)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -59,6 +59,6 @@ class OutputFormat extends \ddGetDocuments\OutputFormat\OutputFormat
 		//TODO: Вывести дату в правильном формате без сниппета «ddGetDate»?
 		
 		//Just use the “String” class
-		return $this->outputFormat_StringInstance->parse($data);
+		return $this->outputter_StringInstance->parse($data);
 	}
 }
