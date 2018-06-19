@@ -184,6 +184,14 @@ if(class_exists($providerClass)){
 	}
 	
 	$dataProvider = new $providerClass($input);
+	
+	if ($outputter != 'raw'){
+		$outputterParams['dataProvider'] = $dataProvider;
+		
+		$outputterClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName($outputter);
+		$outputterObject = new $outputterClass($outputterParams);
+	}
+	
 	$providerResult = $dataProvider->get();
 	
 	$data = new \ddGetDocuments\Output($providerResult);
@@ -193,17 +201,10 @@ if(class_exists($providerClass)){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
-	switch($outputter){
-		default:
-			$outputterClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName($outputter);
-			$outputterObject = new $outputterClass($outputterParams);
-			
-			$result = $outputterObject->parse($data);
-		break;
-		
-		case 'raw':
-			$result = $data;
-		break;
+	if ($outputter == 'raw'){
+		$result = $data;
+	}else{
+		$result = $outputterObject->parse($data);
 	}
 }
 

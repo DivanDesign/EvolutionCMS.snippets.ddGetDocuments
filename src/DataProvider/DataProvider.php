@@ -7,6 +7,17 @@ use ddGetDocuments\Input;
 abstract class DataProvider
 {
 	protected
+		/**
+		 * @property $docFieldsToGet {array_associative} — Document fields which need to get.
+		 * @property $docFieldsToGet['fields'] {array} — Common document fileds.
+		 * @property $docFieldsToGet['fields'][i] {string} — Field name.
+		 * @property $docFieldsToGet['tvs'] {array} — TVs.
+		 * @property $docFieldsToGet['tvs'][i] {string} — TV name.
+		 */
+		$docFieldsToGet = [
+			'fields' => ['id'],
+			'tvs' => []
+		],
 		$total,
 		$filter,
 		$offset,
@@ -71,8 +82,39 @@ abstract class DataProvider
 	}
 	
 	/**
+	 * addDocFieldsToGet
+	 * @version 1.0 (2018-06-17)
+	 * 
+	 * @param $fields {array}
+	 * @param $fields[i] {string} — Name of document field or TV.
+	 * 
+	 * @return {void}
+	 */
+	public final function addDocFieldsToGet($fields){
+		//Separate TVs and common document fields
+		$fields = \ddTools::prepareDocData([
+			'data' => array_flip($fields)
+		]);
+		
+		//Save common fields
+		if (!empty($fields->fieldsData)){
+			$this->docFieldsToGet['fields'] = array_unique(array_merge(
+				$this->docFieldsToGet['fields'],
+				array_keys($fields->fieldsData)
+			));
+		}
+		//Save TVs
+		if (!empty($fields->tvsData)){
+			$this->docFieldsToGet['tvs'] = array_unique(array_merge(
+				$this->docFieldsToGet['tvs'],
+				array_keys($fields->tvsData)
+			));
+		}
+	}
+	
+	/**
 	 * getSelectedDocsFromDb
-	 * @version 1.0 (2018-06-19)
+	 * @version 1.1 (2018-06-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -134,7 +176,11 @@ abstract class DataProvider
 		if(!empty($params->where)){
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
-					SQL_CALC_FOUND_ROWS `documents`.`id`
+					SQL_CALC_FOUND_ROWS
+					`documents`.`'.implode(
+						'`, `documents`.`',
+						$this->docFieldsToGet['fields']
+					).'`
 				FROM
 					'.$queryData->from.' AS `documents`
 				WHERE
@@ -144,6 +190,18 @@ abstract class DataProvider
 			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
+				//TODO: Может быть стоит объединить в один запрос с верхним, т. к. фильтрация по TV там уже используется
+				//Get TVs values
+				foreach ($data as $docIndex => $docValue){
+					$data[$docIndex] = array_merge(
+						$data[$docIndex],
+						\ddTools::getTemplateVarOutput(
+							$this->docFieldsToGet['tvs'],
+							$docValue['id']
+						)
+					);
+				}
+				
 				$dataProviderOutput = new DataProviderOutput(
 					$data,
 					$totalFound

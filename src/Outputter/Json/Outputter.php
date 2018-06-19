@@ -8,7 +8,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	/**
 	 * parse
-	 * @version 2.0 (2018-06-12)
+	 * @version 2.1 (2018-06-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -19,12 +19,15 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$dataArray = $data->toArray();
 		
 		//Пройдемся по полученным данным
-		foreach($dataArray['provider']['items'] as $key => $value){
-			//Для каждого найденого id найдем необходимые TV
-			$result[] = \ddTools::getTemplateVarOutput(
-				$this->docFields,
-				$value['id']
-			);
+		foreach($dataArray['provider']['items'] as $itemIndex => $itemData){
+			$result_item = [];
+			
+			//Result must contains only specified fields
+			foreach($this->docFields as $docField){
+				$result_item[$docField] = $itemData[$docField];
+			}
+			
+			$result[] = $result_item;
 		}
 		
 		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /

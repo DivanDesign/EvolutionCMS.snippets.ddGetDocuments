@@ -17,7 +17,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.0.1 (2018-06-17)
+	 * @version 1.0.2 (2018-06-19)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -41,10 +41,15 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
-		$this->outputter_StringInstance = new $outputter_StringClass([
+		$outputter_StringParams = [
 			'itemTpl' => $this->itemTpl,
 			'wrapperTpl' => $this->wrapperTpl
-		]);
+		];
+		//Transfer provider link
+		if (isset($params['dataProvider'])){
+			$outputter_StringParams['dataProvider'] = $params['dataProvider'];
+		}
+		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
 	}
 	
 	/**

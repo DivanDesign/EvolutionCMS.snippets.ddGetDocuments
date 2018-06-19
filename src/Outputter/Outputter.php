@@ -41,9 +41,10 @@ abstract class Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-06-19)
+	 * @version 1.2 (2018-06-19)
 	 * 
 	 * @param $params {array}
+	 * @param $params['dataProvider'] {\ddGetDocuments\DataProvider\DataProvider}
 	 */
 	function __construct(array $params = []){
 		//Все параметры задают свойства объекта
@@ -66,7 +67,11 @@ abstract class Outputter
 		}
 		
 		if (empty($this->docFields)){
+			//We need something
 			$this->docFields = ['id'];
+		}else if (isset($params['dataProvider'])){
+			//Ask dataProvider to get them
+			$params['dataProvider']->addDocFieldsToGet($this->docFields);
 		}
 	}
 	

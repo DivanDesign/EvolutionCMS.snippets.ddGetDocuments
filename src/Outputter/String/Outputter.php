@@ -61,7 +61,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 2.0.1 (2018-06-17)
+	 * @version 2.1 (2018-06-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -112,25 +112,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 					$chunkName = $this->itemTpl;
 				}
 				
-				//Get TV values
-				$document = \ddTools::getTemplateVarOutput(
-					$this->docFields,
-					$item['id']
-				);
-				
-				if(!empty($document)){
-					$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
-						'text' => $chunkName,
-						'data' => array_merge(
-							$document,
-							$generalPlaceholders,
-							[
-								'itemNumber' => $index + 1,
-								'itemNumberZeroBased' => $index
-							]
-						)
-					]));
-				}
+				$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
+					'text' => $chunkName,
+					'data' => array_merge(
+						$item,
+						$generalPlaceholders,
+						[
+							'itemNumber' => $index + 1,
+							'itemNumberZeroBased' => $index
+						]
+					)
+				]));
 			}
 		}
 		
