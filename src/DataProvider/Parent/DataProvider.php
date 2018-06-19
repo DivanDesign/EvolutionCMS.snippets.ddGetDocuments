@@ -32,81 +32,19 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	}
 	
 	/**
-	 * getDataFromSource
-	 * @version 2.0 (2018-06-13)
+	 * get
+	 * @version 1.0 (2018-06-19)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getDataFromSource(){
-		$dataProviderOutput = new DataProviderOutput(
-			[],
-			0
-		);
-		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
-		
-		$fromQuery = $fromAndFilterQueries['from'];
-		$filterQuery = $fromAndFilterQueries['filter'];
-		if (!empty($filterQuery)){
-			$filterQuery = 'AND '.$filterQuery;
-		}
-		
-		$allChildrenIdsStr = implode(
+	public function get(){
+		return $this->getSelectedDocsFromDb(['docIds' => implode(
 			',',
 			$this->getAllChildrenIds(
 				$this->parentIds,
 				$this->depth
 			)
-		);
-		
-		$orderByQuery = '';
-		
-		if(!empty($this->orderBy)){
-			$orderByQuery = 'ORDER BY '.$this->orderBy;
-		}
-		
-		$limitQuery = '';
-		
-		if(
-			!empty($this->offset) &&
-			!empty($this->total)
-		){
-			$limitQuery = 'LIMIT '.$this->offset.','.$this->total;
-		}elseif(
-			empty($this->offset) &&
-			!empty($this->total)
-		){
-			$limitQuery = 'LIMIT '.$this->total;
-		}elseif(
-			!empty($this->offset) &&
-			empty($this->total)
-		){
-			$limitQuery = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
-		}
-		
-		//Check if child documents were found
-		if($allChildrenIdsStr !== ''){
-			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
-				SELECT
-					SQL_CALC_FOUND_ROWS `documents`.`id`
-				FROM
-					'.$fromQuery.' AS `documents`
-				WHERE
-					`documents`.`id` IN ('.$allChildrenIdsStr.')
-					'.$filterQuery.' '.$orderByQuery.' '.$limitQuery.'
-			'));
-			
-			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
-			
-			if(is_array($data)){
-				$dataProviderOutput = new DataProviderOutput(
-					$data,
-					$totalFound
-				);
-			}
-		}
-		
-		return $dataProviderOutput;
+		)]);
 	}
 	
 	/**

@@ -71,21 +71,97 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * getDataFromSource
-	 * @version 2.0 (2018-06-13)
+	 * getSelectedDocsFromDb
+	 * @version 1.0 (2018-06-19)
+	 * 
+	 * @param $params {array_associative|stdClass}
+	 * @param $params['docIds'] — Document IDs to get. Default: ''.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	abstract protected function getDataFromSource();
+	protected function getSelectedDocsFromDb($params = []){
+		//Defaults
+		$params = (object) array_merge([
+			'docIds' => ''
+		], (array) $params);
+		
+		$dataProviderOutput = new DataProviderOutput(
+			[],
+			0
+		);
+		
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
+		
+		$queryData = (object) [
+			'from' => $fromAndFilterQueries['from'],
+			'where' => '',
+			'where_filter' => $fromAndFilterQueries['filter'],
+			'orderBy' => '',
+			'limit' => '',
+		];
+		
+		if(!empty($this->orderBy)){
+			$queryData->orderBy = 'ORDER BY '.$this->orderBy;
+		}
+		
+		if(
+			!empty($this->offset) &&
+			!empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->offset.','.$this->total;
+		}elseif(
+			empty($this->offset) &&
+			!empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->total;
+		}elseif(
+			!empty($this->offset) &&
+			empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
+		}
+		
+		if(!empty($params->docIds)){
+			$params->where .= '`documents`.`id` IN ('.$params->docIds.')';
+		
+			if(!empty($queryData->where_filter)){
+				$params->where .= ' AND '.$queryData->where_filter;
+			}
+		}else{
+			$params->where .= $queryData->where_filter;
+		}
+		
+		if(!empty($params->where)){
+			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
+				SELECT
+					SQL_CALC_FOUND_ROWS `documents`.`id`
+				FROM
+					'.$queryData->from.' AS `documents`
+				WHERE
+					'.$params->where.' '.$queryData->orderBy.' '.$queryData->limit.'
+			'));
+			
+			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
+			
+			if(is_array($data)){
+				$dataProviderOutput = new DataProviderOutput(
+					$data,
+					$totalFound
+				);
+			}
+		}
+		
+		return $dataProviderOutput;
+	}
 	
 	/**
 	 * get
-	 * @version 2.0 (2018-06-13)
+	 * @version 2.0.1 (2018-06-19)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	public final function get(){
-		return $this->getDataFromSource();
+	public function get(){
+		return $this->getSelectedDocsFromDb();
 	}
 	
 	/**
