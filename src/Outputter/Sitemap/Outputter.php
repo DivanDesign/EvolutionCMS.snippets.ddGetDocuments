@@ -9,7 +9,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	protected 
 		$priorityTVName = 'general_seo_sitemap_priority',
 		$changefreqTVName = 'general_seo_sitemap_changefreq',
-		$itemTpl = '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[[ddGetDate?	&date=`[+editedon+]` &format=`Y-m-d`]]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
+		$itemTpl = '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
 		$wrapperTpl = '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>';
 	
 	private
@@ -54,14 +54,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.0.1 (2018-06-17)
+	 * @version 1.1 (2018-06-19)
 	 * 
 	 * @param $data {Output}
 	 * 
 	 * @return {string}
 	 */
 	public function parse(Output $data){
-		//TODO: Вывести дату в правильном формате без сниппета «ddGetDate»?
+		foreach ($data->provider->items as $docIndex => $docData){
+			//Convert date to appropriate format
+			if (isset($data->provider->items[$docIndex]['editedon'])){
+				$data->provider->items[$docIndex]['editedon'] = date(
+					'Y-m-d',
+					$data->provider->items[$docIndex]['editedon']
+				);
+			}
+		}
 		
 		//Just use the “String” class
 		return $this->outputter_StringInstance->parse($data);
