@@ -15,12 +15,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$placeholders = [],
 		$itemGlue = '';
 	
-	private
-		$docFields = [];
-	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-06-17)
+	 * @version 1.1.1 (2018-06-19)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
@@ -33,37 +30,33 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * @param $params['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
 	 */
 	public function __construct(array $params){
-		//Call base constructor
-		parent::__construct($params);
-		
 		//Prepare item templates
-		if (isset($this->itemTpl)){
+		if (isset($params['itemTpl'])){
 			//All items
-			$this->itemTpl = \ddTools::$modx->getTpl($this->itemTpl);
+			$params['itemTpl'] = \ddTools::$modx->getTpl($params['itemTpl']);
 			
-			$textToGetPlaceholdersFrom = $this->itemTpl;
+			$textToGetPlaceholdersFrom = $params['itemTpl'];
 			
 			//First item
-			if (isset($this->itemTplFirst)){
-				$this->itemTplFirst = \ddTools::$modx->getTpl($this->itemTplFirst);
-				$textToGetPlaceholdersFrom .= $this->itemTplFirst;
+			if (isset($params['itemTplFirst'])){
+				$params['itemTplFirst'] = \ddTools::$modx->getTpl($params['itemTplFirst']);
+				$textToGetPlaceholdersFrom .= $params['itemTplFirst'];
 			}else{
-				$this->itemTplFirst = $this->itemTpl;
+				$params['itemTplFirst'] = $params['itemTpl'];
 			}
 			//Last item
-			if (isset($this->itemTplLast)){
-				$this->itemTplLast = \ddTools::$modx->getTpl($this->itemTplLast);
-				$textToGetPlaceholdersFrom .= $this->itemTplFirst;
+			if (isset($params['itemTplLast'])){
+				$params['itemTplLast'] = \ddTools::$modx->getTpl($params['itemTplLast']);
+				$textToGetPlaceholdersFrom .= $params['itemTplFirst'];
 			}else{
-				$this->itemTplLast = $this->itemTpl;
+				$params['itemTplLast'] = $params['itemTpl'];
 			}
 			
-			$this->docFields = \ddTools::getPlaceholdersFromText(['text' => $textToGetPlaceholdersFrom]);
+			$params['docFields'] = \ddTools::getPlaceholdersFromText(['text' => $textToGetPlaceholdersFrom]);
 		}
 		
-		if (empty($this->docFields)){
-			$this->docFields = ['id'];
-		}
+		//Call base constructor
+		parent::__construct($params);
 	}
 	
 	/**

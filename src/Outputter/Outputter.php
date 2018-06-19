@@ -6,6 +6,13 @@ use ddGetDocuments\Output;
 
 abstract class Outputter
 {
+	protected
+		/**
+		 * @property $docFields {array} — Document fields including TVs used in the output.
+		 * @property $docFields[i] {string} — Field name.
+		 */
+		$docFields = ['id'];
+	
 	/**
 	 * includeOutputterByName
 	 * @version 1.0.2 (2018-06-17)
@@ -34,7 +41,7 @@ abstract class Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.1 (2018-06-19)
 	 * 
 	 * @param $params {array}
 	 */
@@ -50,6 +57,17 @@ abstract class Outputter
 			}
 		}
 		
+		//Comma separated strings
+		if (!is_array($this->docFields)){
+			$this->docFields = explode(
+				',',
+				$this->docFields
+			);
+		}
+		
+		if (empty($this->docFields)){
+			$this->docFields = ['id'];
+		}
 	}
 	
 	/**
