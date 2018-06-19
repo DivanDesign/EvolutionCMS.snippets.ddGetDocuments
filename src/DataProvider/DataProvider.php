@@ -114,7 +114,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedDocsFromDb
-	 * @version 1.1 (2018-06-19)
+	 * @version 1.1.1 (2018-06-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -191,15 +191,23 @@ abstract class DataProvider
 			
 			if(is_array($data)){
 				//TODO: Может быть стоит объединить в один запрос с верхним, т. к. фильтрация по TV там уже используется
-				//Get TVs values
-				foreach ($data as $docIndex => $docValue){
-					$data[$docIndex] = array_merge(
-						$data[$docIndex],
-						\ddTools::getTemplateVarOutput(
+				//If TVs exist
+				if (!empty($this->docFieldsToGet['tvs'])){
+					//Get TVs values
+					foreach ($data as $docIndex => $docValue){
+						$docTvs = \ddTools::getTemplateVarOutput(
 							$this->docFieldsToGet['tvs'],
 							$docValue['id']
-						)
-					);
+						);
+						
+						//If valid TVs exist
+						if (is_array($docTvs)){
+							$data[$docIndex] = array_merge(
+								$data[$docIndex],
+								$docTvs
+							);
+						}
+					}
 				}
 				
 				$dataProviderOutput = new DataProviderOutput(
