@@ -61,7 +61,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 2.1 (2018-06-19)
+	 * @version 2.1.1 (2018-06-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -70,13 +70,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	public function parse(Output $data){
 		$result = '';
 		$resultItems = [];
-		$dataArray = $data->toArray();
 		
-		$total = count($dataArray['provider']['items']);
+		$total = count($data->provider->items);
 		
 		$generalPlaceholders = [
 			'total' => $total,
-			'totalFound' => $dataArray['provider']['totalFound']
+			'totalFound' => $data->provider->totalFound
 		];
 		
 		$generalPlaceholders = array_merge(
@@ -84,11 +83,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			$this->placeholders
 		);
 		
-		if(isset($dataArray['extenders'])){
+		if(isset($data->extenders)){
 			$generalPlaceholders = array_merge(
 				$generalPlaceholders,
 				[
-					'extenders' => $dataArray['extenders']
+					'extenders' => $data->extenders
 				]
 			);
 			
@@ -96,13 +95,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		}
 		
 		if(
-			is_array($dataArray['provider']['items']) &&
+			is_array($data->provider->items) &&
 			//Item template is set
 			$this->itemTpl !== null
 		){
 			$maxIndex = $total - 1;
 			//Foreach items
-			foreach($dataArray['provider']['items'] as $index => $item){
+			foreach($data->provider->items as $index => $item){
 				//Prepare item output template
 				if($index == 0){
 					$chunkName = $this->itemTplFirst;

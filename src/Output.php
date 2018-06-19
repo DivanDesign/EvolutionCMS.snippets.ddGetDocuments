@@ -4,10 +4,9 @@ namespace ddGetDocuments;
 
 class Output
 {
-	private
-		$provider;
-	
-	public $extenders = [];
+	public
+		$provider,
+		$extenders = [];
 	
 	/**
 	 * __construct

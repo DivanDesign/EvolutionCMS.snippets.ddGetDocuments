@@ -90,20 +90,18 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.5 (2018-06-13)
+	 * @version 1.1.6 (2018-06-19)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {string}
 	 */
 	public function applyToOutput(DataProviderOutput $dataProviderOutput){
-		$dataProviderOutputArray = $dataProviderOutput->toArray();
-		
 		$result = '';
 		
 		//Check to prevent division by zero
 		if($this->snippetParams['total'] != 0){
-			$pagesTotal = ceil($dataProviderOutputArray['totalFound'] / $this->snippetParams['total']);
+			$pagesTotal = ceil($dataProviderOutput->totalFound / $this->snippetParams['total']);
 			
 			if($pagesTotal > 1){
 				$urlPrefix = '?';

@@ -4,7 +4,7 @@ namespace ddGetDocuments\DataProvider;
 
 class DataProviderOutput
 {
-	private
+	public
 		$items,
 		$totalFound;
 	

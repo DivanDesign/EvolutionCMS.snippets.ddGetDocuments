@@ -8,7 +8,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	/**
 	 * parse
-	 * @version 2.1 (2018-06-19)
+	 * @version 2.1.1 (2018-06-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -16,10 +16,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 */
 	public function parse(Output $data){
 		$result = [];
-		$dataArray = $data->toArray();
 		
 		//Пройдемся по полученным данным
-		foreach($dataArray['provider']['items'] as $itemIndex => $itemData){
+		foreach($data->provider->items as $itemIndex => $itemData){
 			$result_item = [];
 			
 			//Result must contains only specified fields
