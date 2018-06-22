@@ -47,9 +47,35 @@
  * When $outputter == 'sitemap' =>
  * @param $outputterParams['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
  * @param $outputterParams['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
- * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[[ddGetDate?	&date=`[+editedon+]` &format=`Y-m-d`]]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>'.
+ * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>'.
  * @param $outputterParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
  * @example &outputterParams=`{"priorityTVName": "general_seo_sitemap_priority", "changefreqTVName": "general_seo_sitemap_changefreq"}`
+ * When $outputter == 'Yandexmarket' =>
+ * @param $outputterParams['shopData_shopName'] {string} — Короткое название магазина, не более 20 символов. @required
+ * @param $outputterParams['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
+ * @param $outputterParams['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
+ * @param $outputterParams['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+ * @param $outputterParams['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
+ * @param $outputterParams['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
+ * @param $outputterParams['offerFields_picture'] {string_docField} — Поле, содержащее изображение товара. Defalut: —.
+ * @param $outputterParams['offerFields_name'] {string_docField} — Поле, содержащее модель товара. Default: 'pagetitle'.
+ * @param $outputterParams['offerFields_model'] {string_docField} — Поле, содержащее модель товара. Defalut: —.
+ * @param $outputterParams['offerFields_vendor'] {string_docField} — Поле, содержащее производителя товара. Defalut: —.
+ * @param $outputterParams['offerFields_available'] {string_docField|''} — Поле, содержащее статус товара ('true'|'false'). Default: '' (всегда выводить 'true').
+ * @param $outputterParams['offerFields_description'] {string_docField} — Поле, содержащее описание предложения (длина текста — не более 3000 символов). Default: —.
+ * @param $outputterParams['offerFields_salesNotes'] {string_docField} — Поле, содержащее «sales_notes» (https://yandex.ru/support/partnermarket/elements/sales_notes.html). Default: —.
+ * @param $outputterParams['offerFields_manufacturerWarranty'] {string_docField} — Поле, содержащее наличие официальной гарантии производителя ('true'|'false'). Default: —.
+ * @param $outputterParams['offerFields_countryOfOrigin'] {string_docField} — Поле, содержащее страну производства товара. Default: —.
+ * @param $outputterParams['offerFields_homeCourierDelivery'] {string_docField} — Поле, содержащее возможность курьерской доставки по региону магазина ('true'|'false'). Default: —.
+ * @param $outputterParams['offerFields_dimensions'] {string_docField} — Поле, содержащее габариты товара (длина, ширина, высота) в упаковке (размеры укажите в сантиметрах, формат: три положительных числа с точностью 0.001, разделитель целой и дробной части — точка, числа должны быть разделены символом «/» без пробелов). Default: —.
+ * @param $outputterParams['offerFields_weight'] {string_docField} — Поле, содержащее вес товара в килограммах с учетом упаковки (формат: положительное число с точностью 0.001, разделитель целой и дробной части — точка). Default: —.
+ * @param $outputterParams['offerFields_additionalParams'] {string_docField} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
+ * @param $outputterParams['offerFields_customData'] {string_docField} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
+ * @param $outputterParams['templates_wrapper'] {string_chunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
+ * @param $outputterParams['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+ * @param $outputterParams['templates_offers_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
+ * @param $outputterParams['templates_offers_item_elem' . $FieldName] {string_chunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params['templates_offers_item_elemCountryOfOrigin']. Default: —.
+ * @example &outputterParams=`{"shopData_shopName": "Some shop", "shopData_companyName": "Some shop LTD", "offerFields_price": "catalog_category_good_price"}`
  * 
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
  * Be aware that the order of extender names can affect the output.

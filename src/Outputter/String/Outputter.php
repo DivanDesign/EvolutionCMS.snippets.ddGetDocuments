@@ -6,13 +6,15 @@ use ddGetDocuments\Output;
 
 class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
+	public
+		$placeholders = [];
+		
 	protected
 		$itemTpl = null,
 		$itemTplFirst = null,
 		$itemTplLast = null,
 		$wrapperTpl = null,
 		$noResults = null,
-		$placeholders = [],
 		$itemGlue = '';
 	
 	/**
