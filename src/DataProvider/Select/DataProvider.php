@@ -13,7 +13,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 1.0 (2018-06-19)
+	 * @version 1.0.1 (2018-06-21)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -23,7 +23,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			empty($this->orderBy) &&
 			!empty($this->ids)
 		){
-			$this->orderBy = 'ORDER BY FIELD (`documents`.`id`,'.$this->ids.')';
+			$this->orderBy = 'FIELD (`documents`.`id`,'.$this->ids.')';
 		}
 		
 		return $this->getSelectedDocsFromDb(['docIds' => $this->ids]);
