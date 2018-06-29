@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.8.1 (2017-11-17)
+ * @version 0.9 (2018-06-29)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -9,17 +9,19 @@
  * @uses MODXEvo >= 1.1.
  * @uses MODXEvo.libraries.ddTools >= 0.22.
  * 
+ * Providers:
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
- * @param $providerParams {stirng_json|string_queryFormated} — Parameters to be passed to the provider. The parameter must be set as a query string,
- * When $provider == 'parent' =>
- * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent IDs. Default: 0.
+ * @param $providerParams {stirng_json|string_queryFormated} — Parameters to be passed to the provider.
+ * Providers → Parent:
+ * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent ID(s). Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
  * @example &providerParams=`{"parentIds": 1, "depth": 2}`
  * @example &providerParams=`parentIds=1&depth=2`
- * When $provider == 'select' =>
+ * Providers → Select:
  * @param $providerParams['ids'] {string_commaSepareted} — Document IDs to output. @required
  * @example &providerParams=`{"ids": "1,2,3"}`
  * 
+ * General:
  * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
  * @param $total {integer} — The maximum number of the resources that will be returned. Default: —.
  * @param $filter {string} — The filter condition in SQL-style to be applied while resource fetching. Default: '`published` = 1 AND `deleted` = 0';
@@ -27,9 +29,10 @@
  * @param $offset {integer} — Resources offset. Default: 0.
  * @param $orderBy {string} — A string representing the sorting rule. Default: '`id` ASC'.
  * 
- * @param $outputter {'string'|'json'|'sitemap'|'raw'} — Format of the output. Default: 'string'.
- * @param $outputterParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter. The parameter must be set as a query string,
- * When $outputter == 'string' =>
+ * Outputters:
+ * @param $outputter {'string'|'json'|'sitemap'|'yandexmarket'|'raw'} — Format of the output. Default: 'string'.
+ * @param $outputterParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter.
+ * Outputters → String:
  * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
  * @param $outputterParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
  * @param $outputterParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
@@ -40,17 +43,18 @@
  * @param $outputterParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
  * @example &outputterParams=`{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}`
  * @example &outputterParams=`itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found`
- * When $outputter == 'json' =>
+ * Outputters → Json:
  * @param $outputterParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
+ * @param $outputterParams['docFields'][i] {string} — Document field or TV. @required
  * @example &outputterParams=`{"docFields": "id,pagetitle,introtext"}`
  * @example &outputterParams=`docFields=id,pagetitle,introtext`
- * When $outputter == 'sitemap' =>
+ * Outputters → Sitemap:
  * @param $outputterParams['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
  * @param $outputterParams['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
  * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>'.
  * @param $outputterParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
  * @example &outputterParams=`{"priorityTVName": "general_seo_sitemap_priority", "changefreqTVName": "general_seo_sitemap_changefreq"}`
- * When $outputter == 'Yandexmarket' =>
+ * Outputters → Yandexmarket:
  * @param $outputterParams['shopData_shopName'] {string} — Короткое название магазина, не более 20 символов. @required
  * @param $outputterParams['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
  * @param $outputterParams['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
@@ -72,15 +76,17 @@
  * @param $outputterParams['offerFields_additionalParams'] {string_docField} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
  * @param $outputterParams['offerFields_customData'] {string_docField} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
  * @param $outputterParams['templates_wrapper'] {string_chunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
- * @param $outputterParams['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+ * @param $outputterParams['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
  * @param $outputterParams['templates_offers_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
  * @param $outputterParams['templates_offers_item_elem' . $FieldName] {string_chunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params['templates_offers_item_elemCountryOfOrigin']. Default: —.
  * @example &outputterParams=`{"shopData_shopName": "Some shop", "shopData_companyName": "Some shop LTD", "offerFields_price": "catalog_category_good_price"}`
  * 
+ * Extenders:
  * @param $extenders {string_commaSeparated} — Comma-separated string determining which extenders should be applied to the snippet.
+ * @param $extenders[i] {'pagination'|'tagging'|'search} — Extender name.
  * Be aware that the order of extender names can affect the output.
- * @param $extendersParams {stirng_json|string_queryFormated} — Parameters to be passed to their corresponding extensions. The parameter must be set as a query string,
- * When $extenders == 'pagination' =>
+ * @param $extendersParams {stirng_json|string_queryFormated} — Parameters to be passed to their corresponding extensions.
+ * Extenders → Pagination:
  * @param $extendersParams['wrapperTpl'] {string_chunkName|string} — Chunk to be used to output the pagination (chunk name or code via “@CODE:” prefix). @required
  * @param $extendersParams['pageTpl'] {string_chunkName|string} — Chunk to be used to output pages within the pagination (chunk name or code via “@CODE:” prefix). @required
  * @param $extendersParams['currentPageTpl'] {string_chunkName|string} — Chunk to be used to output the current page within the pagination (chunk name or code via “@CODE:” prefix). @required
@@ -88,15 +94,17 @@
  * @param $extendersParams['nextOffTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the next page if there are no more pages after. Available placeholders: [+url+], [+totalPages+]. @required
  * @param $extendersParams['previousTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the previous page (chunk name or code via “@CODE:” prefix). Available placeholders: [+url+], [+totalPages+]. @required
  * @param $extendersParams['previousOffTpl'] {string_chunkName|string} — Chunk to be used to output the navigation block to the previous page if there are no more pages before (chunk name or code via “@CODE:” prefix). Available placeholders: [+url+], [+totalPages+]. @required
- * When $extenders == 'tagging' =>
+ * Extenders → Tagging:
  * @param $extendersParams['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
- * When $extenders == 'search' =>
+ * Extenders → Search:
  * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
  * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
- * @copyright 2015–2017 DivanDesign {@link http://www.DivanDesign.biz }
+ * @link https://code.divandesign.biz/modx/ddgetdocuments/0.9
+ * 
+ * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
  **/
 
 global $modx;
