@@ -172,7 +172,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * @param $params['offerFields_additionalParams'] {string_docField} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
 	 * @param $params['offerFields_customData'] {string_docField} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
 	 * @param $params['templates_wrapper'] {string_chunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+	 * @param $params['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
 	 * @param $params['templates_offers_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
 	 * @param $params['templates_offers_item_elem' . $FieldName] {string_chunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params['templates_offers_item_elemCountryOfOrigin']. Default: —.
 	 */
@@ -316,7 +316,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.0 (2018-06-22)
+	 * @version 1.0.1 (2018-06-29)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -440,7 +440,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			//deleted
 			0,
 			//
-			'pagetitle,id'
+			'pagetitle,id,parent'
 		);
 		if (is_array($categoriesData)){
 			foreach (
@@ -451,7 +451,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 					'text' => $this->templates->categories_item,
 					'data' => [
 						'id' => $categoriesData_item['id'],
-						'value' => $categoriesData_item['pagetitle']
+						'value' => $categoriesData_item['pagetitle'],
+						'parent' => $categoriesData_item['parent']
 					],
 					'mergeAll' => false
 				]);

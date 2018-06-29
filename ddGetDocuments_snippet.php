@@ -72,7 +72,7 @@
  * @param $outputterParams['offerFields_additionalParams'] {string_docField} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
  * @param $outputterParams['offerFields_customData'] {string_docField} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
  * @param $outputterParams['templates_wrapper'] {string_chunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
- * @param $outputterParams['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+ * @param $outputterParams['templates_categories_item'] {string_chunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
  * @param $outputterParams['templates_offers_item'] {string_chunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
  * @param $outputterParams['templates_offers_item_elem' . $FieldName] {string_chunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params['templates_offers_item_elemCountryOfOrigin']. Default: —.
  * @example &outputterParams=`{"shopData_shopName": "Some shop", "shopData_companyName": "Some shop LTD", "offerFields_price": "catalog_category_good_price"}`
