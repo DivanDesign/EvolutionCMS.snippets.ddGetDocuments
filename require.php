@@ -1,10 +1,10 @@
 <?php
-require_once('src/DataProvider/Output.php');
+require_once('src/DataProvider/DataProviderOutput.php');
 require_once('src/Output.php');
 require_once('src/Input.php');
 require_once('src/Extender/Extender.php');
-require_once('src/OutputFormat/OutputFormat.php');
-require_once('src/OutputFormat/String/OutputFormat.php');
+require_once('src/Outputter/Outputter.php');
+require_once('src/Outputter/String/Outputter.php');
 require_once('src/DataProvider/DataProvider.php');
 require_once('src/DataProvider/Parent/DataProvider.php');
 ?>

@@ -4,12 +4,17 @@ namespace ddGetDocuments;
 
 class Output
 {
-	private
-		$provider;
+	public
+		$provider,
+		$extenders = [];
 	
-	public $extenders = [];
-	
-	public final function __construct(\ddGetDocuments\DataProvider\Output $providerOutput){
+	/**
+	 * __construct
+	 * @version 1.0.1 (2018-06-12)
+	 * 
+	 * @param $providerOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
+	 */
+	public final function __construct(\ddGetDocuments\DataProvider\DataProviderOutput $providerOutput){
 		$this->provider = $providerOutput;
 	}
 	

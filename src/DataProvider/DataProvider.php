@@ -6,24 +6,27 @@ use ddGetDocuments\Input;
 
 abstract class DataProvider
 {
-	public $defaultParams = [];
-	
 	protected
-		$siteContentTableName,
-		$tmplvarTableName,
-		$tmplvarContentvaluesTableName,
-		$tmplvarTemplatesTableName;
-	
-	public function __construct(){
-		global $modx;
-		
-		$this->siteContentTableName = $modx->getFullTableName('site_content');
-		$this->tmplvarTableName = $modx->getFullTableName('site_tmplvars');
-		$this->tmplvarContentvaluesTableName = $modx->getFullTableName('site_tmplvar_contentvalues');
-		$this->tmplvarTemplatesTableName = $modx->getFullTableName('site_tmplvar_templates');
-	}
+		/**
+		 * @property $docFieldsToGet {array_associative} — Document fields which need to get.
+		 * @property $docFieldsToGet['fields'] {array} — Common document fileds.
+		 * @property $docFieldsToGet['fields'][i] {string} — Field name.
+		 * @property $docFieldsToGet['tvs'] {array} — TVs.
+		 * @property $docFieldsToGet['tvs'][i] {string} — TV name.
+		 */
+		$docFieldsToGet = [
+			'fields' => ['id'],
+			'tvs' => []
+		],
+		$total,
+		$filter,
+		$offset,
+		$orderBy;
 	
 	/**
+	 * includeProviderByName
+	 * @version 1.0.2 (2018-06-12)
+	 * 
 	 * @param $providerName
 	 * @return string
 	 * @throws \Exception
@@ -34,39 +37,202 @@ abstract class DataProvider
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
 			require_once($providerPath);
+			
 			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
 		}else{
-			throw new \Exception('Data provider '.$providerName.' not found.', 500);
+			throw new \Exception(
+				'Data provider '.$providerName.' not found.',
+				500
+			);
 		}
 	}
 	
 	/**
-	 * getDataFromSource
+	 * __construct
+	 * @version 1.0 (2018-06-12)
 	 * 
-	 * @param Input $input
-	 * 
-	 * @return \ddGetDocuments\DataProvider\Output
+	 * @param $input {\ddGetDocuments\Input}
 	 */
-	abstract protected function getDataFromSource(Input $input);
+	function __construct(Input $input){
+		//Params from the snippet first
+		foreach (
+			[
+				'total',
+				'filter',
+				'offset',
+				'orderBy'
+			]
+			as $paramName
+		){
+			if(isset($input->snippetParams[$paramName])){
+				$this->{$paramName} = $input->snippetParams[$paramName];
+			}
+		}
+		
+		//Все параметры задают свойства объекта
+		foreach ($input->providerParams as $paramName => $paramValue){
+			//Validation
+			if (property_exists(
+				$this,
+				$paramName
+			)){
+				$this->{$paramName} = $paramValue;
+			}
+		}
+	}
+	
+	/**
+	 * addDocFieldsToGet
+	 * @version 1.0 (2018-06-17)
+	 * 
+	 * @param $fields {array}
+	 * @param $fields[i] {string} — Name of document field or TV.
+	 * 
+	 * @return {void}
+	 */
+	public final function addDocFieldsToGet($fields){
+		//Separate TVs and common document fields
+		$fields = \ddTools::prepareDocData([
+			'data' => array_flip($fields)
+		]);
+		
+		//Save common fields
+		if (!empty($fields->fieldsData)){
+			$this->docFieldsToGet['fields'] = array_unique(array_merge(
+				$this->docFieldsToGet['fields'],
+				array_keys($fields->fieldsData)
+			));
+		}
+		//Save TVs
+		if (!empty($fields->tvsData)){
+			$this->docFieldsToGet['tvs'] = array_unique(array_merge(
+				$this->docFieldsToGet['tvs'],
+				array_keys($fields->tvsData)
+			));
+		}
+	}
+	
+	/**
+	 * getSelectedDocsFromDb
+	 * @version 1.1.1 (2018-06-19)
+	 * 
+	 * @param $params {array_associative|stdClass}
+	 * @param $params['docIds'] — Document IDs to get. Default: ''.
+	 * 
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
+	 */
+	protected function getSelectedDocsFromDb($params = []){
+		//Defaults
+		$params = (object) array_merge([
+			'docIds' => ''
+		], (array) $params);
+		
+		$dataProviderOutput = new DataProviderOutput(
+			[],
+			0
+		);
+		
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
+		
+		$queryData = (object) [
+			'from' => $fromAndFilterQueries['from'],
+			'where' => '',
+			'where_filter' => $fromAndFilterQueries['filter'],
+			'orderBy' => '',
+			'limit' => '',
+		];
+		
+		if(!empty($this->orderBy)){
+			$queryData->orderBy = 'ORDER BY '.$this->orderBy;
+		}
+		
+		if(
+			!empty($this->offset) &&
+			!empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->offset.','.$this->total;
+		}elseif(
+			empty($this->offset) &&
+			!empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->total;
+		}elseif(
+			!empty($this->offset) &&
+			empty($this->total)
+		){
+			$queryData->limit = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
+		}
+		
+		if(!empty($params->docIds)){
+			$params->where .= '`documents`.`id` IN ('.$params->docIds.')';
+		
+			if(!empty($queryData->where_filter)){
+				$params->where .= ' AND '.$queryData->where_filter;
+			}
+		}else{
+			$params->where .= $queryData->where_filter;
+		}
+		
+		if(!empty($params->where)){
+			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
+				SELECT
+					SQL_CALC_FOUND_ROWS
+					`documents`.`'.implode(
+						'`, `documents`.`',
+						$this->docFieldsToGet['fields']
+					).'`
+				FROM
+					'.$queryData->from.' AS `documents`
+				WHERE
+					'.$params->where.' '.$queryData->orderBy.' '.$queryData->limit.'
+			'));
+			
+			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
+			
+			if(is_array($data)){
+				//TODO: Может быть стоит объединить в один запрос с верхним, т. к. фильтрация по TV там уже используется
+				//If TVs exist
+				if (!empty($this->docFieldsToGet['tvs'])){
+					//Get TVs values
+					foreach ($data as $docIndex => $docValue){
+						$docTvs = \ddTools::getTemplateVarOutput(
+							$this->docFieldsToGet['tvs'],
+							$docValue['id']
+						);
+						
+						//If valid TVs exist
+						if (is_array($docTvs)){
+							$data[$docIndex] = array_merge(
+								$data[$docIndex],
+								$docTvs
+							);
+						}
+					}
+				}
+				
+				$dataProviderOutput = new DataProviderOutput(
+					$data,
+					$totalFound
+				);
+			}
+		}
+		
+		return $dataProviderOutput;
+	}
 	
 	/**
 	 * get
+	 * @version 2.0.1 (2018-06-19)
 	 * 
-	 * @param Input $input
-	 * 
-	 * @return Output
+	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	public final function get(Input $input){
-		if(empty($input->providerParams)){
-			$input->providerParams = $this->defaultParams;
-		}
-		
-		return $this->getDataFromSource($input);
+	public function get(){
+		return $this->getSelectedDocsFromDb();
 	}
 	
 	/**
 	 * getUsedFieldsFromFilter
-	 * @version 1.0.1 (2017-01-05)
+	 * @version 1.0.4 (2018-06-17)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -77,47 +243,55 @@ abstract class DataProvider
 	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
 	public final function getUsedFieldsFromFilter($filterStr){
-		$output = [];
+		$result = [];
+		
 		//Try to find all fields/tvs used in filter by the pattern
-		preg_match_all("/`(\w+)`/", $filterStr, $fields);
+		preg_match_all(
+			"/`(\w+)`/",
+			$filterStr,
+			$fields
+		);
 		
 		if(!empty($fields[1])){
 			//Sort out fields from tvs
-			$fieldsArray = \ddTools::explodeFieldsArr(array_flip($fields[1]));
+			$fieldsArray = \ddTools::prepareDocData([
+				'data' => array_flip($fields[1]),
+				//Just something
+				'tvAdditionalFieldsToGet' => ['name']
+			]);
 			
-			if(!empty($fieldsArray[0])){
-				$output['fields'] = array_keys($fieldsArray[0]);
+			if(!empty($fieldsArray->fieldsData)){
+				$result['fields'] = array_keys($fieldsArray->fieldsData);
 			}
 			
 			//If there were tv names in the passed filter string
-			if(is_array($fieldsArray[1])){
-				$output['tvs'] = [];
+			if(!empty($fieldsArray->tvsAdditionalData)){
+				$result['tvs'] = [];
 				
 				//Check whether the current tv name is an actual tv name
-				foreach($fieldsArray[1] as $tvName => $tvData){
-					if(isset($tvData['id'])){
-						//Pupulate the array with the current tv name
-						$output['tvs'][] = $tvName;
-					}
+				foreach($fieldsArray->tvsAdditionalData as $tvName => $tvData){
+					//Pupulate the array with the current tv name
+					$result['tvs'][] = $tvName;
 				}
 				
-				if(empty($output['tvs'])){
-					unset($output['tvs']);
+				if(empty($result['tvs'])){
+					unset($result['tvs']);
 				}
 			}
 		}
 		
-		return $output;
+		return $result;
 	}
 	
 	/**
 	 * buildTVsSubQuery
+	 * @version 1.0.3 (2018-06-12)
 	 * 
-	 * A helper method to build subquery with joined TVS to make possible
-	 * to use filter conditions for both fields and tvs.
+	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
-	 * @param array $tvs
-	 * @return string
+	 * @param $tvs {array}
+	 * 
+	 * @return {string}
 	 */
 	protected function buildTVsSubQuery(array $tvs){
 		//Aliases:
@@ -127,8 +301,8 @@ abstract class DataProvider
 		//tvcv - site_tmplvar_contentvalues
 		
 		//select query
-		$selectTvsQuery = "SELECT `c`.*,";
-		$fromTvsQuery = "FROM {$this->siteContentTableName} as `c`";
+		$selectTvsQuery = 'SELECT `c`.*,';
+		$fromTvsQuery = 'FROM '.\ddTools::$tables['site_content'].' as `c`';
 		//join query
 		$joinTvsQuery = '';
 		//where query
@@ -138,32 +312,40 @@ abstract class DataProvider
 		
 		foreach($tvs as $tvName){
 			//alias of tmplvar_templates
-			$tvtAlias = "`tvt_$tvCounter`";
+			$tvtAlias = '`tvt_'.$tvCounter.'`';
 			//alias of tmplvars
-			$tvAlias = "`tv_$tvCounter`";
+			$tvAlias = '`tv_'.$tvCounter.'`';
 			//alias of tmplvar_contentvalues
-			$tvcvAlias = "`tvcv_$tvCounter`";
+			$tvcvAlias = '`tvcv_'.$tvCounter.'`';
 			//select not null value from either the real value column or default
-			$selectTvsQuery .= "coalesce($tvcvAlias.`value`, $tvAlias.`default_text`) as `$tvName`,";
+			$selectTvsQuery .= 'coalesce('.$tvcvAlias.'.`value`, '.$tvAlias.'.`default_text`) as `'.$tvName.'`,';
+			
 			$joinTvsQuery .=
-				" LEFT JOIN {$this->tmplvarTemplatesTableName} AS $tvtAlias ON $tvtAlias.`templateid` = `c`.`template`".
-				" LEFT JOIN {$this->tmplvarTableName} AS $tvAlias ON $tvAlias.`id` = $tvtAlias.`tmplvarid`".
-				" LEFT JOIN {$this->tmplvarContentvaluesTableName} AS $tvcvAlias ON $tvcvAlias.`contentid` = `c`.`id` AND $tvcvAlias.`tmplvarid` = $tvAlias.`id`";
-			$whereTvsQuery .= "$tvAlias.`name` = '$tvName' AND";
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_templates'].' AS '.$tvtAlias.' ON '.$tvtAlias.'.`templateid` = `c`.`template`'.
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvars'].' AS '.$tvAlias.' ON '.$tvAlias.'.`id` = '.$tvtAlias.'.`tmplvarid`'.
+				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_contentvalues'].' AS '.$tvcvAlias.' ON '.$tvcvAlias.'.`contentid` = `c`.`id` AND '.$tvcvAlias.'.`tmplvarid` = '.$tvAlias.'.`id`';
+			
+			$whereTvsQuery .= $tvAlias.'.`name` = "'.$tvName.'" AND';
 			
 			$tvCounter++;
 		}
 		
-		$selectTvsQuery = trim($selectTvsQuery, ',');
-		$whereTvsQuery = "WHERE ".trim($whereTvsQuery, ' AND');
+		$selectTvsQuery = trim(
+			$selectTvsQuery,
+			','
+		);
+		$whereTvsQuery = 'WHERE '.trim(
+			$whereTvsQuery,
+			' AND'
+		);
 		
 		//complete from query
-		return "$selectTvsQuery $fromTvsQuery $joinTvsQuery $whereTvsQuery";
+		return $selectTvsQuery.' '.$fromTvsQuery.' '.$joinTvsQuery.' '.$whereTvsQuery;
 	}
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0.1 (2017-01-05)
+	 * @version 1.0.2 (2018-06-12)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -174,7 +356,7 @@ abstract class DataProvider
 	protected final function prepareFromAndFilterQueries($filterStr){
 		$result = [
 			//By default, the required data is just fetched from the site_content table
-			'from' => $this->siteContentTableName,
+			'from' => \ddTools::$tables['site_content'],
 			'filter' => ''
 		];
 		

@@ -2,30 +2,45 @@
 namespace ddGetDocuments\Extender\Search;
 
 
-use ddGetDocuments\DataProvider\Output;
+use ddGetDocuments\DataProvider\DataProviderOutput;
 
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
-		//Templates ids to search in
-		$currentQuery = '',
-		$docFieldsToSearch = ['pagetitle', 'content'];
+		$currentQuery = '';
 	
-	public function __construct(array $extenderParams){
-		global $modx;
+	protected
+		$docFieldsToSearch = [
+			'pagetitle',
+			'content'
+		];
+	
+	/**
+	 * __construct
+	 * @version 1.1 (2018-06-12)
+	 * 
+	 * @param $params {array_associative}
+	 * @param $params['docFieldsToSearch'] {array|string_commaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
+	 */
+	public function __construct(array $params){
+		//Call base constructor
+		parent::__construct($params);
 		
-		if(isset($extenderParams['docFieldsToSearch'])){
-			$this->docFieldsToSearch = explode(',', (string) $extenderParams['docFieldsToSearch']);
+		if(!is_array($this->docFieldsToSearch)){
+			$this->docFieldsToSearch = explode(
+				',',
+				(string) $this->docFieldsToSearch
+			);
 		}
 		
 		if (isset($_REQUEST['query'])){
-			$this->currentQuery = trim($modx->db->escape($_REQUEST['query']));
+			$this->currentQuery = trim(\ddTools::$modx->db->escape($_REQUEST['query']));
 		}
 	}
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0 (2017-04-09)
+	 * @version 1.0.1 (2018-06-12)
 	 * 
 	 * @param $snippetParams {array_associative}
 	 * 
@@ -49,7 +64,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				$searchQueries[] = '`'.trim($docField).'` LIKE("%'.$this->currentQuery.'%")';
 			}
 			
-			$snippetParams['filter'] .= ' ('.implode(' OR ', $searchQueries).')';
+			$snippetParams['filter'] .= ' ('.implode(
+				' OR ',
+				$searchQueries
+			).')';
 		}
 		
 		return $snippetParams;
