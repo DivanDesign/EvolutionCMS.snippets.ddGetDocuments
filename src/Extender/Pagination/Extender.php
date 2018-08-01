@@ -15,19 +15,29 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	protected
 		//Chunk to be used to output pages within the pagination
-		$pageTpl = '',
+		$pageTpl = '<a href="[~[*id*]~][+url+]" class="strl">[+page+]</a>',
 		//Chunk to be used to output the current page within the pagination
-		$currentPageTpl = '',
+		$currentPageTpl = '<a class="strl active">[+page+]</a>',
 		//Chunk to be used to output the pagination
-		$wrapperTpl = '',
+		$wrapperTpl = '<div class="pagination_container">
+	<div class="pagination clearfix">
+		<div class="pagination_links">[+previous+]</div>
+		<div class="pagination_pages">[+pages+]</div>
+		<div class="pagination_links">[+next+]</div>
+	</div>
+</div>',
 		//Chunk to be used to output the navigation block to the next page
-		$nextTpl = '',
+		$nextTpl = '<a href="[~[*id*]~][+url+]" class="pagination_next strl"><span>Следующая</span>&nbsp;→</a><br>
+<small><a href="[~[*id*]~]?page=[+totalPages+]" class="pagination_last strl"><span>Последняя</span>&nbsp;→</a></small>',
 		//Chunk to be used to output the navigation block to the next page if there are no more pages after
-		$nextOffTpl = '',
+		$nextOffTpl = '<span class="pagination_next"><span>Следующая</span>&nbsp;→</span><br>
+<small><span class="pagination_last"><span>Последняя</span></span>&nbsp;→</small>',
 		//Chunk to be used to output the navigation block to the previous page
-		$previousTpl = '',
+		$previousTpl = '<a href="[~[*id*]~][+url+]" class="pagination_prev strl">←&nbsp;<span>Предыдущая</span></a><br>
+<small><a href="[~[*id*]~]" class="pagination_first strl">←&nbsp;<span>Первая</span></a></small>',
 		//Chunk to be used to output the navigation block to the previous page if there are no more pages before
-		$previousOffTpl = '';
+		$previousOffTpl = '<span class="pagination_prev">←&nbsp;<span>Предыдущая</span></span><br>
+<small><span class="pagination_first">←&nbsp;<span>Первая</span></span></small>';
 	
 	/**
 	 * __construct
