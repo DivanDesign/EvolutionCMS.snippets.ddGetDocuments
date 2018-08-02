@@ -15,6 +15,7 @@
  * Providers → Parent:
  * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent ID(s). Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
+ * @param $providerParams['excludeIds'] {array|string_commaSepareted} — The IDs which will excluded.
  * @example &providerParams=`{"parentIds": 1, "depth": 2}`
  * @example &providerParams=`parentIds=1&depth=2`
  * Providers → Select:

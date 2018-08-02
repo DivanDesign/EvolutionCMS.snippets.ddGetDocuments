@@ -10,11 +10,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	protected
 		$parentIds = [0],
 		$depth = 1,
+		$excludeIds = [],
 		$filter = '`published` = 1 AND `deleted` = 0';
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.1 (2018-08-02)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -27,6 +28,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$this->parentIds = explode(
 				',',
 				$this->parentIds
+			);
+		}
+		if (!is_array($this->excludeIds)){
+			$this->excludeIds = explode(
+				',',
+				$this->excludeIds
 			);
 		}
 	}
@@ -49,7 +56,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * getAllChildrenIds
-	 * @version 1.0.5 (2018-06-12)
+	 * @version 1.1 (2018-08-02)
 	 * 
 	 * @return {array}
 	 */
@@ -76,7 +83,9 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				!empty($resultArray)
 			){
 				foreach($resultArray as $document){
-					$result[] = $document['id'];
+					if(!in_array($document['id'], $this->excludeIds)){
+						$result[] = $document['id'];
+					}
 				}
 				
 				if($depth > 1){
