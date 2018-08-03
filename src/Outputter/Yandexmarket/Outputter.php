@@ -138,7 +138,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			',
 			'offers_item_elem' => '<[+tagName+][+attrs+]>[+value+]</[+tagName+]>',
 // 			'offers_item_elemAdditionalParams' => '<param name="[+name+]"[+attrs+]>[+value+]</param>',
-		];
+		],
+		$categoryIds_last;
 	
 	private
 		$outputter_StringInstance,
@@ -146,7 +147,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-19)
+	 * @version 1.1 (2018-08-03)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -155,6 +156,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * @param $params['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
 	 * @param $params['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
 	 * @param $params['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+	 * @param $params['categoryIds_last'] {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
 	 * @param $params['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
 	 * @param $params['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
 	 * @param $params['offerFields_picture'] {string_docField} — Поле, содержащее изображение товара. Defalut: —.
@@ -301,6 +303,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			'mergeAll' => false
 		]);
 		
+		//save last parent id for category
+		$this->categoryIds_last = isset($params['categoryIds_last']) ? trim($params['categoryIds_last']) : '';
+		
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = [
@@ -316,7 +321,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.0.1 (2018-06-29)
+	 * @version 1.2 (2018-08-03)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -432,31 +437,80 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Prepare categories
 		$categoriesString = '';
 		$this->categoryIds = array_unique($this->categoryIds);
-		$categoriesData = \ddTools::getDocuments(
-			//ids
-			$this->categoryIds,
-			//published
-			'all',
-			//deleted
-			0,
-			//
-			'pagetitle,id,parent'
-		);
-		if (is_array($categoriesData)){
-			foreach (
-				$categoriesData as
-				$categoriesData_item
-			){
-				$categoriesString .= \ddTools::parseText([
-					'text' => $this->templates->categories_item,
-					'data' => [
-						'id' => $categoriesData_item['id'],
-						'value' => $categoriesData_item['pagetitle'],
-						'parent' => $categoriesData_item['parent']
-					],
-					'mergeAll' => false
-				]);
+		$categoryIds_all = [];
+		$categoryIds_last = $this->categoryIds;
+			
+		if(!empty($this->categoryIds_last)){
+			$categoryIds_last = explode(',', $this->categoryIds_last);
+		}
+		
+		$getCategories = function ($id) use (
+			$categoryIds_last, 
+			&$categoryIds_all, 
+			&$categoriesString, 
+			&$getCategories
+		){
+			if(!in_array(
+				$id, 
+				$categoryIds_all
+			)){
+				$category = \ddTools::getDocument(
+					//id
+					$id,
+					'pagetitle,id,parent',
+					//published
+					'all',
+					//deleted
+					0
+				);
+				$categoryIds_all []= $id;
+				
+				if(!in_array(
+					$category['id'], 
+					$categoryIds_last
+				)){
+					$categoriesString .= \ddTools::parseText([
+						'text' => $this->templates->categories_item,
+						'data' => [
+							'id' => $category['id'],
+							'value' => $category['pagetitle'],
+							'parent' => $category['parent'],
+							'attrs' => ' parentId="'. $category['parent'] .'"'
+						],
+						'mergeAll' => false
+					]);
+					$getCategories($category['parent']);
+				}
 			}
+		};
+		foreach(
+			$this->categoryIds as 
+			$id
+		){
+			$getCategories($id);
+		}
+		foreach(
+			$categoryIds_last as 
+			$id
+		){
+			$category = \ddTools::getDocument(
+				//id
+				$id,
+				'pagetitle,id,parent',
+				//published
+				'all',
+				//deleted
+				0
+			);
+			$categoriesString .= \ddTools::parseText([
+				'text' => $this->templates->categories_item,
+				'data' => [
+					'id' => $category['id'],
+					'value' => $category['pagetitle'],
+					'parent' => $category['parent']
+				],
+				'mergeAll' => false
+			]);
 		}
 		
 		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $categoriesString;
