@@ -320,8 +320,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	}
 	
 	/**
+	 * screening
+	 * @version 0.1 (2018-08-08)
+	 * 
+	 * @param $str {string} — Строка которую нужно экранировать. https://yandex.ru/support/partnermarket/export/yml.html
+	 * 
+	 * @return {string}
+	 */
+	public function screening($str){
+		$search  = array('"', '&', '>', '<', "'");
+		$replace = array('&quot;', '&amp;', '&gt;', '&lt;', '&apos;');
+		
+		return str_replace($search, $replace, $str);
+	}
+	/**
 	 * parse
-	 * @version 1.2 (2018-08-03)
+	 * @version 1.2.1 (2018-08-08)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -420,7 +434,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
-									'value' => $data->provider->items[$docIndex][$offerFieldData->docFieldName]
+									'value' => $this->screening($data->provider->items[$docIndex][$offerFieldData->docFieldName])
 								],
 								'mergeAll' => false
 							]);
@@ -473,7 +487,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						'text' => $this->templates->categories_item,
 						'data' => [
 							'id' => $category['id'],
-							'value' => $category['pagetitle'],
+							'value' => $this->screening($category['pagetitle']),
 							'parent' => $category['parent'],
 							'attrs' => ' parentId="'. $category['parent'] .'"'
 						],
@@ -506,7 +520,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				'text' => $this->templates->categories_item,
 				'data' => [
 					'id' => $category['id'],
-					'value' => $category['pagetitle'],
+					'value' => $this->screening($category['pagetitle']),
 					'parent' => $category['parent']
 				],
 				'mergeAll' => false
