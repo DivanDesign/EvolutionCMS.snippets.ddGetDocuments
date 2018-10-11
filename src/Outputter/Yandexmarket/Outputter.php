@@ -321,21 +321,35 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * screening
-	 * @version 0.1 (2018-08-08)
+	 * @version 0.1.1 (2018-10-11)
 	 * 
-	 * @param $str {string} — Строка которую нужно экранировать. https://yandex.ru/support/partnermarket/export/yml.html
+	 * @param $inputString {string} — Строка, которую нужно экранировать. https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
 	 * @return {string}
 	 */
-	public function screening($str){
-		$search  = array('"', '&', '>', '<', "'");
-		$replace = array('&quot;', '&amp;', '&gt;', '&lt;', '&apos;');
-		
-		return str_replace($search, $replace, $str);
+	public function screening($inputString){
+		return str_replace(
+			[
+				'"',
+				'&',
+				'>',
+				'<',
+				"'"
+			],
+			[
+				'&quot;',
+				'&amp;',
+				'&gt;',
+				'&lt;',
+				'&apos;'
+			],
+			$inputString
+		);
 	}
+	
 	/**
 	 * parse
-	 * @version 1.2.1 (2018-08-08)
+	 * @version 1.2.2 (2018-10-11)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -355,7 +369,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				}
 				
 				//Foreach all offer fields
-				foreach($this->offerFields as $offerFieldName => $offerFieldData){
+				foreach(
+					$this->offerFields as
+					$offerFieldName => $offerFieldData
+				){
 					if (
 						//If is set
 						!empty($offerFieldData->docFieldName) &&
@@ -441,7 +458,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						}
 					}
 				}
-				
 			}else{
 				//Remove invalid offers
 				unset($data->provider->items[$docIndex]);
@@ -455,7 +471,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$categoryIds_last = $this->categoryIds;
 			
 		if(!empty($this->categoryIds_last)){
-			$categoryIds_last = explode(',', $this->categoryIds_last);
+			$categoryIds_last = explode(
+				',',
+				$this->categoryIds_last
+			);
 		}
 		
 		$getCategories = function ($id) use (
@@ -477,7 +496,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 					//deleted
 					0
 				);
-				$categoryIds_all []= $id;
+				$categoryIds_all[] = $id;
 				
 				if(!in_array(
 					$category['id'], 
@@ -497,12 +516,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				}
 			}
 		};
+		
 		foreach(
 			$this->categoryIds as 
 			$id
 		){
 			$getCategories($id);
 		}
+		
 		foreach(
 			$categoryIds_last as 
 			$id

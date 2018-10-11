@@ -114,7 +114,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedDocsFromDb
-	 * @version 2.0 (2018-09-11)
+	 * @version 2.0.1 (2018-10-11)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -183,9 +183,13 @@ abstract class DataProvider
 					`documents`.`'.implode(
 						'`, `documents`.`',
 						$this->docFieldsToGet['fields']
-					).'`, (
+					).'`,
+					(
 						SELECT
-							JSON_OBJECTAGG(`tvName`.`name`, `tvValue`.`value`)
+							JSON_OBJECTAGG(
+								`tvName`.`name`,
+								`tvValue`.`value`
+							)
 						FROM
 							'. \ddTools::$tables["site_tmplvar_contentvalues"] .' as `tvValue`,
 							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`
@@ -205,8 +209,14 @@ abstract class DataProvider
 				//If TVs exist
 				if (!empty($this->docFieldsToGet['tvs'])){
 					//Get TVs values
-					foreach ($data as $docIndex => $docValue){
-						$docValue['TVs'] = json_decode($docValue['TVs'], true);
+					foreach (
+						$data as
+						$docIndex => $docValue
+					){
+						$docValue['TVs'] = json_decode(
+							$docValue['TVs'],
+							true
+						);
 						
 						foreach ($this->docFieldsToGet['tvs'] as $tvName){
 							//If valid TVs exist
@@ -214,6 +224,7 @@ abstract class DataProvider
 								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
 							}
 						}
+						
 						unset($data[$docIndex]['TVs']);
 					}
 				}
