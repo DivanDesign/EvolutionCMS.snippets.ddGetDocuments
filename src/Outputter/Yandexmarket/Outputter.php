@@ -320,14 +320,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	}
 	
 	/**
-	 * screening
-	 * @version 0.1.1 (2018-10-11)
+	 * escapeSpecialChars
+	 * @version 0.2 (2018-10-11)
 	 * 
 	 * @param $inputString {string} — Строка, которую нужно экранировать. https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
 	 * @return {string}
 	 */
-	public function screening($inputString){
+	private function escapeSpecialChars($inputString){
 		return str_replace(
 			[
 				'"',
@@ -451,7 +451,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
-									'value' => $this->screening($data->provider->items[$docIndex][$offerFieldData->docFieldName])
+									'value' => $this->escapeSpecialChars($data->provider->items[$docIndex][$offerFieldData->docFieldName])
 								],
 								'mergeAll' => false
 							]);
@@ -506,7 +506,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						'text' => $this->templates->categories_item,
 						'data' => [
 							'id' => $category['id'],
-							'value' => $this->screening($category['pagetitle']),
+							'value' => $this->escapeSpecialChars($category['pagetitle']),
 							'parent' => $category['parent'],
 							'attrs' => ' parentId="'. $category['parent'] .'"'
 						],
@@ -541,7 +541,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				'text' => $this->templates->categories_item,
 				'data' => [
 					'id' => $category['id'],
-					'value' => $this->screening($category['pagetitle']),
+					'value' => $this->escapeSpecialChars($category['pagetitle']),
 					'parent' => $category['parent']
 				],
 				'mergeAll' => false
