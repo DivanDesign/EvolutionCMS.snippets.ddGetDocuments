@@ -114,7 +114,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedDocsFromDb
-	 * @version 1.1.1 (2018-06-19)
+	 * @version 2.0.1 (2018-10-11)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -164,6 +164,9 @@ abstract class DataProvider
 		}
 		
 		if(!empty($params->docIds)){
+			if(!isset($params->where)){
+				$params->where = '';
+			}
 			$params->where .= '`documents`.`id` IN ('.$params->docIds.')';
 		
 			if(!empty($queryData->where_filter)){
@@ -180,7 +183,20 @@ abstract class DataProvider
 					`documents`.`'.implode(
 						'`, `documents`.`',
 						$this->docFieldsToGet['fields']
-					).'`
+					).'`,
+					(
+						SELECT
+							JSON_OBJECTAGG(
+								`tvName`.`name`,
+								`tvValue`.`value`
+							)
+						FROM
+							'. \ddTools::$tables["site_tmplvar_contentvalues"] .' as `tvValue`,
+							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`
+						WHERE
+							`tvName`.`id` = `tvValue`.`tmplvarid` AND
+							`documents`.`id` = `tvValue`.`contentid`
+					) as `TVs`
 				FROM
 					'.$queryData->from.' AS `documents`
 				WHERE
@@ -190,23 +206,26 @@ abstract class DataProvider
 			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 			
 			if(is_array($data)){
-				//TODO: Может быть стоит объединить в один запрос с верхним, т. к. фильтрация по TV там уже используется
 				//If TVs exist
 				if (!empty($this->docFieldsToGet['tvs'])){
 					//Get TVs values
-					foreach ($data as $docIndex => $docValue){
-						$docTvs = \ddTools::getTemplateVarOutput(
-							$this->docFieldsToGet['tvs'],
-							$docValue['id']
+					foreach (
+						$data as
+						$docIndex => $docValue
+					){
+						$docValue['TVs'] = json_decode(
+							$docValue['TVs'],
+							true
 						);
 						
-						//If valid TVs exist
-						if (is_array($docTvs)){
-							$data[$docIndex] = array_merge(
-								$data[$docIndex],
-								$docTvs
-							);
+						foreach ($this->docFieldsToGet['tvs'] as $tvName){
+							//If valid TVs exist
+							if(isset($docValue['TVs'][$tvName])){
+								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
+							}
 						}
+						
+						unset($data[$docIndex]['TVs']);
 					}
 				}
 				

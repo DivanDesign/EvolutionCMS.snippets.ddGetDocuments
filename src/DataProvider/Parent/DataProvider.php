@@ -10,11 +10,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	protected
 		$parentIds = [0],
 		$depth = 1,
+		$excludeIds = [],
 		$filter = '`published` = 1 AND `deleted` = 0';
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.1 (2018-08-02)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -29,68 +30,66 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				$this->parentIds
 			);
 		}
+		if (!is_array($this->excludeIds)){
+			$this->excludeIds = explode(
+				',',
+				$this->excludeIds
+			);
+		}
 	}
 	
 	/**
 	 * get
-	 * @version 1.0 (2018-06-19)
+	 * @version 2.0 (2018-09-10)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public function get(){
-		return $this->getSelectedDocsFromDb(['docIds' => implode(
-			',',
-			$this->getAllChildrenIds(
-				$this->parentIds,
-				$this->depth
-			)
-		)]);
-	}
-	
-	/**
-	 * getAllChildrenIds
-	 * @version 1.0.5 (2018-06-12)
-	 * 
-	 * @return {array}
-	 */
-	protected function getAllChildrenIds(
-		array $parentIds,
-		$depth
-	){
-		$result = [];
-		
 		$parentIdsStr = implode(
 			',',
-			$parentIds
+			$this->parentIds
 		);
+		$excludeIdsStr = trim(implode(
+			',',
+			$this->excludeIds
+		));
+		
+		$allChildrenIds = 'SELECT 
+			`id`
+		FROM 
+			' . \ddTools::$tables['site_content'] . '
+		WHERE 
+			`parent` in (' . $parentIdsStr . ')
+			' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '');
 		
 		if($parentIdsStr !== ''){
-			$resultArray = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
-				SELECT `id`
-				FROM '.\ddTools::$tables['site_content'].'
-				WHERE `parent` IN ('.$parentIdsStr.')
-			'));
-			
-			if(
-				is_array($resultArray) &&
-				!empty($resultArray)
-			){
-				foreach($resultArray as $document){
-					$result[] = $document['id'];
-				}
-				
-				if($depth > 1){
-					$result = array_merge(
-						$result,
-						$this->getAllChildrenIds(
-							$result,
-							$depth - 1
-						)
-					);
-				}
+			if($this->depth > 1){
+				$allChildrenIds = 'WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
+					SELECT 
+						`id`, `parent`, 1
+					FROM 
+						' . \ddTools::$tables['site_content'] . '
+					WHERE 
+						`parent` in (' . $parentIdsStr . ')
+						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
+					UNION ALL
+					SELECT 
+						`content`.`id`, `content`.`parent`, `recursive`.`depth`+1
+					FROM 
+						' . \ddTools::$tables['site_content'] . ' as `content` 
+					JOIN 
+						`recursive_query` as `recursive` 
+					ON 
+						`recursive`.`id` = `content`.`parent`
+					WHERE 
+						`recursive`.`depth` < ' . $this->depth . '
+						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
+				) SELECT 
+					DISTINCT `id`
+				FROM 
+					`recursive_query`';
 			}
 		}
-		
-		return $result;
+		return $this->getSelectedDocsFromDb(['docIds' => $allChildrenIds]);
 	}
 }

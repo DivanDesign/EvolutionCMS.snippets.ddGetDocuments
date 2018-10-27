@@ -138,6 +138,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			$this->noResults !== null &&
 			$this->noResults != ''
 		){
+			$chunkContent = \ddTools::$modx->getChunk($this->noResults);
+			
 			if(!is_null($chunkContent)){
 				$result = \ddTools::parseSource(\ddTools::parseText([
 					'text' => \ddTools::$modx->getTpl($this->noResults),

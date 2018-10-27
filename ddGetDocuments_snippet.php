@@ -1,11 +1,12 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.9 (2018-06-29)
+ * @version 0.10 (2018-10-27)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @uses PHP >= 5.4.
+ * @uses MySQL >= 8.
  * @uses MODXEvo >= 1.1.
  * @uses MODXEvo.libraries.ddTools >= 0.22.
  * 
@@ -15,6 +16,7 @@
  * Providers → Parent:
  * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent ID(s). Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
+ * @param $providerParams['excludeIds'] {array|string_commaSepareted} — The IDs which will excluded.
  * @example &providerParams=`{"parentIds": 1, "depth": 2}`
  * @example &providerParams=`parentIds=1&depth=2`
  * Providers → Select:
@@ -59,6 +61,7 @@
  * @param $outputterParams['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
  * @param $outputterParams['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
  * @param $outputterParams['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+ * @param $outputterParams['categoryIds_last'] {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —.
  * @param $outputterParams['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
  * @param $outputterParams['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
  * @param $outputterParams['offerFields_picture'] {string_docField} — Поле, содержащее изображение товара. Defalut: —.
@@ -102,7 +105,7 @@
  * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
  * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
- * @link https://code.divandesign.biz/modx/ddgetdocuments/0.9
+ * @link https://code.divandesign.biz/modx/ddgetdocuments/0.10
  * 
  * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
  **/
