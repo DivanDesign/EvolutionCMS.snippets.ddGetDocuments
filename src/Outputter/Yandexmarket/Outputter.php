@@ -349,7 +349,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.2.2 (2018-10-11)
+	 * @version 1.2.3 (2018-10-11)
 	 * 
 	 * @param $data {Output}
 	 * 

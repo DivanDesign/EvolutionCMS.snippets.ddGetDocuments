@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.9 (2018-06-29)
+ * @version 0.10 (2018-10-27)
  * 
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
@@ -105,7 +105,7 @@
  * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
  * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
- * @link https://code.divandesign.biz/modx/ddgetdocuments/0.9
+ * @link https://code.divandesign.biz/modx/ddgetdocuments/0.10
  * 
  * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
  **/
