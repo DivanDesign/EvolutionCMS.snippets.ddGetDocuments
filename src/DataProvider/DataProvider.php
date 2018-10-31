@@ -24,6 +24,14 @@ abstract class DataProvider
 		$orderBy;
 	
 	/**
+	 * @property $getSelectedDocsFromDbTVsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 */
+	private $getSelectedDocsFromDbTVsSQL = 'JSON_OBJECTAGG(
+		`tvName`.`name`,
+		`tvValue`.`value`
+	)';
+	
+	/**
 	 * includeProviderByName
 	 * @version 1.0.2 (2018-06-12)
 	 * 
@@ -49,7 +57,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.0.1 (2018-10-31)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -78,6 +86,38 @@ abstract class DataProvider
 			)){
 				$this->{$paramName} = $paramValue;
 			}
+		}
+		
+		//TODO: Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+		$dbVersion = \ddTools::$modx->db->getValue(\ddTools::$modx->db->query('SELECT VERSION()'));
+		
+		if (
+			//MariaDB is used
+			stripos(
+				$dbVersion,
+				'mariadb'
+			) !== false &&
+			//And version < 10.4
+			version_compare(
+				$dbVersion,
+				'10.4',
+				'<'
+			)
+		){
+			$this->getSelectedDocsFromDbTVsSQL = 'CONCAT(
+				"{",
+				GROUP_CONCAT(
+					TRIM(
+						LEADING "{" FROM TRIM(
+							TRAILING "}" FROM JSON_OBJECT(
+								`tvName`.`name`, 
+								`tvValue`.`value`
+							)
+						)
+					)
+				),
+				"}"
+			)';
 		}
 	}
 	
@@ -114,7 +154,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedDocsFromDb
-	 * @version 2.0.1 (2018-10-11)
+	 * @version 2.0.2 (2018-10-31)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -186,10 +226,7 @@ abstract class DataProvider
 					).'`,
 					(
 						SELECT
-							JSON_OBJECTAGG(
-								`tvName`.`name`,
-								`tvValue`.`value`
-							)
+							'.$this->getSelectedDocsFromDbTVsSQL.'
 						FROM
 							'. \ddTools::$tables["site_tmplvar_contentvalues"] .' as `tvValue`,
 							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`

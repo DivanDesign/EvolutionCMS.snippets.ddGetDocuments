@@ -6,7 +6,7 @@
  * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
  * 
  * @uses PHP >= 5.4.
- * @uses MySQL >= 8.
+ * @uses MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
  * @uses MODXEvo >= 1.1.
  * @uses MODXEvo.libraries.ddTools >= 0.22.
  * 
