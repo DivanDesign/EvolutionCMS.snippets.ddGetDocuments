@@ -14,13 +14,13 @@
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
  * @param $providerParams {stirng_json|string_queryFormated} — Parameters to be passed to the provider.
  * Providers → Parent:
- * @param $providerParams['parentIds'] {array|string_commaSepareted} — Parent ID(s). Default: 0.
+ * @param $providerParams['parentIds'] {array|string_commaSeparated} — Parent ID(s). Default: 0.
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
- * @param $providerParams['excludeIds'] {array|string_commaSepareted} — The IDs which will excluded.
+ * @param $providerParams['excludeIds'] {array|string_commaSeparated} — The document IDs which need to exclude. Default: —.
  * @example &providerParams=`{"parentIds": 1, "depth": 2}`
  * @example &providerParams=`parentIds=1&depth=2`
  * Providers → Select:
- * @param $providerParams['ids'] {string_commaSepareted} — Document IDs to output. @required
+ * @param $providerParams['ids'] {string_commaSeparated} — Document IDs to output. @required
  * @example &providerParams=`{"ids": "1,2,3"}`
  * 
  * General:
@@ -61,7 +61,7 @@
  * @param $outputterParams['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
  * @param $outputterParams['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
  * @param $outputterParams['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
- * @param $outputterParams['categoryIds_last'] {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —.
+ * @param $outputterParams['categoryIds_last'] {string_commaSeparated} — ID конечных категорий (parent). Если пусто, то выводятся только непосредственный родитель товара. Defalut: —.
  * @param $outputterParams['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
  * @param $outputterParams['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
  * @param $outputterParams['offerFields_picture'] {string_docField} — Поле, содержащее изображение товара. Defalut: —.
@@ -102,7 +102,7 @@
  * @param $extendersParams['tagsDelimiter'] {string_tvName} — Tags delimiter in the document field. Default: ', '.
  * @param $extendersParams['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
  * Extenders → Search:
- * @param $extendersParams['docFieldsToSearch'] {string_commaSepareted} — Document fields to search in. Default: 'pagetitle,content'.
+ * @param $extendersParams['docFieldsToSearch'] {string_commaSeparated} — Document fields to search in. Default: 'pagetitle,content'.
  * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
  * @link https://code.divandesign.biz/modx/ddgetdocuments/0.10.1
