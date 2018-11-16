@@ -18,7 +18,6 @@
  * @param $providerParams['depth'] {integer} — Depth of children documents search. Default: 1.
  * @param $providerParams['excludeIds'] {array|string_commaSeparated} — The document IDs which need to exclude. Default: —.
  * @example &providerParams=`{"parentIds": 1, "depth": 2}`
- * @example &providerParams=`parentIds=1&depth=2`
  * Providers → Select:
  * @param $providerParams['ids'] {string_commaSeparated} — Document IDs to output. @required
  * @example &providerParams=`{"ids": "1,2,3"}`
@@ -44,12 +43,10 @@
  * @param $outputterParams['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
  * @param $outputterParams['noResults'] {string|string_chunkName|string} — A chunk or text to output when no items found (chunk name or code via “@CODE:” prefix). Available placeholders: [+any of extender placeholders+]. 
  * @example &outputterParams=`{"itemTpl": "chunk_1", "wrapperTpl": "chunk_2", "noResults": "No items found"}`
- * @example &outputterParams=`itemTpl=chunk_1&wrapperTpl=chunk_2&noResults=No items found`
  * Outputters → Json:
  * @param $outputterParams['docFields'] {array|string_commaSeparated} — Document fields to output (including TVs). Default: 'id'.
  * @param $outputterParams['docFields'][i] {string} — Document field or TV. @required
  * @example &outputterParams=`{"docFields": "id,pagetitle,introtext"}`
- * @example &outputterParams=`docFields=id,pagetitle,introtext`
  * Outputters → Sitemap:
  * @param $outputterParams['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
  * @param $outputterParams['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
