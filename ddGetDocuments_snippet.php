@@ -35,9 +35,9 @@
  * @param $outputter {'string'|'json'|'sitemap'|'yandexmarket'|'raw'} — Format of the output. Default: 'string'.
  * @param $outputterParams {stirng_json|string_queryFormated} — Parameters to be passed to the specified formatter.
  * Outputters → String:
- * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
- * @param $outputterParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
- * @param $outputterParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+].
+ * @param $outputterParams['itemTpl'] {string_chunkName|string} — Item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+], [+itemNumber+], [+itemNumberZeroBased+]. @required
+ * @param $outputterParams['itemTplFirst'] {string_chunkName|string} — First item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+], [+itemNumber+], [+itemNumberZeroBased+].
+ * @param $outputterParams['itemTplLast'] {string_chunkName|string} — Last item template (chunk name or code via “@CODE:” prefix). Available placeholders: [+any field or tv name+], [+any of extender placeholders+], [+itemNumber+], [+itemNumberZeroBased+].
  * @param $outputterParams['wrapperTpl'] {string_chunkName|string} — Wrapper template (chunk name or code via “@CODE:” prefix). Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+], [+any placeholders from “placeholders” param+].
  * @param $outputterParams['placeholders'] {array_associative} — Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Е.g. 'placeholders[alias]=test&placeholders[pagetitle]=Some title'. Default: []. 
  * @param $outputterParams['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required 
