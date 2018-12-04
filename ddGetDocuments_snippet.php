@@ -7,8 +7,8 @@
  * 
  * @uses PHP >= 5.4.
  * @uses MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
- * @uses MODXEvo >= 1.1.
- * @uses MODXEvo.libraries.ddTools >= 0.22.
+ * @uses (MODX)EvolutionCMS >= 1.1.
+ * @uses (MODX)EvolutionCMS.libraries.ddTools >= 0.22.
  * 
  * Providers:
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
