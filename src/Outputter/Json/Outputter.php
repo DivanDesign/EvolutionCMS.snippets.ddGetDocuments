@@ -8,7 +8,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	/**
 	 * parse
-	 * @version 2.1.1 (2018-06-19)
+	 * @version 2.1.2 (2019-03-11)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -18,11 +18,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$result = [];
 		
 		//Пройдемся по полученным данным
-		foreach($data->provider->items as $itemIndex => $itemData){
+		foreach(
+			$data->provider->items as
+			$itemIndex => $itemData
+		){
 			$result_item = [];
 			
 			//Result must contains only specified fields
-			foreach($this->docFields as $docField){
+			foreach(
+				$this->docFields as
+				$docField
+			){
 				$result_item[$docField] = $itemData[$docField];
 			}
 			

@@ -15,7 +15,7 @@ abstract class Outputter
 	
 	/**
 	 * includeOutputterByName
-	 * @version 1.0.2 (2018-06-17)
+	 * @version 1.0.3 (2019-03-11)
 	 * 
 	 * @param $parserName {string}
 	 * 
@@ -25,15 +25,15 @@ abstract class Outputter
 	 */
 	public final static function includeOutputterByName($parserName){
 		$parserName = ucfirst(strtolower($parserName));
-		$parserPath = $parserName.DIRECTORY_SEPARATOR.'Outputter'.'.php';
+		$parserPath = $parserName.DIRECTORY_SEPARATOR . 'Outputter' . '.php';
 		
-		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$parserPath)){
+		if(is_file(__DIR__.DIRECTORY_SEPARATOR . $parserPath)){
 			require_once($parserPath);
 			
-			return __NAMESPACE__.'\\'.$parserName.'\\'.'Outputter';
+			return __NAMESPACE__ . '\\' . $parserName . '\\' . 'Outputter';
 		}else{
 			throw new \Exception(
-				'Parser “'.$parserName.'” not found.',
+				'Outputter “' . $parserName . '” not found.',
 				500
 			);
 		}
@@ -41,14 +41,17 @@ abstract class Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.2 (2018-06-19)
+	 * @version 1.2.1 (2019-03-11)
 	 * 
 	 * @param $params {array}
 	 * @param $params['dataProvider'] {\ddGetDocuments\DataProvider\DataProvider}
 	 */
 	function __construct(array $params = []){
 		//Все параметры задают свойства объекта
-		foreach ($params as $paramName => $paramValue){
+		foreach (
+			$params as
+			$paramName => $paramValue
+		){
 			//Validation
 			if (property_exists(
 				$this,
