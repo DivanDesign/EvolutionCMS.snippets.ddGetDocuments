@@ -8,8 +8,10 @@ use ddGetDocuments\Input;
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected
-		$ids = null,
-		$filter = null;
+		$filter = null,
+		
+		$ids = null
+	;
 	
 	/**
 	 * get

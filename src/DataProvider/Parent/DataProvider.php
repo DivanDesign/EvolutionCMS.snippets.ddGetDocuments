@@ -8,10 +8,12 @@ use ddGetDocuments\Input;
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected
+		$filter = '`published` = 1 AND `deleted` = 0',
+		
 		$parentIds = [0],
 		$depth = 1,
-		$excludeIds = [],
-		$filter = '`published` = 1 AND `deleted` = 0';
+		$excludeIds = []
+	;
 	
 	/**
 	 * __construct
@@ -40,7 +42,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0 (2018-09-10)
+	 * @version 2.0.1 (2019-03-12)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -57,7 +59,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		$allChildrenIds = 'SELECT 
 			`id`
 		FROM 
-			' . \ddTools::$tables['site_content'] . '
+			' . $this->resourcesTableName . '
 		WHERE 
 			`parent` in (' . $parentIdsStr . ')
 			' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '');
@@ -68,7 +70,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 					SELECT 
 						`id`, `parent`, 1
 					FROM 
-						' . \ddTools::$tables['site_content'] . '
+						' . $this->resourcesTableName . '
 					WHERE 
 						`parent` in (' . $parentIdsStr . ')
 						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
@@ -76,7 +78,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 					SELECT 
 						`content`.`id`, `content`.`parent`, `recursive`.`depth`+1
 					FROM 
-						' . \ddTools::$tables['site_content'] . ' as `content` 
+						' . $this->resourcesTableName . ' as `content` 
 					JOIN 
 						`recursive_query` as `recursive` 
 					ON 

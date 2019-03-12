@@ -21,7 +21,11 @@ abstract class DataProvider
 		$total,
 		$filter,
 		$offset,
-		$orderBy;
+		$orderBy,
+		/**
+		 * @property $resourcesTableName {string} — Source DB table name. Default: \ddTools::$tables['site_content'].
+		 */
+		$resourcesTableName = 'site_content';
 	
 	/**
 	 * @property $getSelectedDocsFromDbTVsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
@@ -57,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.0.1 (2018-10-31)
+	 * @version 1.1 (2019-03-12)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -87,6 +91,13 @@ abstract class DataProvider
 				$this->{$paramName} = $paramValue;
 			}
 		}
+		
+		//Init source DB table name
+		$this->resourcesTableName =
+			isset(\ddTools::$tables[$this->resourcesTableName]) ?
+			\ddTools::$tables[$this->resourcesTableName] :
+			$this->resourcesTableName
+		;
 		
 		//TODO: Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
 		$dbVersion = \ddTools::$modx->db->getValue(\ddTools::$modx->db->query('SELECT VERSION()'));
@@ -341,7 +352,7 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.3 (2018-06-12)
+	 * @version 1.0.4 (2019-03-12)
 	 * 
 	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
@@ -358,7 +369,7 @@ abstract class DataProvider
 		
 		//select query
 		$selectTvsQuery = 'SELECT `c`.*,';
-		$fromTvsQuery = 'FROM '.\ddTools::$tables['site_content'].' as `c`';
+		$fromTvsQuery = 'FROM ' . $this->resourcesTableName . ' as `c`';
 		//join query
 		$joinTvsQuery = '';
 		//where query
@@ -401,7 +412,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0.2 (2018-06-12)
+	 * @version 1.0.3 (2019-03-12)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -412,7 +423,7 @@ abstract class DataProvider
 	protected final function prepareFromAndFilterQueries($filterStr){
 		$result = [
 			//By default, the required data is just fetched from the site_content table
-			'from' => \ddTools::$tables['site_content'],
+			'from' => $this->resourcesTableName,
 			'filter' => ''
 		];
 		
