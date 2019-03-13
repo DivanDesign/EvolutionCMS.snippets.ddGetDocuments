@@ -8,13 +8,13 @@ abstract class DataProvider
 {
 	protected
 		/**
-		 * @property $docFieldsToGet {array_associative} — Document fields which need to get.
-		 * @property $docFieldsToGet['fields'] {array} — Common document fileds.
-		 * @property $docFieldsToGet['fields'][i] {string} — Field name.
-		 * @property $docFieldsToGet['tvs'] {array} — TVs.
-		 * @property $docFieldsToGet['tvs'][i] {string} — TV name.
+		 * @property $resourcesFieldsToGet {array_associative} — Document fields which need to get.
+		 * @property $resourcesFieldsToGet['fields'] {array} — Common document fileds.
+		 * @property $resourcesFieldsToGet['fields'][i] {string} — Field name.
+		 * @property $resourcesFieldsToGet['tvs'] {array} — TVs.
+		 * @property $resourcesFieldsToGet['tvs'][i] {string} — TV name.
 		 */
-		$docFieldsToGet = [
+		$resourcesFieldsToGet = [
 			'fields' => ['id'],
 			'tvs' => []
 		],
@@ -28,9 +28,9 @@ abstract class DataProvider
 		$resourcesTableName = 'site_content';
 	
 	/**
-	 * @property $getSelectedDocsFromDbTVsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 * @property $getSelectedResourcesFromDbTVsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
 	 */
-	private $getSelectedDocsFromDbTVsSQL = 'JSON_OBJECTAGG(
+	private $getSelectedResourcesFromDbTVsSQL = 'JSON_OBJECTAGG(
 		`tvName`.`name`,
 		`tvValue`.`value`
 	)';
@@ -61,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2019-03-12)
+	 * @version 1.1.1 (2019-03-13)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -115,7 +115,7 @@ abstract class DataProvider
 				'<'
 			)
 		){
-			$this->getSelectedDocsFromDbTVsSQL = 'CONCAT(
+			$this->getSelectedResourcesFromDbTVsSQL = 'CONCAT(
 				"{",
 				GROUP_CONCAT(
 					TRIM(
@@ -133,15 +133,15 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * addDocFieldsToGet
-	 * @version 1.0 (2018-06-17)
+	 * addResourcesFieldsToGet
+	 * @version 2.0 (2019-03-13)
 	 * 
 	 * @param $fields {array}
 	 * @param $fields[i] {string} — Name of document field or TV.
 	 * 
 	 * @return {void}
 	 */
-	public final function addDocFieldsToGet($fields){
+	public final function addResourcesFieldsToGet($fields){
 		//Separate TVs and common document fields
 		$fields = \ddTools::prepareDocData([
 			'data' => array_flip($fields)
@@ -149,30 +149,30 @@ abstract class DataProvider
 		
 		//Save common fields
 		if (!empty($fields->fieldsData)){
-			$this->docFieldsToGet['fields'] = array_unique(array_merge(
-				$this->docFieldsToGet['fields'],
+			$this->resourcesFieldsToGet['fields'] = array_unique(array_merge(
+				$this->resourcesFieldsToGet['fields'],
 				array_keys($fields->fieldsData)
 			));
 		}
 		//Save TVs
 		if (!empty($fields->tvsData)){
-			$this->docFieldsToGet['tvs'] = array_unique(array_merge(
-				$this->docFieldsToGet['tvs'],
+			$this->resourcesFieldsToGet['tvs'] = array_unique(array_merge(
+				$this->resourcesFieldsToGet['tvs'],
 				array_keys($fields->tvsData)
 			));
 		}
 	}
 	
 	/**
-	 * getSelectedDocsFromDb
-	 * @version 2.0.2 (2018-10-31)
+	 * getSelectedResourcesFromDb
+	 * @version 3.0 (2019-03-13)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getSelectedDocsFromDb($params = []){
+	protected function getSelectedResourcesFromDb($params = []){
 		//Defaults
 		$params = (object) array_merge([
 			'docIds' => ''
@@ -233,11 +233,11 @@ abstract class DataProvider
 					SQL_CALC_FOUND_ROWS
 					`documents`.`'.implode(
 						'`, `documents`.`',
-						$this->docFieldsToGet['fields']
+						$this->resourcesFieldsToGet['fields']
 					).'`,
 					(
 						SELECT
-							'.$this->getSelectedDocsFromDbTVsSQL.'
+							'.$this->getSelectedResourcesFromDbTVsSQL.'
 						FROM
 							'. \ddTools::$tables["site_tmplvar_contentvalues"] .' as `tvValue`,
 							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`
@@ -255,7 +255,7 @@ abstract class DataProvider
 			
 			if(is_array($data)){
 				//If TVs exist
-				if (!empty($this->docFieldsToGet['tvs'])){
+				if (!empty($this->resourcesFieldsToGet['tvs'])){
 					//Get TVs values
 					foreach (
 						$data as
@@ -266,7 +266,7 @@ abstract class DataProvider
 							true
 						);
 						
-						foreach ($this->docFieldsToGet['tvs'] as $tvName){
+						foreach ($this->resourcesFieldsToGet['tvs'] as $tvName){
 							//If valid TVs exist
 							if(isset($docValue['TVs'][$tvName])){
 								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
@@ -289,12 +289,12 @@ abstract class DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.1 (2018-06-19)
+	 * @version 2.0.2 (2019-03-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public function get(){
-		return $this->getSelectedDocsFromDb();
+		return $this->getSelectedResourcesFromDb();
 	}
 	
 	/**

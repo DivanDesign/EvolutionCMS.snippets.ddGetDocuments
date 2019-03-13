@@ -42,7 +42,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.1 (2019-03-12)
+	 * @version 2.0.2 (2019-03-13)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -92,6 +92,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 					`recursive_query`';
 			}
 		}
-		return $this->getSelectedDocsFromDb(['docIds' => $allChildrenIds]);
+		return $this->getSelectedResourcesFromDb(['docIds' => $allChildrenIds]);
 	}
 }

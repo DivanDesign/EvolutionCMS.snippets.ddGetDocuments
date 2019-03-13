@@ -41,7 +41,7 @@ abstract class Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.2.1 (2019-03-11)
+	 * @version 1.2.2 (2019-03-13)
 	 * 
 	 * @param $params {array}
 	 * @param $params['dataProvider'] {\ddGetDocuments\DataProvider\DataProvider}
@@ -74,7 +74,7 @@ abstract class Outputter
 			$this->docFields = ['id'];
 		}else if (isset($params['dataProvider'])){
 			//Ask dataProvider to get them
-			$params['dataProvider']->addDocFieldsToGet($this->docFields);
+			$params['dataProvider']->addResourcesFieldsToGet($this->docFields);
 		}
 	}
 	
