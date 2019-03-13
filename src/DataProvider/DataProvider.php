@@ -165,7 +165,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0 (2019-03-13)
+	 * @version 3.0.1 (2019-03-13)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -218,7 +218,7 @@ abstract class DataProvider
 			if(!isset($params->where)){
 				$params->where = '';
 			}
-			$params->where .= '`documents`.`id` IN ('.$params->docIds.')';
+			$params->where .= '`resources`.`id` IN ('.$params->docIds.')';
 		
 			if(!empty($queryData->where_filter)){
 				$params->where .= ' AND '.$queryData->where_filter;
@@ -231,8 +231,8 @@ abstract class DataProvider
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS
-					`documents`.`'.implode(
-						'`, `documents`.`',
+					`resources`.`'.implode(
+						'`, `resources`.`',
 						$this->resourcesFieldsToGet['fields']
 					).'`,
 					(
@@ -243,10 +243,10 @@ abstract class DataProvider
 							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`
 						WHERE
 							`tvName`.`id` = `tvValue`.`tmplvarid` AND
-							`documents`.`id` = `tvValue`.`contentid`
+							`resources`.`id` = `tvValue`.`contentid`
 					) as `TVs`
 				FROM
-					'.$queryData->from.' AS `documents`
+					'.$queryData->from.' AS `resources`
 				WHERE
 					'.$params->where.' '.$queryData->orderBy.' '.$queryData->limit.'
 			'));
