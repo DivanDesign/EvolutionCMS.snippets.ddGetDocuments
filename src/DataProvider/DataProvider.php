@@ -298,10 +298,36 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * prepareUsedDocFieldsFromSqlString
-	 * @version 2.0 (2019-03-13)
+	 * getUsedFieldsFromSqlString
+	 * @version 1.0 (2019-03-13)
 	 * 
-	 * @param $filterStr {string}
+	 * @param $sqlString {string_sql}
+	 * 
+	 * @return $result {array}
+	 * @return $result[i] {string} — Field name.
+	 */
+	protected final function getUsedFieldsFromSqlString($sqlString){
+		$result = [];
+		
+		//Try to find all resources fields (including tvs) used in string (e. g. in “filter”) by the pattern
+		preg_match_all(
+			"/`(\w+)`/",
+			$sqlString,
+			$fields
+		);
+		
+		if(!empty($fields[1])){
+			$result = $fields[1];
+		}
+		
+		return $result;
+	}
+	
+	/**
+	 * prepareUsedDocFieldsFromSqlString
+	 * @version 2.0.1 (2019-03-13)
+	 * 
+	 * @param $sqlString {string_sql}
 	 * 
 	 * @return $result {array_associative}
 	 * @return $result['fields'] {array_associative} — Document fields.
@@ -309,20 +335,15 @@ abstract class DataProvider
 	 * @return $result['tvs'] {array_associative} — Template variables.
 	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
-	protected final function prepareUsedDocFieldsFromSqlString($filterStr){
+	protected final function prepareUsedDocFieldsFromSqlString($sqlString){
 		$result = [];
 		
-		//Try to find all fields/tvs used in filter by the pattern
-		preg_match_all(
-			"/`(\w+)`/",
-			$filterStr,
-			$fields
-		);
+		$usedFields = $this->getUsedFieldsFromSqlString($sqlString);
 		
-		if(!empty($fields[1])){
+		if(!empty($usedFields)){
 			//Sort out fields from tvs
 			$fieldsArray = \ddTools::prepareDocData([
-				'data' => array_flip($fields[1]),
+				'data' => array_flip($usedFields),
 				//Just something
 				'tvAdditionalFieldsToGet' => ['name']
 			]);
