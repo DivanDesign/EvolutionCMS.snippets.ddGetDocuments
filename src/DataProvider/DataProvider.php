@@ -298,8 +298,8 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * getUsedFieldsFromFilter
-	 * @version 1.0.5 (2019-03-13)
+	 * prepareUsedDocFieldsFromSqlString
+	 * @version 2.0 (2019-03-13)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -309,7 +309,7 @@ abstract class DataProvider
 	 * @return $result['tvs'] {array_associative} — Template variables.
 	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
-	protected final function getUsedFieldsFromFilter($filterStr){
+	protected final function prepareUsedDocFieldsFromSqlString($filterStr){
 		$result = [];
 		
 		//Try to find all fields/tvs used in filter by the pattern
@@ -412,7 +412,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0.3 (2019-03-12)
+	 * @version 1.0.4 (2019-03-13)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -429,7 +429,7 @@ abstract class DataProvider
 		
 		//If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filterStr)){
-			$usedFields = $this->getUsedFieldsFromFilter($filterStr);
+			$usedFields = $this->prepareUsedDocFieldsFromSqlString($filterStr);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
