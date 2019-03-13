@@ -299,7 +299,7 @@ abstract class DataProvider
 	
 	/**
 	 * getUsedFieldsFromFilter
-	 * @version 1.0.4 (2018-06-17)
+	 * @version 1.0.5 (2019-03-13)
 	 * 
 	 * @param $filterStr {string}
 	 * 
@@ -309,7 +309,7 @@ abstract class DataProvider
 	 * @return $result['tvs'] {array_associative} — Template variables.
 	 * @return $result['tvs'][] {array_associative} — TV name.
 	 */
-	public final function getUsedFieldsFromFilter($filterStr){
+	protected final function getUsedFieldsFromFilter($filterStr){
 		$result = [];
 		
 		//Try to find all fields/tvs used in filter by the pattern
