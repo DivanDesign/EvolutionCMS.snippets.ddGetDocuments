@@ -17,7 +17,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-08-02)
+	 * @version 1.1.1 (2019-03-12)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -38,11 +38,17 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				$this->excludeIds
 			);
 		}
+		
+		//Parent IDs must be set.
+		//TODO: Does we need to to this? People must set correct parameters. Or not? :)
+		if (is_empty($this->parentIds)){
+			$this->parentIds = [0];
+		}
 	}
 	
 	/**
 	 * get
-	 * @version 2.0.4 (2019-03-14)
+	 * @version 2.0.5 (2019-03-14)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -71,39 +77,38 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				' . $excludeIdsStr
 		;
 		
-		if($parentIdsStr !== ''){
-			if($this->depth > 1){
-				$allChildrenIds = '
-					WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
-						SELECT
-							`id`,
-							`parent`,
-							1
-						FROM 
-							' . $this->resourcesTableName . '
-						WHERE 
-							`parent` in (' . $parentIdsStr . ')
-							' . $excludeIdsStr . '
-						UNION ALL
-						SELECT
-							`content`.`id`,
-							`content`.`parent`,
-							`recursive`.`depth`+1
-						FROM
-							' . $this->resourcesTableName . ' as `content`
-						JOIN
-							`recursive_query` as `recursive`
-						ON
-							`recursive`.`id` = `content`.`parent`
-						WHERE
-							`recursive`.`depth` < ' . $this->depth . '
-							' . $excludeIdsStr . '
-					) SELECT
-						DISTINCT `id`
+		//Need to get multiple levels
+		if($this->depth > 1){
+			$allChildrenIds = '
+				WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
+					SELECT
+						`id`,
+						`parent`,
+						1
 					FROM
-						`recursive_query`
-				';
-			}
+						' . $this->resourcesTableName . '
+					WHERE
+						`parent` in (' . $parentIdsStr . ')
+						' . $excludeIdsStr . '
+					UNION ALL
+					SELECT
+						`content`.`id`,
+						`content`.`parent`,
+						`recursive`.`depth`+1
+					FROM
+						' . $this->resourcesTableName . ' as `content`
+					JOIN
+						`recursive_query` as `recursive`
+					ON
+						`recursive`.`id` = `content`.`parent`
+					WHERE
+						`recursive`.`depth` < ' . $this->depth . '
+						' . $excludeIdsStr . '
+				) SELECT
+					DISTINCT `id`
+				FROM
+					`recursive_query`
+			';
 		}
 		
 		return $this->getSelectedResourcesFromDb([
