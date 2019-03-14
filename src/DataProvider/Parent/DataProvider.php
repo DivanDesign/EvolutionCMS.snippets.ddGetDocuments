@@ -42,7 +42,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.2 (2019-03-13)
+	 * @version 2.0.3 (2019-03-14)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -56,42 +56,65 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$this->excludeIds
 		));
 		
-		$allChildrenIds = 'SELECT 
-			`id`
-		FROM 
-			' . $this->resourcesTableName . '
-		WHERE 
-			`parent` in (' . $parentIdsStr . ')
-			' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '');
+		$allChildrenIds = '
+			SELECT 
+				`id`
+			FROM 
+				' . $this->resourcesTableName . '
+			WHERE 
+				`parent` in (' . $parentIdsStr . ')
+				' . (
+					$excludeIdsStr !== '' ?
+					'AND `id` NOT IN (' . $excludeIdsStr . ')' :
+					''
+				)
+		;
 		
 		if($parentIdsStr !== ''){
 			if($this->depth > 1){
-				$allChildrenIds = 'WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
-					SELECT 
-						`id`, `parent`, 1
-					FROM 
-						' . $this->resourcesTableName . '
-					WHERE 
-						`parent` in (' . $parentIdsStr . ')
-						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
-					UNION ALL
-					SELECT 
-						`content`.`id`, `content`.`parent`, `recursive`.`depth`+1
-					FROM 
-						' . $this->resourcesTableName . ' as `content` 
-					JOIN 
-						`recursive_query` as `recursive` 
-					ON 
-						`recursive`.`id` = `content`.`parent`
-					WHERE 
-						`recursive`.`depth` < ' . $this->depth . '
-						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
-				) SELECT 
-					DISTINCT `id`
-				FROM 
-					`recursive_query`';
+				$allChildrenIds = '
+					WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
+						SELECT
+							`id`,
+							`parent`,
+							1
+						FROM 
+							' . $this->resourcesTableName . '
+						WHERE 
+							`parent` in (' . $parentIdsStr . ')
+							' . (
+								$excludeIdsStr !== '' ?
+								'AND `id` NOT IN (' . $excludeIdsStr . ')' :
+								''
+							) . '
+						UNION ALL
+						SELECT
+							`content`.`id`,
+							`content`.`parent`,
+							`recursive`.`depth`+1
+						FROM
+							' . $this->resourcesTableName . ' as `content`
+						JOIN
+							`recursive_query` as `recursive`
+						ON
+							`recursive`.`id` = `content`.`parent`
+						WHERE
+							`recursive`.`depth` < ' . $this->depth . '
+							' . (
+								$excludeIdsStr !== '' ?
+								'AND `id` NOT IN (' . $excludeIdsStr . ')' :
+								''
+							) . '
+					) SELECT
+						DISTINCT `id`
+					FROM
+						`recursive_query`
+				';
 			}
 		}
-		return $this->getSelectedResourcesFromDb(['docIds' => $allChildrenIds]);
+		
+		return $this->getSelectedResourcesFromDb([
+			'docIds' => $allChildrenIds
+		]);
 	}
 }

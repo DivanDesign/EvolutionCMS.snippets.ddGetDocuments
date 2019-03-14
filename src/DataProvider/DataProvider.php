@@ -37,7 +37,7 @@ abstract class DataProvider
 	
 	/**
 	 * includeProviderByName
-	 * @version 1.0.2 (2018-06-12)
+	 * @version 1.0.3 (2019-03-14)
 	 * 
 	 * @param $providerName
 	 * @return string
@@ -45,15 +45,15 @@ abstract class DataProvider
 	 */
 	public final static function includeProviderByName($providerName){
 		$providerName = ucfirst(strtolower($providerName));
-		$providerPath = $providerName.DIRECTORY_SEPARATOR.'DataProvider'.".php";
+		$providerPath = $providerName . DIRECTORY_SEPARATOR . 'DataProvider' . ".php";
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
 			require_once($providerPath);
 			
-			return __NAMESPACE__.'\\'.$providerName.'\\'.'DataProvider';
+			return __NAMESPACE__ . '\\' . $providerName . '\\' . 'DataProvider';
 		}else{
 			throw new \Exception(
-				'Data provider '.$providerName.' not found.',
+				'Data provider ' . $providerName . ' not found.',
 				500
 			);
 		}
@@ -61,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.1 (2019-03-13)
+	 * @version 1.1.2 (2019-03-14)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -82,7 +82,10 @@ abstract class DataProvider
 		}
 		
 		//Все параметры задают свойства объекта
-		foreach ($input->providerParams as $paramName => $paramValue){
+		foreach (
+			$input->providerParams as
+			$paramName => $paramValue
+		){
 			//Validation
 			if (property_exists(
 				$this,
@@ -165,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0.1 (2019-03-13)
+	 * @version 3.0.2 (2019-03-14)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -174,9 +177,12 @@ abstract class DataProvider
 	 */
 	protected function getSelectedResourcesFromDb($params = []){
 		//Defaults
-		$params = (object) array_merge([
-			'docIds' => ''
-		], (array) $params);
+		$params = (object) array_merge(
+			[
+				'docIds' => ''
+			],
+			(array) $params
+		);
 		
 		$dataProviderOutput = new DataProviderOutput(
 			[],
@@ -194,34 +200,35 @@ abstract class DataProvider
 		];
 		
 		if(!empty($this->orderBy)){
-			$queryData->orderBy = 'ORDER BY '.$this->orderBy;
+			$queryData->orderBy = 'ORDER BY ' . $this->orderBy;
 		}
 		
 		if(
 			!empty($this->offset) &&
 			!empty($this->total)
 		){
-			$queryData->limit = 'LIMIT '.$this->offset.','.$this->total;
+			$queryData->limit = 'LIMIT ' . $this->offset . ',' . $this->total;
 		}elseif(
 			empty($this->offset) &&
 			!empty($this->total)
 		){
-			$queryData->limit = 'LIMIT '.$this->total;
+			$queryData->limit = 'LIMIT ' . $this->total;
 		}elseif(
 			!empty($this->offset) &&
 			empty($this->total)
 		){
-			$queryData->limit = 'LIMIT '.$this->offset.','.PHP_INT_MAX;
+			$queryData->limit = 'LIMIT ' . $this->offset . ',' . PHP_INT_MAX;
 		}
 		
 		if(!empty($params->docIds)){
 			if(!isset($params->where)){
 				$params->where = '';
 			}
-			$params->where .= '`resources`.`id` IN ('.$params->docIds.')';
-		
+			
+			$params->where .= '`resources`.`id` IN (' . $params->docIds . ')';
+			
 			if(!empty($queryData->where_filter)){
-				$params->where .= ' AND '.$queryData->where_filter;
+				$params->where .= ' AND ' . $queryData->where_filter;
 			}
 		}else{
 			$params->where .= $queryData->where_filter;
@@ -231,24 +238,24 @@ abstract class DataProvider
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS
-					`resources`.`'.implode(
+					`resources`.`' . implode(
 						'`, `resources`.`',
 						$this->resourcesFieldsToGet['fields']
-					).'`,
+					) . '`,
 					(
 						SELECT
 							'.$this->getSelectedResourcesFromDbTVsSQL.'
 						FROM
-							'. \ddTools::$tables["site_tmplvar_contentvalues"] .' as `tvValue`,
-							'. \ddTools::$tables["site_tmplvars"] .' as `tvName`
+							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
+							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
 						WHERE
 							`tvName`.`id` = `tvValue`.`tmplvarid` AND
 							`resources`.`id` = `tvValue`.`contentid`
 					) as `TVs`
 				FROM
-					'.$queryData->from.' AS `resources`
+					' . $queryData->from . ' AS `resources`
 				WHERE
-					'.$params->where.' '.$queryData->orderBy.' '.$queryData->limit.'
+					' . $params->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
 			'));
 			
 			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
@@ -266,7 +273,10 @@ abstract class DataProvider
 							true
 						);
 						
-						foreach ($this->resourcesFieldsToGet['tvs'] as $tvName){
+						foreach (
+							$this->resourcesFieldsToGet['tvs'] as
+							$tvName
+						){
 							//If valid TVs exist
 							if(isset($docValue['TVs'][$tvName])){
 								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
@@ -325,7 +335,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 2.0.1 (2019-03-13)
+	 * @version 2.0.2 (2019-03-14)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
@@ -357,7 +367,10 @@ abstract class DataProvider
 				$result['tvs'] = [];
 				
 				//Check whether the current tv name is an actual tv name
-				foreach($fieldsArray->tvsAdditionalData as $tvName => $tvData){
+				foreach(
+					$fieldsArray->tvsAdditionalData as
+					$tvName => $tvData
+				){
 					//Pupulate the array with the current tv name
 					$result['tvs'][] = $tvName;
 				}
@@ -373,7 +386,7 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.4 (2019-03-12)
+	 * @version 1.0.5 (2019-03-14)
 	 * 
 	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
@@ -398,22 +411,25 @@ abstract class DataProvider
 		
 		$tvCounter = 1;
 		
-		foreach($tvs as $tvName){
+		foreach(
+			$tvs as
+			$tvName
+		){
 			//alias of tmplvar_templates
-			$tvtAlias = '`tvt_'.$tvCounter.'`';
+			$tvtAlias = '`tvt_' . $tvCounter . '`';
 			//alias of tmplvars
-			$tvAlias = '`tv_'.$tvCounter.'`';
+			$tvAlias = '`tv_' . $tvCounter . '`';
 			//alias of tmplvar_contentvalues
-			$tvcvAlias = '`tvcv_'.$tvCounter.'`';
+			$tvcvAlias = '`tvcv_' . $tvCounter . '`';
 			//select not null value from either the real value column or default
-			$selectTvsQuery .= 'coalesce('.$tvcvAlias.'.`value`, '.$tvAlias.'.`default_text`) as `'.$tvName.'`,';
+			$selectTvsQuery .= 'coalesce(' . $tvcvAlias . '.`value`, ' . $tvAlias . '.`default_text`) as `' . $tvName . '`,';
 			
 			$joinTvsQuery .=
-				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_templates'].' AS '.$tvtAlias.' ON '.$tvtAlias.'.`templateid` = `c`.`template`'.
-				' LEFT JOIN '.\ddTools::$tables['site_tmplvars'].' AS '.$tvAlias.' ON '.$tvAlias.'.`id` = '.$tvtAlias.'.`tmplvarid`'.
-				' LEFT JOIN '.\ddTools::$tables['site_tmplvar_contentvalues'].' AS '.$tvcvAlias.' ON '.$tvcvAlias.'.`contentid` = `c`.`id` AND '.$tvcvAlias.'.`tmplvarid` = '.$tvAlias.'.`id`';
+				' LEFT JOIN ' . \ddTools::$tables['site_tmplvar_templates'] . ' AS ' . $tvtAlias . ' ON ' . $tvtAlias . '.`templateid` = `c`.`template`'.
+				' LEFT JOIN ' . \ddTools::$tables['site_tmplvars'] . ' AS ' . $tvAlias . ' ON ' . $tvAlias . '.`id` = ' . $tvtAlias . '.`tmplvarid`'.
+				' LEFT JOIN ' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' AS ' . $tvcvAlias . ' ON ' . $tvcvAlias . '.`contentid` = `c`.`id` AND ' . $tvcvAlias . '.`tmplvarid` = ' . $tvAlias . '.`id`';
 			
-			$whereTvsQuery .= $tvAlias.'.`name` = "'.$tvName.'" AND';
+			$whereTvsQuery .= $tvAlias . '.`name` = "' . $tvName . '" AND';
 			
 			$tvCounter++;
 		}
@@ -428,12 +444,12 @@ abstract class DataProvider
 		);
 		
 		//complete from query
-		return $selectTvsQuery.' '.$fromTvsQuery.' '.$joinTvsQuery.' '.$whereTvsQuery;
+		return $selectTvsQuery . ' ' . $fromTvsQuery . ' ' . $joinTvsQuery . ' ' . $whereTvsQuery;
 	}
 	
 	/**
 	 * prepareFromAndFilterQueries
-	 * @version 1.0.4 (2019-03-13)
+	 * @version 1.0.5 (2019-03-14)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -455,10 +471,10 @@ abstract class DataProvider
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields['tvs'])){
 				//complete from query
-				$result['from'] = '('.$this->buildTVsSubQuery($usedFields['tvs']).')';
+				$result['from'] = '(' . $this->buildTVsSubQuery($usedFields['tvs']) . ')';
 			}
 			
-			$result['filter'] = '('.$filterStr.')';
+			$result['filter'] = '(' . $filterStr . ')';
 		}
 		
 		return $result;
