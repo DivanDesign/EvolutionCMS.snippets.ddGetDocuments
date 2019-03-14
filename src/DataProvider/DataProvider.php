@@ -168,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0.3 (2019-03-14)
+	 * @version 3.0.4 (2019-03-14)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -205,21 +205,25 @@ abstract class DataProvider
 			$queryData->orderBy = 'ORDER BY ' . $this->orderBy;
 		}
 		
-		if(
-			!empty($this->offset) &&
+		//If LIMIT needed
+		if (
+			!empty($this->offset) ||
 			!empty($this->total)
 		){
-			$queryData->limit = 'LIMIT ' . $this->offset . ',' . $this->total;
-		}elseif(
-			empty($this->offset) &&
-			!empty($this->total)
-		){
-			$queryData->limit = 'LIMIT ' . $this->total;
-		}elseif(
-			!empty($this->offset) &&
-			empty($this->total)
-		){
-			$queryData->limit = 'LIMIT ' . $this->offset . ',' . PHP_INT_MAX;
+			$queryData->limit = 'LIMIT ';
+			
+			//Prepare offset
+			if (!empty($this->offset)){
+				$queryData->limit .= $this->offset . ',';
+			}
+			
+			//Prepare total rows
+			if (!empty($this->total)){
+				$queryData->limit .= $this->total;
+			}else{
+				//All rows
+				$queryData->limit .= PHP_INT_MAX;
+			}
 		}
 		
 		if(!empty($params->docIds)){
