@@ -42,7 +42,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.3 (2019-03-14)
+	 * @version 2.0.4 (2019-03-14)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -51,10 +51,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			',',
 			$this->parentIds
 		);
-		$excludeIdsStr = trim(implode(
-			',',
-			$this->excludeIds
-		));
+		
+		if (!empty($this->excludeIds)){
+			$excludeIdsStr = 'AND `id` NOT IN (' . trim(implode(
+				',',
+				$this->excludeIds
+			)) . ')';
+		}else{
+			$excludeIdsStr = '';
+		}
 		
 		$allChildrenIds = '
 			SELECT 
@@ -63,11 +68,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				' . $this->resourcesTableName . '
 			WHERE 
 				`parent` in (' . $parentIdsStr . ')
-				' . (
-					$excludeIdsStr !== '' ?
-					'AND `id` NOT IN (' . $excludeIdsStr . ')' :
-					''
-				)
+				' . $excludeIdsStr
 		;
 		
 		if($parentIdsStr !== ''){
@@ -82,11 +83,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 							' . $this->resourcesTableName . '
 						WHERE 
 							`parent` in (' . $parentIdsStr . ')
-							' . (
-								$excludeIdsStr !== '' ?
-								'AND `id` NOT IN (' . $excludeIdsStr . ')' :
-								''
-							) . '
+							' . $excludeIdsStr . '
 						UNION ALL
 						SELECT
 							`content`.`id`,
@@ -100,11 +97,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 							`recursive`.`id` = `content`.`parent`
 						WHERE
 							`recursive`.`depth` < ' . $this->depth . '
-							' . (
-								$excludeIdsStr !== '' ?
-								'AND `id` NOT IN (' . $excludeIdsStr . ')' :
-								''
-							) . '
+							' . $excludeIdsStr . '
 					) SELECT
 						DISTINCT `id`
 					FROM
