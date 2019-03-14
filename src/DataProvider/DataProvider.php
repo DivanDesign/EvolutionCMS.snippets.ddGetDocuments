@@ -168,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0.4 (2019-03-14)
+	 * @version 3.0.5 (2019-03-14)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
@@ -191,52 +191,9 @@ abstract class DataProvider
 			0
 		);
 		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
+		$queryData = $this->prepareQueryData($params);
 		
-		$queryData = (object) [
-			'from' => $fromAndFilterQueries['from'],
-			'where' => '',
-			'where_filter' => $fromAndFilterQueries['filter'],
-			'orderBy' => '',
-			'limit' => '',
-		];
-		
-		if(!empty($this->orderBy)){
-			$queryData->orderBy = 'ORDER BY ' . $this->orderBy;
-		}
-		
-		//If LIMIT needed
-		if (
-			!empty($this->offset) ||
-			!empty($this->total)
-		){
-			$queryData->limit = 'LIMIT ';
-			
-			//Prepare offset
-			if (!empty($this->offset)){
-				$queryData->limit .= $this->offset . ',';
-			}
-			
-			//Prepare total rows
-			if (!empty($this->total)){
-				$queryData->limit .= $this->total;
-			}else{
-				//All rows
-				$queryData->limit .= PHP_INT_MAX;
-			}
-		}
-		
-		if(!empty($params->docIds)){
-			$params->where .= '`resources`.`id` IN (' . $params->docIds . ')';
-			
-			if(!empty($queryData->where_filter)){
-				$params->where .= ' AND ' . $queryData->where_filter;
-			}
-		}else{
-			$params->where .= $queryData->where_filter;
-		}
-		
-		if(!empty($params->where)){
+		if(!empty($queryData->where)){
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS
@@ -257,7 +214,7 @@ abstract class DataProvider
 				FROM
 					' . $queryData->from . ' AS `resources`
 				WHERE
-					' . $params->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
+					' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
 			'));
 			
 			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
@@ -477,6 +434,77 @@ abstract class DataProvider
 			}
 			
 			$result['filter'] = '(' . $filterStr . ')';
+		}
+		
+		return $result;
+	}
+	
+	/**
+	 * prepareQueryData
+	 * @version 1.0 (2019-03-14)
+	 * 
+	 * @param $params {array_associative|stdClass}
+	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
+	 * @param $params['where'] — Additional “where” clause. Default: ''. @todo Does it needed? “$this->filter” can be used similarly.
+	 * 
+	 * @return $result {stdClass}
+	 * @return $result->from {string}
+	 * @return $result->where {string}
+	 * @return $result->orderBy {string}
+	 * @return $result->limit {string}
+	 */
+	protected final function prepareQueryData($params = []){
+		//Defaults
+		$params = (object) array_merge(
+			[
+				'resourcesIds' => '',
+				'where' => ''
+			],
+			(array) $params
+		);
+		
+		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
+		
+		$result = (object) [
+			'from' => $fromAndFilterQueries['from'],
+			'where' => $params->where,
+			'orderBy' => '',
+			'limit' => '',
+		];
+		
+		if(!empty($this->orderBy)){
+			$result->orderBy = 'ORDER BY ' . $this->orderBy;
+		}
+		
+		//If LIMIT needed
+		if (
+			!empty($this->offset) ||
+			!empty($this->total)
+		){
+			$result->limit = 'LIMIT ';
+			
+			//Prepare offset
+			if (!empty($this->offset)){
+				$result->limit .= $this->offset . ',';
+			}
+			
+			//Prepare total rows
+			if (!empty($this->total)){
+				$result->limit .= $this->total;
+			}else{
+				//All rows
+				$result->limit .= PHP_INT_MAX;
+			}
+		}
+		
+		if(!empty($params->resourcesIds)){
+			$result->where .= '`resources`.`id` IN (' . $params->resourcesIds . ')';
+				
+			if(!empty($fromAndFilterQueries['filter'])){
+				$result->where .= ' AND ' . $fromAndFilterQueries['filter'];
+			}
+		}else{
+			$result->where .= $fromAndFilterQueries['filter'];
 		}
 		
 		return $result;
