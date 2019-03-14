@@ -48,7 +48,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.5 (2019-03-14)
+	 * @version 2.0.6 (2019-03-14)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -66,16 +66,6 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		}else{
 			$excludeIdsStr = '';
 		}
-		
-		$allChildrenIds = '
-			SELECT 
-				`id`
-			FROM 
-				' . $this->resourcesTableName . '
-			WHERE 
-				`parent` in (' . $parentIdsStr . ')
-				' . $excludeIdsStr
-		;
 		
 		//Need to get multiple levels
 		if($this->depth > 1){
@@ -109,6 +99,17 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				FROM
 					`recursive_query`
 			';
+		//Just single level
+		}else{
+			$allChildrenIds = '
+				SELECT 
+					`id`
+				FROM 
+					' . $this->resourcesTableName . '
+				WHERE 
+					`parent` in (' . $parentIdsStr . ')
+					' . $excludeIdsStr
+			;
 		}
 		
 		return $this->getSelectedResourcesFromDb([
