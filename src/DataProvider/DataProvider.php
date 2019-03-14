@@ -168,10 +168,10 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0.6 (2019-03-14)
+	 * @version 4.0 (2019-03-14)
 	 * 
 	 * @param $params {array_associative|stdClass}
-	 * @param $params['docIds'] — Document IDs to get. Default: ''.
+	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
 	 * @param $params['where'] — Additional “where” clause. Default: ''. @todo Does it needed? “$this->filter” can be used similarly.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
@@ -180,7 +180,7 @@ abstract class DataProvider
 		//Defaults
 		$params = (object) array_merge(
 			[
-				'docIds' => '',
+				'resourcesIds' => '',
 				'where' => ''
 			],
 			(array) $params
@@ -408,8 +408,8 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * prepareFromAndFilterQueries
-	 * @version 1.0.5 (2019-03-14)
+	 * prepareQueryData_fromAndFilter
+	 * @version 2.0 (2019-03-14)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -417,7 +417,7 @@ abstract class DataProvider
 	 * @return $result['from'] {string}
 	 * @return $result['filter'] {string}
 	 */
-	protected final function prepareFromAndFilterQueries($filterStr){
+	protected final function prepareQueryData_fromAndFilter($filterStr){
 		$result = [
 			//By default, the required data is just fetched from the site_content table
 			'from' => $this->resourcesTableName,
@@ -464,7 +464,7 @@ abstract class DataProvider
 			(array) $params
 		);
 		
-		$fromAndFilterQueries = $this->prepareFromAndFilterQueries($this->filter);
+		$fromAndFilterQueries = $this->prepareQueryData_fromAndFilter($this->filter);
 		
 		$result = (object) [
 			'from' => $fromAndFilterQueries['from'],
