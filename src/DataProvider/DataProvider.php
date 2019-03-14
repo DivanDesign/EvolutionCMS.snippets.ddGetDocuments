@@ -168,10 +168,11 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 3.0.2 (2019-03-14)
+	 * @version 3.0.3 (2019-03-14)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['docIds'] — Document IDs to get. Default: ''.
+	 * @param $params['where'] — Additional “where” clause. Default: ''. @todo Does it needed? “$this->filter” can be used similarly.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -179,7 +180,8 @@ abstract class DataProvider
 		//Defaults
 		$params = (object) array_merge(
 			[
-				'docIds' => ''
+				'docIds' => '',
+				'where' => ''
 			],
 			(array) $params
 		);
@@ -221,10 +223,6 @@ abstract class DataProvider
 		}
 		
 		if(!empty($params->docIds)){
-			if(!isset($params->where)){
-				$params->where = '';
-			}
-			
 			$params->where .= '`resources`.`id` IN (' . $params->docIds . ')';
 			
 			if(!empty($queryData->where_filter)){
