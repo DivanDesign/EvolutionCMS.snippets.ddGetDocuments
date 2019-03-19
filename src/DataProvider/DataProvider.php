@@ -168,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 5.0 (2019-03-19)
+	 * @version 5.0.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -186,13 +186,14 @@ abstract class DataProvider
 		
 		$queryData = $this->prepareQueryData($params);
 		
+		//Empty result by default
+		$result = new DataProviderOutput(
+			[],
+			0
+		);
+		
 		//Invalid query data — empty result
-		if(empty($queryData->where)){
-			$result = new DataProviderOutput(
-				[],
-				0
-			);
-		}else{
+		if(!empty($queryData->where)){
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
 				SELECT
 					SQL_CALC_FOUND_ROWS
