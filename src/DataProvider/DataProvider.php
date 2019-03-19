@@ -8,11 +8,11 @@ abstract class DataProvider
 {
 	protected
 		/**
-		 * @property $resourcesFieldsToGet {array_associative} — Document fields which need to get.
-		 * @property $resourcesFieldsToGet['fields'] {array} — Common document fileds.
-		 * @property $resourcesFieldsToGet['fields'][i] {string} — Field name.
-		 * @property $resourcesFieldsToGet['tvs'] {array} — TVs.
-		 * @property $resourcesFieldsToGet['tvs'][i] {string} — TV name.
+		 * @property $resourcesFieldsToGet {stdClass} — Document fields which need to get.
+		 * @property $resourcesFieldsToGet->fields {array} — Common document fileds.
+		 * @property $resourcesFieldsToGet->fields[i] {string} — Field name.
+		 * @property $resourcesFieldsToGet->tvs {array} — TVs.
+		 * @property $resourcesFieldsToGet->tvs[i] {string} — TV name.
 		 */
 		$resourcesFieldsToGet = [
 			'fields' => ['id'],
@@ -61,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.4 (2019-03-19)
+	 * @version 1.2 (2019-03-19)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -102,6 +102,9 @@ abstract class DataProvider
 			\ddTools::$modx->getFullTableName($this->resourcesTableName)
 		;
 		
+		//Init needed resources fields
+		$this->resourcesFieldsToGet = (object) $this->resourcesFieldsToGet;
+		
 		//TODO: Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
 		$dbVersion = \ddTools::$modx->db->getValue(\ddTools::$modx->db->query('SELECT VERSION()'));
 		
@@ -137,7 +140,7 @@ abstract class DataProvider
 	
 	/**
 	 * addResourcesFieldsToGet
-	 * @version 2.0 (2019-03-13)
+	 * @version 2.0.1 (2019-03-19)
 	 * 
 	 * @param $fields {array}
 	 * @param $fields[i] {string} — Name of document field or TV.
@@ -152,15 +155,15 @@ abstract class DataProvider
 		
 		//Save common fields
 		if (!empty($fields->fieldsData)){
-			$this->resourcesFieldsToGet['fields'] = array_unique(array_merge(
-				$this->resourcesFieldsToGet['fields'],
+			$this->resourcesFieldsToGet->fields = array_unique(array_merge(
+				$this->resourcesFieldsToGet->fields,
 				array_keys($fields->fieldsData)
 			));
 		}
 		//Save TVs
 		if (!empty($fields->tvsData)){
-			$this->resourcesFieldsToGet['tvs'] = array_unique(array_merge(
-				$this->resourcesFieldsToGet['tvs'],
+			$this->resourcesFieldsToGet->tvs = array_unique(array_merge(
+				$this->resourcesFieldsToGet->tvs,
 				array_keys($fields->tvsData)
 			));
 		}
@@ -168,7 +171,7 @@ abstract class DataProvider
 	
 	/**
 	 * getResourcesDataFromDb
-	 * @version 6.1.1 (2019-03-19)
+	 * @version 6.1.2 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -195,7 +198,7 @@ abstract class DataProvider
 				$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 				
 				//If TVs exist
-				if (!empty($this->resourcesFieldsToGet['tvs'])){
+				if (!empty($this->resourcesFieldsToGet->tvs)){
 					//Get TVs values
 					foreach (
 						$data as
@@ -207,7 +210,7 @@ abstract class DataProvider
 						);
 						
 						foreach (
-							$this->resourcesFieldsToGet['tvs'] as
+							$this->resourcesFieldsToGet->tvs as
 							$tvName
 						){
 							//If valid TV exist
@@ -484,7 +487,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQuery
-	 * @version 1.1.1 (2019-03-19)
+	 * @version 1.1.2 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -511,12 +514,12 @@ abstract class DataProvider
 					SQL_CALC_FOUND_ROWS
 					`resources`.`' . implode(
 						'`, `resources`.`',
-						$this->resourcesFieldsToGet['fields']
+						$this->resourcesFieldsToGet->fields
 					) . '`
 			';
 			
 			//If TVs exist
-			if (!empty($this->resourcesFieldsToGet['tvs'])){
+			if (!empty($this->resourcesFieldsToGet->tvs)){
 				$result .= '
 					,
 					(
