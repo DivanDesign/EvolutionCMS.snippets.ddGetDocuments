@@ -484,7 +484,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQuery
-	 * @version 1.0 (2019-03-19)
+	 * @version 1.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -512,7 +512,13 @@ abstract class DataProvider
 					`resources`.`' . implode(
 						'`, `resources`.`',
 						$this->resourcesFieldsToGet['fields']
-					) . '`,
+					) . '`
+			';
+			
+			//If TVs exist
+			if (!empty($this->resourcesFieldsToGet['tvs'])){
+				$result .= '
+					,
 					(
 						SELECT
 							'.$this->getResourcesDataFromDb_tvsSQL.'
@@ -523,6 +529,10 @@ abstract class DataProvider
 							`tvName`.`id` = `tvValue`.`tmplvarid` AND
 							`resources`.`id` = `tvValue`.`contentid`
 					) as `TVs`
+				';
+			}
+			
+			$result .= '
 				FROM
 					' . $queryData->from . ' AS `resources`
 				WHERE
