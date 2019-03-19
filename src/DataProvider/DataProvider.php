@@ -419,7 +419,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQueryData
-	 * @version 2.0 (2019-03-19)
+	 * @version 2.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -483,12 +483,16 @@ abstract class DataProvider
 			$result->where .= $fromAndFilterQueries->filter;
 		}
 		
+		if (!empty($result->where)){
+			$result->where = 'WHERE ' . $result->where;
+		}
+		
 		return $result;
 	}
 	
 	/**
 	 * prepareQuery
-	 * @version 1.1.2 (2019-03-19)
+	 * @version 1.1.3 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -539,8 +543,7 @@ abstract class DataProvider
 			$result .= '
 				FROM
 					' . $queryData->from . ' AS `resources`
-				WHERE
-					' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
+				' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
 			';
 		}
 		
