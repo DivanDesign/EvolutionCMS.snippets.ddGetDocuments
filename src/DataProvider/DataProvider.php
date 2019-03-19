@@ -168,7 +168,7 @@ abstract class DataProvider
 	
 	/**
 	 * getResourcesDataFromDb
-	 * @version 6.1 (2019-03-19)
+	 * @version 6.1.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -188,9 +188,12 @@ abstract class DataProvider
 		if(!empty($query)){
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query($query));
 			
-			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
-			
-			if(is_array($data)){
+			if(
+				is_array($data) &&
+				!empty($data)
+			){
+				$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
+				
 				//If TVs exist
 				if (!empty($this->resourcesFieldsToGet['tvs'])){
 					//Get TVs values
@@ -207,7 +210,7 @@ abstract class DataProvider
 							$this->resourcesFieldsToGet['tvs'] as
 							$tvName
 						){
-							//If valid TVs exist
+							//If valid TV exist
 							if(isset($docValue['TVs'][$tvName])){
 								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
 							}
