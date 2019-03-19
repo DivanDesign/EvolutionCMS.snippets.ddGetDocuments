@@ -141,14 +141,14 @@ abstract class DataProvider
 	
 	/**
 	 * addResourcesFieldsToGet
-	 * @version 2.0.1 (2019-03-19)
+	 * @version 2.0.2 (2019-03-19)
 	 * 
 	 * @param $fields {array}
 	 * @param $fields[i] {string} — Name of document field or TV.
 	 * 
 	 * @return {void}
 	 */
-	public final function addResourcesFieldsToGet($fields){
+	public function addResourcesFieldsToGet($fields){
 		//Separate TVs and common document fields
 		$fields = \ddTools::prepareDocData([
 			'data' => array_flip($fields)
@@ -272,7 +272,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 3.0.1 (2019-03-19)
+	 * @version 3.0.2 (2019-03-19)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
@@ -282,7 +282,7 @@ abstract class DataProvider
 	 * @return $result->tvs {array} — Template variables. Default: —.
 	 * @return $result->tvs[] {string} — TV name. @required
 	 */
-	protected final function prepareUsedDocFieldsFromSqlString($sqlString){
+	protected function prepareUsedDocFieldsFromSqlString($sqlString){
 		$result = (object) [];
 		
 		$usedFields = $this->getUsedFieldsFromSqlString($sqlString);

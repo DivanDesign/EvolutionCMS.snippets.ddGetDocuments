@@ -21,6 +21,8 @@
  * Providers → Select:
  * @param $providerParams['ids'] {string_commaSeparated} — Document IDs to output. @required
  * @example &providerParams=`{"ids": "1,2,3"}`
+ * Providers → Customdbtable:
+ * @param $providerParams['resourcesTableName'] {string} — DB table to get resources from. @required
  * 
  * General:
  * @param $fieldDelimiter {string} — The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. $orderBy and $filter. Default: '`'.
