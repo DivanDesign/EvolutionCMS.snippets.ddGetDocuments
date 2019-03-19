@@ -492,7 +492,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQuery
-	 * @version 1.1.3 (2019-03-19)
+	 * @version 1.2 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -513,7 +513,7 @@ abstract class DataProvider
 		$queryData = $this->prepareQueryData($params);
 		
 		//Invalid query data — empty result
-		if(!empty($queryData->where)){
+		if(!empty($queryData->from)){
 			$result = '
 				SELECT
 					SQL_CALC_FOUND_ROWS
