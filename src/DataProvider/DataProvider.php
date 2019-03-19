@@ -61,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.2 (2019-03-14)
+	 * @version 1.1.3 (2019-03-19)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -99,7 +99,7 @@ abstract class DataProvider
 		$this->resourcesTableName =
 			isset(\ddTools::$tables[$this->resourcesTableName]) ?
 			\ddTools::$tables[$this->resourcesTableName] :
-			$this->resourcesTableName
+			\ddTools::$modx->getFullTableName($this->resourcesTableName)
 		;
 		
 		//TODO: Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
