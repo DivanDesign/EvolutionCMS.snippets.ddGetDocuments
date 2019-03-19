@@ -110,14 +110,15 @@
  **/
 
 global $modx;
+
 $result = false;
 
 if(!class_exists('\ddTools')){
-	require_once($modx->config['base_path'].'assets/libs/ddTools/modx.ddtools.class.php');
+	require_once($modx->config['base_path'] . 'assets/libs/ddTools/modx.ddtools.class.php');
 }
 
 if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
-	require_once($modx->config['base_path'].'assets/snippets/ddGetDocuments/require.php');
+	require_once($modx->config['base_path'] . 'assets/snippets/ddGetDocuments/require.php');
 }
 
 //Backward compatibility
@@ -130,27 +131,71 @@ extract(ddTools::verifyRenamedParams(
 ));
 
 //General
-$total = isset($total) ? $total : null;
-$offset = isset($offset) ? $offset : 0;
-$orderBy = isset($orderBy) ? $orderBy : '`id` ASC';
-$filter = isset($filter) ? $filter : null;
-$fieldDelimiter = isset($fieldDelimiter) ? $fieldDelimiter : '`';
+$total =
+	isset($total) ?
+	$total :
+	null
+;
+$offset =
+	isset($offset) ?
+	$offset :
+	0
+;
+$orderBy =
+	isset($orderBy) ?
+	$orderBy :
+	'`id` ASC'
+;
+$filter =
+	isset($filter) ?
+	$filter :
+	null
+;
+$fieldDelimiter =
+	isset($fieldDelimiter) ?
+	$fieldDelimiter :
+	'`'
+;
 
 //Data provider
-$provider = isset($provider) ? $provider : 'parent';
+$provider =
+	isset($provider) ?
+	$provider :
+	'parent'
+;
 $providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
-$providerParams = isset($providerParams) ? $providerParams : '';
+$providerParams =
+	isset($providerParams) ?
+	$providerParams :
+	''
+;
 
 //Output format
-$outputter = isset($outputter) ? strtolower($outputter) : 'string';
-$outputterParams = isset($outputterParams) ? $outputterParams : '';
+$outputter =
+	isset($outputter) ?
+	strtolower($outputter) :
+	'string'
+;
+$outputterParams =
+	isset($outputterParams) ?
+	$outputterParams :
+	''
+;
 
 //Extenders
-$extenders = isset($extenders) ? explode(
-	',',
-	trim($extenders)
-) : [];
-$extendersParams = isset($extendersParams) ? $extendersParams : '';
+$extenders =
+	isset($extenders) ?
+	explode(
+		',',
+		trim($extenders)
+	) :
+	[]
+;
+$extendersParams =
+	isset($extendersParams) ?
+	$extendersParams :
+	''
+;
 
 if(class_exists($providerClass)){
 	//Prepare provider params
@@ -171,7 +216,10 @@ if(class_exists($providerClass)){
 			}
 		}else{
 			//Make sure that for each extender there is an item in $extendersParams 
-			foreach($extenders as $extenderName){
+			foreach(
+				$extenders as
+				$extenderName
+			){
 				if(!isset($extendersParams[$extenderName])){
 					$extendersParams[$extenderName] = [];
 				}
@@ -233,7 +281,10 @@ if(class_exists($providerClass)){
 	$data = new \ddGetDocuments\Output($providerResult);
 	
 	//Iterate through all extenders again to apply them to the output
-	foreach($extendersStorage as $extenderName => $extender){
+	foreach(
+		$extendersStorage as
+		$extenderName => $extender
+	){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}
 	
