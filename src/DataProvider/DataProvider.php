@@ -295,18 +295,18 @@ abstract class DataProvider
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 2.0.2 (2019-03-14)
+	 * @version 3.0 (2019-03-19)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
-	 * @return $result {array_associative}
-	 * @return $result['fields'] {array_associative} — Document fields.
-	 * @return $result['fields'][] {string} — Field name.
-	 * @return $result['tvs'] {array_associative} — Template variables.
-	 * @return $result['tvs'][] {array_associative} — TV name.
+	 * @return $result {stdClass}
+	 * @return $result->fields {array} — Document fields.
+	 * @return $result->fields[] {string} — Field name.
+	 * @return $result->tvs {array} — Template variables.
+	 * @return $result->tvs[] {string} — TV name.
 	 */
 	protected final function prepareUsedDocFieldsFromSqlString($sqlString){
-		$result = [];
+		$result = (object) [];
 		
 		$usedFields = $this->getUsedFieldsFromSqlString($sqlString);
 		
@@ -319,12 +319,12 @@ abstract class DataProvider
 			]);
 			
 			if(!empty($fieldsArray->fieldsData)){
-				$result['fields'] = array_keys($fieldsArray->fieldsData);
+				$result->fields = array_keys($fieldsArray->fieldsData);
 			}
 			
 			//If there were tv names in the passed filter string
 			if(!empty($fieldsArray->tvsAdditionalData)){
-				$result['tvs'] = [];
+				$result->tvs = [];
 				
 				//Check whether the current tv name is an actual tv name
 				foreach(
@@ -332,11 +332,11 @@ abstract class DataProvider
 					$tvName => $tvData
 				){
 					//Pupulate the array with the current tv name
-					$result['tvs'][] = $tvName;
+					$result->tvs[] = $tvName;
 				}
 				
-				if(empty($result['tvs'])){
-					unset($result['tvs']);
+				if(empty($result->tvs)){
+					unset($result->tvs);
 				}
 			}
 		}
@@ -409,16 +409,16 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQueryData_fromAndFilter
-	 * @version 2.0 (2019-03-14)
+	 * @version 3.0 (2019-03-19)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
-	 * @return $result {array_associative}
-	 * @return $result['from'] {string}
-	 * @return $result['filter'] {string}
+	 * @return $result {stdClass}
+	 * @return $result->from {string}
+	 * @return $result->filter {string}
 	 */
 	protected final function prepareQueryData_fromAndFilter($filterStr){
-		$result = [
+		$result = (object) [
 			//By default, the required data is just fetched from the site_content table
 			'from' => $this->resourcesTableName,
 			'filter' => ''
@@ -429,12 +429,12 @@ abstract class DataProvider
 			$usedFields = $this->prepareUsedDocFieldsFromSqlString($filterStr);
 			
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
-			if(!empty($usedFields['tvs'])){
+			if(!empty($usedFields->tvs)){
 				//complete from query
-				$result['from'] = '(' . $this->buildTVsSubQuery($usedFields['tvs']) . ')';
+				$result->from = '(' . $this->buildTVsSubQuery($usedFields->tvs) . ')';
 			}
 			
-			$result['filter'] = '(' . $filterStr . ')';
+			$result->filter = '(' . $filterStr . ')';
 		}
 		
 		return $result;
@@ -442,7 +442,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQueryData
-	 * @version 1.0 (2019-03-14)
+	 * @version 1.0.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -467,7 +467,7 @@ abstract class DataProvider
 		$fromAndFilterQueries = $this->prepareQueryData_fromAndFilter($this->filter);
 		
 		$result = (object) [
-			'from' => $fromAndFilterQueries['from'],
+			'from' => $fromAndFilterQueries->from,
 			'where' => $params->where,
 			'orderBy' => '',
 			'limit' => '',
@@ -501,11 +501,11 @@ abstract class DataProvider
 		if(!empty($params->resourcesIds)){
 			$result->where .= '`resources`.`id` IN (' . $params->resourcesIds . ')';
 				
-			if(!empty($fromAndFilterQueries['filter'])){
-				$result->where .= ' AND ' . $fromAndFilterQueries['filter'];
+			if(!empty($fromAndFilterQueries->filter)){
+				$result->where .= ' AND ' . $fromAndFilterQueries->filter;
 			}
 		}else{
-			$result->where .= $fromAndFilterQueries['filter'];
+			$result->where .= $fromAndFilterQueries->filter;
 		}
 		
 		return $result;
