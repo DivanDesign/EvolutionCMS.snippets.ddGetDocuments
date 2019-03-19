@@ -28,9 +28,9 @@ abstract class DataProvider
 		$resourcesTableName = 'site_content';
 	
 	/**
-	 * @property $getSelectedResourcesFromDbTVsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 * @property $getResourcesDataFromDb_tvsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
 	 */
-	private $getSelectedResourcesFromDbTVsSQL = 'JSON_OBJECTAGG(
+	private $getResourcesDataFromDb_tvsSQL = 'JSON_OBJECTAGG(
 		`tvName`.`name`,
 		`tvValue`.`value`
 	)';
@@ -61,7 +61,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.3 (2019-03-19)
+	 * @version 1.1.4 (2019-03-19)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -118,7 +118,7 @@ abstract class DataProvider
 				'<'
 			)
 		){
-			$this->getSelectedResourcesFromDbTVsSQL = 'CONCAT(
+			$this->getResourcesDataFromDb_tvsSQL = 'CONCAT(
 				"{",
 				GROUP_CONCAT(
 					TRIM(
@@ -167,15 +167,15 @@ abstract class DataProvider
 	}
 	
 	/**
-	 * getSelectedResourcesFromDb
-	 * @version 5.0.1 (2019-03-19)
+	 * getResourcesDataFromDb
+	 * @version 6.0 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getSelectedResourcesFromDb($params = []){
+	protected function getResourcesDataFromDb($params = []){
 		//Defaults
 		$params = (object) array_merge(
 			[
@@ -203,7 +203,7 @@ abstract class DataProvider
 					) . '`,
 					(
 						SELECT
-							'.$this->getSelectedResourcesFromDbTVsSQL.'
+							'.$this->getResourcesDataFromDb_tvsSQL.'
 						FROM
 							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
 							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
@@ -258,12 +258,12 @@ abstract class DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.2 (2019-03-13)
+	 * @version 2.0.3 (2019-03-19)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public function get(){
-		return $this->getSelectedResourcesFromDb();
+		return $this->getResourcesDataFromDb();
 	}
 	
 	/**

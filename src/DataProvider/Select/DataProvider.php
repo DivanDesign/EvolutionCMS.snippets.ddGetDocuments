@@ -15,7 +15,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 1.0.5 (2019-03-14)
+	 * @version 1.0.6 (2019-03-19)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -28,7 +28,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			$this->orderBy = 'FIELD (`resources`.`id`,' . $this->ids . ')';
 		}
 		
-		return $this->getSelectedResourcesFromDb([
+		return $this->getResourcesDataFromDb([
 			'resourcesIds' => $this->ids
 		]);
 	}

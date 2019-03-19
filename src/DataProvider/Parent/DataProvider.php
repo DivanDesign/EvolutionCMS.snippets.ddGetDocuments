@@ -48,7 +48,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.7 (2019-03-14)
+	 * @version 2.0.8 (2019-03-19)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -112,7 +112,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			;
 		}
 		
-		return $this->getSelectedResourcesFromDb([
+		return $this->getResourcesDataFromDb([
 			'resourcesIds' => $allChildrenIds
 		]);
 	}
