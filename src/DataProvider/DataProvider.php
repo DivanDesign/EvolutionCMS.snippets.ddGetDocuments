@@ -8,6 +8,10 @@ abstract class DataProvider
 {
 	protected
 		/**
+		 * @property $resourcesTableName {string} — Source DB table name. Default: \ddTools::$tables['site_content'].
+		 */
+		$resourcesTableName = 'site_content',
+		/**
 		 * @property $resourcesFieldsToGet {stdClass} — Document fields which need to get.
 		 * @property $resourcesFieldsToGet->fields {array} — Common document fileds.
 		 * @property $resourcesFieldsToGet->fields[i] {string} — Field name.
@@ -21,11 +25,8 @@ abstract class DataProvider
 		$total,
 		$filter,
 		$offset,
-		$orderBy,
-		/**
-		 * @property $resourcesTableName {string} — Source DB table name. Default: \ddTools::$tables['site_content'].
-		 */
-		$resourcesTableName = 'site_content';
+		$orderBy
+	;
 	
 	/**
 	 * @property $getResourcesDataFromDb_tvsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
@@ -37,7 +38,7 @@ abstract class DataProvider
 	
 	/**
 	 * includeProviderByName
-	 * @version 1.0.3 (2019-03-14)
+	 * @version 1.0.4 (2019-03-19)
 	 * 
 	 * @param $providerName
 	 * @return string
@@ -45,7 +46,7 @@ abstract class DataProvider
 	 */
 	public final static function includeProviderByName($providerName){
 		$providerName = ucfirst(strtolower($providerName));
-		$providerPath = $providerName . DIRECTORY_SEPARATOR . 'DataProvider' . ".php";
+		$providerPath = $providerName . DIRECTORY_SEPARATOR . 'DataProvider' . '.php';
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
 			require_once($providerPath);

@@ -7,19 +7,21 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	public
-		$placeholders = [];
-		
+		$placeholders = []
+	;
+	
 	protected
 		$itemTpl = null,
 		$itemTplFirst = null,
 		$itemTplLast = null,
 		$wrapperTpl = null,
 		$noResults = null,
-		$itemGlue = '';
+		$itemGlue = ''
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.1.1 (2018-06-19)
+	 * @version 1.1.2 (2019-03-19)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
@@ -54,7 +56,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				$params['itemTplLast'] = $params['itemTpl'];
 			}
 			
-			$params['docFields'] = \ddTools::getPlaceholdersFromText(['text' => $textToGetPlaceholdersFrom]);
+			$params['docFields'] = \ddTools::getPlaceholdersFromText([
+				'text' => $textToGetPlaceholdersFrom
+			]);
 		}
 		
 		//Call base constructor
@@ -63,7 +67,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 2.1.1 (2018-06-19)
+	 * @version 2.1.2 (2019-03-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -103,7 +107,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		){
 			$maxIndex = $total - 1;
 			//Foreach items
-			foreach($data->provider->items as $index => $item){
+			foreach(
+				$data->provider->items as
+				$index => $item
+			){
 				//Prepare item output template
 				if($index == 0){
 					$chunkName = $this->itemTplFirst;

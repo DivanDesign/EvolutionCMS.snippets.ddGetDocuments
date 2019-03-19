@@ -11,7 +11,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		//Current page index
 		$pageIndex,
 		//The parameter in $_REQUEST to get the current page index from
-		$pageIndexRequestParamName = 'page';
+		$pageIndexRequestParamName = 'page'
+	;
 	
 	protected
 		//Chunk to be used to output pages within the pagination
@@ -37,11 +38,12 @@ class Extender extends \ddGetDocuments\Extender\Extender
 <small><a href="[~[*id*]~]" class="pagination_first strl">←&nbsp;<span>Первая</span></a></small>',
 		//Chunk to be used to output the navigation block to the previous page if there are no more pages before
 		$previousOffTpl = '<span class="pagination_prev">←&nbsp;<span>Предыдущая</span></span><br>
-<small><span class="pagination_first">←&nbsp;<span>Первая</span></span></small>';
+<small><span class="pagination_first">←&nbsp;<span>Первая</span></span></small>'
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.2 (2018-06-12)
+	 * @version 1.2.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative}
 	 */
@@ -77,7 +79,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			$this->previousOffTpl = \ddTools::$modx->getTpl((string) $this->previousOffTpl);
 		}
 		
-		$this->pageIndex = isset($_REQUEST[$this->pageIndexRequestParamName]) ? (int) $_REQUEST[$this->pageIndexRequestParamName] :	1;
+		$this->pageIndex =
+			isset($_REQUEST[$this->pageIndexRequestParamName]) ?
+			(int) $_REQUEST[$this->pageIndexRequestParamName] :
+			1
+		;
 	}
 	
 	/**
@@ -100,7 +106,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.6 (2018-06-19)
+	 * @version 1.1.7 (2019-03-19)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -133,7 +139,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					}
 					
 					if (count($currentQuery) > 0){
-						$urlPrefix .= http_build_query($currentQuery).'&';
+						$urlPrefix .= http_build_query($currentQuery) . '&';
 					}
 				}
 				
@@ -161,15 +167,23 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					$pagesOutputText .= \ddTools::parseSource(\ddTools::parseText([
 						'text' => $pageChunk,
 						'data' => [
-							'url' => $urlPrefix.$this->pageIndexRequestParamName.'='.$pageIndex,
+							'url' => $urlPrefix.$this->pageIndexRequestParamName . '=' . $pageIndex,
 							'page' => $pageIndex
 						]
 					]));
 				}
 				
-				$previousLinkChunk = $this->pageIndex == 1 ? $this->previousOffTpl : $this->previousTpl;
+				$previousLinkChunk =
+					$this->pageIndex == 1 ?
+					$this->previousOffTpl :
+					$this->previousTpl
+				;
 				
-				$nextLinkChunk = $this->pageIndex == $pagesTotal ? $this->nextOffTpl : $this->nextTpl;
+				$nextLinkChunk =
+					$this->pageIndex == $pagesTotal ?
+					$this->nextOffTpl :
+					$this->nextTpl
+				;
 				
 				$result = \ddTools::parseSource(\ddTools::parseText([
 					'text' => $this->wrapperTpl,
@@ -177,7 +191,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'previous' => \ddTools::parseSource(\ddTools::parseText([
 							'text' => $previousLinkChunk,
 							'data' => [
-								'url' => $this->pageIndex == 1 ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
+								'url' =>
+									$this->pageIndex == 1 ?
+									'' :
+									$urlPrefix . $this->pageIndexRequestParamName . '=' . ($this->pageIndex - 1)
+								,
 								'totalPages' => $pagesTotal
 							]
 						])),
@@ -185,7 +203,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'next' => \ddTools::parseSource(\ddTools::parseText([
 							'text' => $nextLinkChunk,
 							'data' => [
-								'url' => $this->pageIndex == $pagesTotal ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
+								'url' =>
+									$this->pageIndex == $pagesTotal ?
+									'' :
+									$urlPrefix . $this->pageIndexRequestParamName . '=' . ($this->pageIndex + 1)
+								,
 								'totalPages' => $pagesTotal
 							]
 						]))

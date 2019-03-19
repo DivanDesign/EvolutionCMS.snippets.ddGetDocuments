@@ -6,7 +6,8 @@ class Output
 {
 	public
 		$provider,
-		$extenders = [];
+		$extenders = []
+	;
 	
 	/**
 	 * __construct

@@ -139,15 +139,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			'offers_item_elem' => '<[+tagName+][+attrs+]>[+value+]</[+tagName+]>',
 // 			'offers_item_elemAdditionalParams' => '<param name="[+name+]"[+attrs+]>[+value+]</param>',
 		],
-		$categoryIds_last;
+		$categoryIds_last
+	;
 	
 	private
 		$outputter_StringInstance,
-		$categoryIds = [];
+		$categoryIds = []
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-08-03)
+	 * @version 1.1.1 (2019-03-19)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -261,7 +263,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			
 			//Replace to field name placeholder
 			if (!empty($fieldData->docFieldName)){
-				$templateData[$fieldAlias] = '[+'.$templateData[$fieldAlias].'+]';
+				$templateData[$fieldAlias] = '[+' . $templateData[$fieldAlias] . '+]';
 			}else{
 				//Always available
 				if ($fieldAlias == 'available'){
@@ -304,7 +306,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		]);
 		
 		//save last parent id for category
-		$this->categoryIds_last = isset($params['categoryIds_last']) ? trim($params['categoryIds_last']) : '';
+		$this->categoryIds_last =
+			isset($params['categoryIds_last']) ?
+			trim($params['categoryIds_last']) :
+			''
+		;
 		
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
@@ -349,7 +355,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.2.3 (2018-10-11)
+	 * @version 1.2.4 (2019-03-19)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -394,7 +400,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 								$docData[$offerFieldData->docFieldName] !== 'false'
 							)
 						){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = (bool) $docData[$offerFieldData->docFieldName] ? 'true' : 'false';
+							$data->provider->items[$docIndex][$offerFieldData->docFieldName] =
+								(bool) $docData[$offerFieldData->docFieldName] ?
+								'true' :
+								'false'
+							;
 						}
 						
 						//Fields that may be set as document IDs
@@ -422,7 +432,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						
 						//Value prefix
 						if (isset($offerFieldData->valuePrefix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $offerFieldData->valuePrefix.$data->provider->items[$docIndex][$offerFieldData->docFieldName];
+							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $offerFieldData->valuePrefix . $data->provider->items[$docIndex][$offerFieldData->docFieldName];
 						}
 						//Value suffix
 						if (isset($offerFieldData->valueSuffix)){
@@ -430,7 +440,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						}
 						
 						//Try to search template by name
-						$templateName = 'offers_item_elem'.ucfirst($offerFieldName);
+						$templateName = 'offers_item_elem' . ucfirst($offerFieldName);
 						if (!isset($this->templates->{$templateName})){
 							//Default element template
 							if (!isset($offerFieldData->templateName)){
@@ -469,7 +479,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$this->categoryIds = array_unique($this->categoryIds);
 		$categoryIds_all = [];
 		$categoryIds_last = $this->categoryIds;
-			
+		
 		if(!empty($this->categoryIds_last)){
 			$categoryIds_last = explode(
 				',',
@@ -508,7 +518,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 							'id' => $category['id'],
 							'value' => $this->escapeSpecialChars($category['pagetitle']),
 							'parent' => $category['parent'],
-							'attrs' => ' parentId="'. $category['parent'] .'"'
+							'attrs' => ' parentId="' . $category['parent'] . '"'
 						],
 						'mergeAll' => false
 					]);

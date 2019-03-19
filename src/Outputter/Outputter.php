@@ -11,7 +11,8 @@ abstract class Outputter
 		 * @property $docFields {array} — Document fields including TVs used in the output.
 		 * @property $docFields[i] {string} — Field name.
 		 */
-		$docFields = ['id'];
+		$docFields = ['id']
+	;
 	
 	/**
 	 * includeOutputterByName

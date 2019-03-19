@@ -7,13 +7,15 @@ use ddGetDocuments\DataProvider\DataProviderOutput;
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
-		$currentQuery = '';
+		$currentQuery = ''
+	;
 	
 	protected
 		$docFieldsToSearch = [
 			'pagetitle',
 			'content'
-		];
+		]
+	;
 	
 	/**
 	 * __construct
@@ -40,7 +42,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 1.0.2 (2018-03-19)
 	 * 
 	 * @param $snippetParams {array_associative}
 	 * 
@@ -60,14 +62,17 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			
 			$searchQueries = [];
 			
-			foreach ($this->docFieldsToSearch as $docField){
-				$searchQueries[] = '`'.trim($docField).'` LIKE("%'.$this->currentQuery.'%")';
+			foreach (
+				$this->docFieldsToSearch as
+				$docField
+			){
+				$searchQueries[] = '`' . trim($docField) . '` LIKE("%' . $this->currentQuery . '%")';
 			}
 			
-			$snippetParams['filter'] .= ' ('.implode(
+			$snippetParams['filter'] .= ' (' . implode(
 				' OR ',
 				$searchQueries
-			).')';
+			) . ')';
 		}
 		
 		return $snippetParams;

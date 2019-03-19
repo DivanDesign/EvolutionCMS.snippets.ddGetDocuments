@@ -8,7 +8,8 @@ class Input
 		$snippetParams,
 		$extenderParams,
 		$providerParams,
-		$outputterParams;
+		$outputterParams
+	;
 	
 	public function __construct(
 		array $snippetParams = null,

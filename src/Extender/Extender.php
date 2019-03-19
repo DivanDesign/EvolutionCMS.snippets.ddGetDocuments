@@ -37,13 +37,16 @@ abstract class Extender
 	
 	/**
 	 * __construct
-	 * @version 1.0 (2018-06-12)
+	 * @version 1.0.1 (2018-03-19)
 	 * 
 	 * @param $params {array_associative}
 	 */
 	function __construct(array $params = []){
 		//Все параметры задают свойства объекта
-		foreach ($params as $paramName => $paramValue){
+		foreach (
+			$params as
+			$paramName => $paramValue
+		){
 			//Validation
 			if (property_exists(
 				$this,
