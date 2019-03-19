@@ -13,7 +13,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * addResourcesFieldsToGet
-	 * @version 1.0 (2019-03-19)
+	 * @version 1.1 (2019-03-19)
 	 * 
 	 * @param $fields {array}
 	 * @param $fields[i] {string} — Name of table column to add.
@@ -21,9 +21,17 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	 * @return {void}
 	 */
 	public function addResourcesFieldsToGet($fields){
+		$existingFields = \ddTools::$modx->db->getColumn(
+			'Field',
+			\ddTools::$modx->db->query('SHOW COLUMNS FROM ' . $this->resourcesTableName)
+		);
+		
 		$this->resourcesFieldsToGet->fields = array_unique(array_merge(
 			$this->resourcesFieldsToGet->fields,
-			$fields
+			array_intersect(
+				$existingFields,
+				$fields
+			)
 		));
 	}
 	
