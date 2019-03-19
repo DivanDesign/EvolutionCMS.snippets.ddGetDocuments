@@ -17,7 +17,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.1 (2019-03-12)
+	 * @version 1.1.2 (2019-03-12)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -41,7 +41,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		
 		//Parent IDs must be set.
 		//TODO: Does we need to to this? People must set correct parameters. Or not? :)
-		if (is_empty($this->parentIds)){
+		if (empty($this->parentIds)){
 			$this->parentIds = [0];
 		}
 	}
