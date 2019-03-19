@@ -268,15 +268,15 @@ abstract class DataProvider
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 3.0 (2019-03-19)
+	 * @version 3.0.1 (2019-03-19)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
 	 * @return $result {stdClass}
-	 * @return $result->fields {array} — Document fields.
-	 * @return $result->fields[] {string} — Field name.
-	 * @return $result->tvs {array} — Template variables.
-	 * @return $result->tvs[] {string} — TV name.
+	 * @return $result->fields {array} — Document fields. Default: —.
+	 * @return $result->fields[] {string} — Field name. @required
+	 * @return $result->tvs {array} — Template variables. Default: —.
+	 * @return $result->tvs[] {string} — TV name. @required
 	 */
 	protected final function prepareUsedDocFieldsFromSqlString($sqlString){
 		$result = (object) [];
@@ -484,7 +484,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQuery
-	 * @version 1.1 (2019-03-19)
+	 * @version 1.1.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -521,7 +521,7 @@ abstract class DataProvider
 					,
 					(
 						SELECT
-							'.$this->getResourcesDataFromDb_tvsSQL.'
+							' . $this->getResourcesDataFromDb_tvsSQL . '
 						FROM
 							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
 							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
