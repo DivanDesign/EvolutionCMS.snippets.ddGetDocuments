@@ -168,11 +168,10 @@ abstract class DataProvider
 	
 	/**
 	 * getSelectedResourcesFromDb
-	 * @version 4.0 (2019-03-14)
+	 * @version 5.0 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
-	 * @param $params['where'] — Additional “where” clause. Default: ''. @todo Does it needed? “$this->filter” can be used similarly.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -180,8 +179,7 @@ abstract class DataProvider
 		//Defaults
 		$params = (object) array_merge(
 			[
-				'resourcesIds' => '',
-				'where' => ''
+				'resourcesIds' => ''
 			],
 			(array) $params
 		);
@@ -442,11 +440,10 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQueryData
-	 * @version 1.0.1 (2019-03-19)
+	 * @version 2.0 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
-	 * @param $params['where'] — Additional “where” clause. Default: ''. @todo Does it needed? “$this->filter” can be used similarly.
 	 * 
 	 * @return $result {stdClass}
 	 * @return $result->from {string}
@@ -458,8 +455,7 @@ abstract class DataProvider
 		//Defaults
 		$params = (object) array_merge(
 			[
-				'resourcesIds' => '',
-				'where' => ''
+				'resourcesIds' => ''
 			],
 			(array) $params
 		);
@@ -468,7 +464,7 @@ abstract class DataProvider
 		
 		$result = (object) [
 			'from' => $fromAndFilterQueries->from,
-			'where' => $params->where,
+			'where' => '',
 			'orderBy' => '',
 			'limit' => '',
 		];
