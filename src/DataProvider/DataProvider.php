@@ -168,54 +168,25 @@ abstract class DataProvider
 	
 	/**
 	 * getResourcesDataFromDb
-	 * @version 6.0 (2019-03-19)
+	 * @version 6.1 (2019-03-19)
 	 * 
 	 * @param $params {array_associative|stdClass}
-	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
+	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
-	protected function getResourcesDataFromDb($params = []){
-		//Defaults
-		$params = (object) array_merge(
-			[
-				'resourcesIds' => ''
-			],
-			(array) $params
-		);
-		
-		$queryData = $this->prepareQueryData($params);
-		
+	protected final function getResourcesDataFromDb($params = []){
 		//Empty result by default
 		$result = new DataProviderOutput(
 			[],
 			0
 		);
 		
-		//Invalid query data — empty result
-		if(!empty($queryData->where)){
-			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query('
-				SELECT
-					SQL_CALC_FOUND_ROWS
-					`resources`.`' . implode(
-						'`, `resources`.`',
-						$this->resourcesFieldsToGet['fields']
-					) . '`,
-					(
-						SELECT
-							'.$this->getResourcesDataFromDb_tvsSQL.'
-						FROM
-							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
-							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
-						WHERE
-							`tvName`.`id` = `tvValue`.`tmplvarid` AND
-							`resources`.`id` = `tvValue`.`contentid`
-					) as `TVs`
-				FROM
-					' . $queryData->from . ' AS `resources`
-				WHERE
-					' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
-			'));
+		$query = $this->prepareQuery($params);
+		
+		//Invalid query — empty result
+		if(!empty($query)){
+			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query($query));
 			
 			$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 			
@@ -503,6 +474,57 @@ abstract class DataProvider
 			}
 		}else{
 			$result->where .= $fromAndFilterQueries->filter;
+		}
+		
+		return $result;
+	}
+	
+	/**
+	 * prepareQuery
+	 * @version 1.0 (2019-03-19)
+	 * 
+	 * @param $params {array_associative|stdClass}
+	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
+	 * 
+	 * @return $result {string}
+	 */
+	protected function prepareQuery($params = []){
+		//Defaults
+		$params = (object) array_merge(
+			[
+				'resourcesIds' => ''
+			],
+			(array) $params
+		);
+		
+		$result = '';
+		
+		$queryData = $this->prepareQueryData($params);
+		
+		//Invalid query data — empty result
+		if(!empty($queryData->where)){
+			$result = '
+				SELECT
+					SQL_CALC_FOUND_ROWS
+					`resources`.`' . implode(
+						'`, `resources`.`',
+						$this->resourcesFieldsToGet['fields']
+					) . '`,
+					(
+						SELECT
+							'.$this->getResourcesDataFromDb_tvsSQL.'
+						FROM
+							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
+							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
+						WHERE
+							`tvName`.`id` = `tvValue`.`tmplvarid` AND
+							`resources`.`id` = `tvValue`.`contentid`
+					) as `TVs`
+				FROM
+					' . $queryData->from . ' AS `resources`
+				WHERE
+					' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
+			';
 		}
 		
 		return $result;
