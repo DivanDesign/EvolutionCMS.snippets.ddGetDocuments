@@ -149,7 +149,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.1.1 (2019-03-19)
+	 * @version 1.1.2 (2019-07-11)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -186,7 +186,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$this->offerFields = (object) $this->offerFields;
 		foreach (
 			$this->offerFields as
-			$offerFieldName => $offerFieldValue
+			$offerFieldName =>
+			$offerFieldValue
 		){
 			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
 		}
@@ -194,7 +195,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Trim all templates
 		foreach (
 			$this->templates as
-			$templateName => $templateText
+			$templateName =>
+			$templateText
 		){
 			$this->templates->{$templateName} = trim($templateText);
 		}
@@ -205,7 +207,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Save shop data and offer fields
 		foreach (
 			$params as
-			$paramName => $paramValue
+			$paramName =>
+			$paramValue
 		){
 			//Shop data
 			if (substr(
@@ -257,7 +260,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		
 		foreach (
 			$this->offerFields as
-			$fieldAlias => $fieldData
+			$fieldAlias =>
+			$fieldData
 		){
 			$templateData[$fieldAlias] = $fieldData->docFieldName;
 			
@@ -355,7 +359,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.2.4 (2019-03-19)
+	 * @version 1.2.5 (2019-07-11)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -365,7 +369,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Foreach all docs-items
 		foreach (
 			$data->provider->items as
-			$docIndex => $docData
+			$docIndex =>
+			$docData
 		){
 			//Check required elements
 			if (!empty($docData[$this->offerFields->price->docFieldName])){
@@ -377,7 +382,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				//Foreach all offer fields
 				foreach(
 					$this->offerFields as
-					$offerFieldName => $offerFieldData
+					$offerFieldName =>
+					$offerFieldData
 				){
 					if (
 						//If is set
