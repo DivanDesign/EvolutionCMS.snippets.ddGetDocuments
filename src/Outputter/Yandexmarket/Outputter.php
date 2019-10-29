@@ -17,7 +17,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		$shopData = [
 			'shopName' => '',
 			'agency' => '',
-			'currencyId' => 'RUR'
+			'currencyId' => 'RUR',
+			'platform' => '(MODX) Evolution CMS',
+			'version' => '[(settings_version)]'
 		],
 		$offerFields = [
 			'name' => [
@@ -102,8 +104,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 							<name>[+shopData.shopName+]</name>
 							<company>[+shopData.companyName+]</company>
 							<url>[(site_url)]</url>
-							<platform>(MODX) Evolution CMS</platform>
-							<version>[(settings_version)]</version>
+							<platform>[+shopData.platform+]</platform>
+							<version>[+shopData.version+]</version>
 							[+shopData.agency+]
 							<currencies>
 								<currency id="[+shopData.currencyId+]" rate="1" />
@@ -149,7 +151,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.1.2 (2019-07-11)
+	 * @version 1.2 (2019-10-29)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -158,6 +160,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * @param $params['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
 	 * @param $params['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
 	 * @param $params['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+	 * @param $params['shopData_platform'] {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
+	 * @param $params['shopData_version'] {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
 	 * @param $params['categoryIds_last'] {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
 	 * @param $params['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
 	 * @param $params['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.

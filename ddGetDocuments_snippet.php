@@ -60,6 +60,8 @@
  * @param $outputterParams['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
  * @param $outputterParams['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
  * @param $outputterParams['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+ * @param $outputterParams['shopData_platform'] {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
+ * @param $outputterParams['shopData_version'] {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
  * @param $outputterParams['categoryIds_last'] {string_commaSeparated} — ID конечных категорий (parent). Если пусто, то выводятся только непосредственный родитель товара. Defalut: —.
  * @param $outputterParams['offerFields_price'] {string_docField|''} — Поле, содержащее актуальную цену товара. @required
  * @param $outputterParams['offerFields_priceOld'] {string_docField} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
