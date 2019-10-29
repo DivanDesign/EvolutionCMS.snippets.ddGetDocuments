@@ -363,7 +363,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.2.5 (2019-07-11)
+	 * @version 1.3 (2019-10-29)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -376,6 +376,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 			$docIndex =>
 			$docData
 		){
+			//Correct price
+			if (
+				empty($docData[$this->offerFields->price->docFieldName]) &&
+				!empty($docData[$this->offerFields->priceOld->docFieldName])
+			){
+				$docData[$this->offerFields->price->docFieldName] = $docData[$this->offerFields->priceOld->docFieldName];
+				
+				unset($docData[$this->offerFields->priceOld->docFieldName]);
+			}
+			
 			//Check required elements
 			if (!empty($docData[$this->offerFields->price->docFieldName])){
 				//Save category id
