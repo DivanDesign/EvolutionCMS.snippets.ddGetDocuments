@@ -363,7 +363,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.3 (2019-10-29)
+	 * @version 1.4 (2019-10-29)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -399,6 +399,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 					$offerFieldName =>
 					$offerFieldData
 				){
+					//Smart offer name
+					if ($offerFieldName == 'name'){
+						if (empty($offerFieldData->docFieldName)){
+							$offerFieldData->docFieldName = 'pagetitle';
+						}
+						
+						if (empty($docData[$offerFieldData->docFieldName])){
+							$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
+						}
+					}
+					
 					if (
 						//If is set
 						!empty($offerFieldData->docFieldName) &&
