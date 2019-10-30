@@ -363,7 +363,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.4 (2019-10-29)
+	 * @version 1.4.1 (2019-10-30)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -408,6 +408,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 						if (empty($docData[$offerFieldData->docFieldName])){
 							$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
 						}
+					}
+					
+					//Numeric fields
+					if (
+						$offerFieldName == 'weight' &&
+						$data->provider->items[$docIndex][$offerFieldData->docFieldName] == '0'
+					){
+						$data->provider->items[$docIndex][$offerFieldData->docFieldName] = '';
 					}
 					
 					if (
