@@ -111,9 +111,10 @@
  * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
  */
 
-global $modx;
+//The snippet must return an empty string even if result is absent
+$snippetResult = '';
 
-$result = false;
+global $modx;
 
 //Include (MODX)EvolutionCMS.libraries.ddTools
 if(!class_exists('\ddTools')){
@@ -302,11 +303,11 @@ if(class_exists($providerClass)){
 	}
 	
 	if ($outputter == 'raw'){
-		$result = $data;
+		$snippetResult = $data;
 	}else{
-		$result = $outputterObject->parse($data);
+		$snippetResult = $outputterObject->parse($data);
 	}
 }
 
-return $result;
+return $snippetResult;
 ?>
