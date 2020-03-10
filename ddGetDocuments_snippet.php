@@ -199,7 +199,10 @@ $outputterParams =
 
 //Extenders
 $extenders =
-	isset($extenders) ?
+	(
+		isset($extenders) &&
+		!empty($extenders)
+	) ?
 	explode(
 		',',
 		trim($extenders)
