@@ -3,12 +3,7 @@
  * ddGetDocuments
  * @version 0.10.1 (2018-10-31)
  * 
- * @desc A snippet for fetching and parsing resources from the document tree by a custom rule.
- * 
- * @uses PHP >= 5.4.
- * @uses MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
- * @uses (MODX)EvolutionCMS >= 1.1.
- * @uses (MODX)EvolutionCMS.libraries.ddTools >= 0.30.
+ * @see README.md
  * 
  * Providers:
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
@@ -106,7 +101,7 @@
  * @param $extendersParams['docFieldsToSearch'] {string_commaSeparated} — Document fields to search in. Default: 'pagetitle,content'.
  * @example &extendersParams=`{"pagination": {"wrapperTpl":"pagination", …}, "tagging": {"tagsDocumentField": "general_tags"}}`
  * 
- * @link https://code.divandesign.biz/modx/ddgetdocuments/0.10.1
+ * @link https://code.divandesign.biz/modx/ddgetdocuments
  * 
  * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
  */
