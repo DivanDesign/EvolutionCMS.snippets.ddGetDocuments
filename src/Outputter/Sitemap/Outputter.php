@@ -21,11 +21,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * __construct
 	 * @version 1.0.2 (2018-06-19)
 	 * 
-	 * @param $params {array_associative}
-	 * @param $params['priorityTVName'] {string_TVName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
-	 * @param $params['changefreqTVName'] {string_TVName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
-	 * @param $params['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params['wrapperTpl'] {string_chunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
+	 * @param $params {arrayAssociative}
+	 * @param $params['priorityTVName'] {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
+	 * @param $params['changefreqTVName'] {stringTvName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
+	 * @param $params['itemTpl'] {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params['wrapperTpl'] {stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
 	 */
 	function __construct($params = []){
 		//Call base constructor

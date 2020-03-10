@@ -179,7 +179,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	 * getResourcesDataFromDb
 	 * @version 6.1.3 (2020-03-10)
 	 * 
-	 * @param $params {array_associative|stdClass}
+	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
@@ -503,7 +503,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	 * prepareQueryData
 	 * @version 2.1.1 (2020-03-10)
 	 * 
-	 * @param $params {array_associative|stdClass}
+	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
 	 * 
 	 * @return $result {stdClass}
@@ -592,7 +592,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	 * prepareQuery
 	 * @version 1.2.1 (2020-03-10)
 	 * 
-	 * @param $params {array_associative|stdClass}
+	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
 	 * 
 	 * @return $result {string}

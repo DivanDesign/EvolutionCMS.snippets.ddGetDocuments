@@ -12,7 +12,7 @@ abstract class Extender extends \DDTools\BaseClass {
 	 * __construct
 	 * @version 1.0.2 (2020-03-10)
 	 * 
-	 * @param $params {array_associative}
+	 * @param $params {arrayAssociative}
 	 */
 	function __construct(array $params = []){
 		$this->setExistingProps($params);

@@ -23,13 +23,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	 * __construct
 	 * @version 1.1.2 (2019-03-19)
 	 * 
-	 * @param $params {array_associative}
-	 * @param $params['itemTpl'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
-	 * @param $params['itemTplFirst'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params['itemTpl'];
-	 * @param $params['itemTplLast'] {string_chunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params['itemTpl'];
-	 * @param $params['wrapperTpl'] {string_chunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
-	 * @param $params['noResults'] {string_chunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+].
-	 * @param $params['placeholders'] {array_associative}. Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Default: [].
+	 * @param $params {arrayAssociative}
+	 * @param $params['itemTpl'] {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+	 * @param $params['itemTplFirst'] {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params['itemTpl'];
+	 * @param $params['itemTplLast'] {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params['itemTpl'];
+	 * @param $params['wrapperTpl'] {stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
+	 * @param $params['noResults'] {stringChunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+].
+	 * @param $params['placeholders'] {arrayAssociative}. Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Default: [].
 	 * @param $params['placeholders'][name] {string} — Key for placeholder name and value for placeholder value. @required
 	 * @param $params['itemGlue'] {string} — The string that combines items while rendering. Default: ''.
 	 */

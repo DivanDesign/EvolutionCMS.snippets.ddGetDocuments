@@ -21,7 +21,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 * __construct
 	 * @version 1.1 (2018-06-12)
 	 * 
-	 * @param $params {array_associative}
+	 * @param $params {arrayAssociative}
 	 * @param $params['docFieldsToSearch'] {array|string_commaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
 	 */
 	public function __construct(array $params){
@@ -44,9 +44,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 * applyToSnippetParams
 	 * @version 1.0.3 (2020-03-10)
 	 * 
-	 * @param $snippetParams {array_associative}
+	 * @param $snippetParams {arrayAssociative}
 	 * 
-	 * @return {array_associative}
+	 * @return {arrayAssociative}
 	 */
 	public function applyToSnippetParams(array $snippetParams){
 		//If URL contains tags
