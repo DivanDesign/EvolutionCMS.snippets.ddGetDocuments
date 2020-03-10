@@ -43,12 +43,14 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.2.3 (2020-03-10)
+	 * @version 1.3 (2020-03-10)
 	 * 
-	 * @param $params {array}
-	 * @param $params['dataProvider'] {\ddGetDocuments\DataProvider\DataProvider}
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
 	 */
-	function __construct(array $params = []){
+	function __construct($params = []){
+		$params = (object) $params;
+		
 		//Все параметры задают свойства объекта
 		$this->setExistingProps($params);
 		
@@ -63,9 +65,9 @@ abstract class Outputter extends \DDTools\BaseClass {
 		if (empty($this->docFields)){
 			//We need something
 			$this->docFields = ['id'];
-		}else if (isset($params['dataProvider'])){
+		}else if (isset($params->dataProvider)){
 			//Ask dataProvider to get them
-			$params['dataProvider']->addResourcesFieldsToGet($this->docFields);
+			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
 		}
 	}
 	

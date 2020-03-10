@@ -151,40 +151,42 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.2 (2019-10-29)
+	 * @version 1.3 (2020-03-10)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
-	 * @param $params {arrayAssociative}
-	 * @param $params['shopData_shopName'] {string} — Короткое название магазина, не более 20 символов. @required
-	 * @param $params['shopData_companyName'] {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
-	 * @param $params['shopData_agency'] {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
-	 * @param $params['shopData_currencyId'] {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
-	 * @param $params['shopData_platform'] {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
-	 * @param $params['shopData_version'] {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
-	 * @param $params['categoryIds_last'] {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
-	 * @param $params['offerFields_price'] {stringDocFieldName|''} — Поле, содержащее актуальную цену товара. @required
-	 * @param $params['offerFields_priceOld'] {stringDocFieldName} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
-	 * @param $params['offerFields_picture'] {stringDocFieldName} — Поле, содержащее изображение товара. Defalut: —.
-	 * @param $params['offerFields_name'] {stringDocFieldName} — Поле, содержащее модель товара. Default: 'pagetitle'.
-	 * @param $params['offerFields_model'] {stringDocFieldName} — Поле, содержащее модель товара. Defalut: —.
-	 * @param $params['offerFields_vendor'] {stringDocFieldName} — Поле, содержащее производителя товара. Defalut: —.
-	 * @param $params['offerFields_available'] {stringDocFieldName|''} — Поле, содержащее статус товара ('true'|'false'). Default: '' (всегда выводить 'true').
-	 * @param $params['offerFields_description'] {stringDocFieldName} — Поле, содержащее описание предложения (длина текста — не более 3000 символов). Default: —.
-	 * @param $params['offerFields_salesNotes'] {stringDocFieldName} — Поле, содержащее «sales_notes» (https://yandex.ru/support/partnermarket/elements/sales_notes.html). Default: —.
-	 * @param $params['offerFields_manufacturerWarranty'] {stringDocFieldName} — Поле, содержащее наличие официальной гарантии производителя ('true'|'false'). Default: —.
-	 * @param $params['offerFields_countryOfOrigin'] {stringDocFieldName} — Поле, содержащее страну производства товара. Default: —.
-	 * @param $params['offerFields_homeCourierDelivery'] {stringDocFieldName} — Поле, содержащее возможность курьерской доставки по региону магазина ('true'|'false'). Default: —.
-	 * @param $params['offerFields_dimensions'] {stringDocFieldName} — Поле, содержащее габариты товара (длина, ширина, высота) в упаковке (размеры укажите в сантиметрах, формат: три положительных числа с точностью 0.001, разделитель целой и дробной части — точка, числа должны быть разделены символом «/» без пробелов). Default: —.
-	 * @param $params['offerFields_weight'] {stringDocFieldName} — Поле, содержащее вес товара в килограммах с учетом упаковки (формат: положительное число с точностью 0.001, разделитель целой и дробной части — точка). Default: —.
-	 * @param $params['offerFields_additionalParams'] {stringDocFieldName} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
-	 * @param $params['offerFields_customData'] {stringDocFieldName} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
-	 * @param $params['templates_wrapper'] {stringChunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params['templates_categories_item'] {stringChunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
-	 * @param $params['templates_offers_item'] {stringChunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params['templates_offers_item_elem' . $FieldName] {stringChunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params['templates_offers_item_elemCountryOfOrigin']. Default: —.
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->shopData_shopName {string} — Короткое название магазина, не более 20 символов. @required
+	 * @param $params->shopData_companyName {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
+	 * @param $params->shopData_agency {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
+	 * @param $params->shopData_currencyId {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+	 * @param $params->shopData_platform {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
+	 * @param $params->shopData_version {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
+	 * @param $params->categoryIds_last {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
+	 * @param $params->offerFields_price {stringDocFieldName|''} — Поле, содержащее актуальную цену товара. @required
+	 * @param $params->offerFields_priceOld {stringDocFieldName} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
+	 * @param $params->offerFields_picture {stringDocFieldName} — Поле, содержащее изображение товара. Defalut: —.
+	 * @param $params->offerFields_name {stringDocFieldName} — Поле, содержащее модель товара. Default: 'pagetitle'.
+	 * @param $params->offerFields_model {stringDocFieldName} — Поле, содержащее модель товара. Defalut: —.
+	 * @param $params->offerFields_vendor {stringDocFieldName} — Поле, содержащее производителя товара. Defalut: —.
+	 * @param $params->offerFields_available {stringDocFieldName|''} — Поле, содержащее статус товара ('true'|'false'). Default: '' (всегда выводить 'true').
+	 * @param $params->offerFields_description {stringDocFieldName} — Поле, содержащее описание предложения (длина текста — не более 3000 символов). Default: —.
+	 * @param $params->offerFields_salesNotes {stringDocFieldName} — Поле, содержащее «sales_notes» (https://yandex.ru/support/partnermarket/elements/sales_notes.html). Default: —.
+	 * @param $params->offerFields_manufacturerWarranty {stringDocFieldName} — Поле, содержащее наличие официальной гарантии производителя ('true'|'false'). Default: —.
+	 * @param $params->offerFields_countryOfOrigin {stringDocFieldName} — Поле, содержащее страну производства товара. Default: —.
+	 * @param $params->offerFields_homeCourierDelivery {stringDocFieldName} — Поле, содержащее возможность курьерской доставки по региону магазина ('true'|'false'). Default: —.
+	 * @param $params->offerFields_dimensions {stringDocFieldName} — Поле, содержащее габариты товара (длина, ширина, высота) в упаковке (размеры укажите в сантиметрах, формат: три положительных числа с точностью 0.001, разделитель целой и дробной части — точка, числа должны быть разделены символом «/» без пробелов). Default: —.
+	 * @param $params->offerFields_weight {stringDocFieldName} — Поле, содержащее вес товара в килограммах с учетом упаковки (формат: положительное число с точностью 0.001, разделитель целой и дробной части — точка). Default: —.
+	 * @param $params->offerFields_additionalParams {stringDocFieldName} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
+	 * @param $params->offerFields_customData {stringDocFieldName} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
+	 * @param $params->templates_wrapper {stringChunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params->templates_categories_item {stringChunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+	 * @param $params->templates_offers_item {stringChunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params->{'templates_offers_item_elem' . $FieldName} {stringChunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params->templates_offers_item_elemCountryOfOrigin. Default: —.
 	 */
 	function __construct($params = []){
+		$params = (object) $params;
+		
 		//Convert params to objects
 		$this->shopData = (object) $this->shopData;
 		$this->offerFields = (object) $this->offerFields;
@@ -315,20 +317,20 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		
 		//save last parent id for category
 		$this->categoryIds_last =
-			isset($params['categoryIds_last']) ?
-			trim($params['categoryIds_last']) :
+			isset($params->categoryIds_last) ?
+			trim($params->categoryIds_last) :
 			''
 		;
 		
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
-		$outputter_StringParams = [
+		$outputter_StringParams = (object) [
 			'itemTpl' => $this->templates->offers_item,
 			'wrapperTpl' => $this->templates->wrapper
 		];
 		//Transfer provider link
-		if (isset($params['dataProvider'])){
-			$outputter_StringParams['dataProvider'] = $params['dataProvider'];
+		if (isset($params->dataProvider)){
+			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
 		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
 	}
