@@ -88,15 +88,19 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
+	 * @version 1.0.1 (2020-03-10)
 	 * 
-	 * @param array $snippetParams
+	 * @param $snippetParams {arrayAssociative}
 	 * 
-	 * @return array
+	 * @return {array}
 	 */
 	public function applyToSnippetParams(array $snippetParams){
 		//If “total” is set then we need to override “offset” according to the current page index
 		if(isset($snippetParams['total'])){
-			$snippetParams['offset'] = ($this->pageIndex - 1) * $snippetParams['total'];
+			$snippetParams['offset'] =
+				($this->pageIndex - 1) *
+				$snippetParams['total']
+			;
 		}
 		
 		$this->snippetParams = $snippetParams;
@@ -106,7 +110,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.7 (2019-03-19)
+	 * @version 1.1.8 (2020-03-10)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -117,7 +121,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		
 		//Check to prevent division by zero
 		if($this->snippetParams['total'] != 0){
-			$pagesTotal = ceil($dataProviderOutput->totalFound / $this->snippetParams['total']);
+			$pagesTotal = ceil(
+				$dataProviderOutput->totalFound /
+				$this->snippetParams['total']
+			);
 			
 			if($pagesTotal > 1){
 				$urlPrefix = '?';
@@ -139,7 +146,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					}
 					
 					if (count($currentQuery) > 0){
-						$urlPrefix .= http_build_query($currentQuery) . '&';
+						$urlPrefix .=
+							http_build_query($currentQuery) .
+							'&'
+						;
 					}
 				}
 				
@@ -167,7 +177,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					$pagesOutputText .= \ddTools::parseSource(\ddTools::parseText([
 						'text' => $pageChunk,
 						'data' => [
-							'url' => $urlPrefix.$this->pageIndexRequestParamName . '=' . $pageIndex,
+							'url' =>
+								$urlPrefix.$this->pageIndexRequestParamName .
+								'=' .
+								$pageIndex
+							,
 							'page' => $pageIndex
 						]
 					]));
@@ -194,7 +208,12 @@ class Extender extends \ddGetDocuments\Extender\Extender
 								'url' =>
 									$this->pageIndex == 1 ?
 									'' :
-									$urlPrefix . $this->pageIndexRequestParamName . '=' . ($this->pageIndex - 1)
+									(
+										$urlPrefix .
+										$this->pageIndexRequestParamName .
+										'=' .
+										($this->pageIndex - 1)
+									)
 								,
 								'totalPages' => $pagesTotal
 							]
@@ -206,7 +225,12 @@ class Extender extends \ddGetDocuments\Extender\Extender
 								'url' =>
 									$this->pageIndex == $pagesTotal ?
 									'' :
-									$urlPrefix . $this->pageIndexRequestParamName . '=' . ($this->pageIndex + 1)
+									(
+										$urlPrefix .
+										$this->pageIndexRequestParamName .
+										'=' .
+										($this->pageIndex + 1)
+									)
 								,
 								'totalPages' => $pagesTotal
 							]

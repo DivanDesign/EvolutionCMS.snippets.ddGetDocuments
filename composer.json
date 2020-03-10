@@ -2,7 +2,12 @@
 	"name": "dd/modxevo-snippet-ddgetdocuments",
 	"type": "modxevo-snippet",
 	"description": "A snippet for fetching and parsing resources from the document tree by a custom rule.",
-	"keywords": ["modx", "modx evo", "modx evolution", "ddgetdocuments"],
+	"keywords": [
+		"modx",
+		"modx evo",
+		"modx evolution",
+		"ddgetdocuments"
+	],
 	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",

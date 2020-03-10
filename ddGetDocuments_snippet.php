@@ -109,22 +109,29 @@
  * @link https://code.divandesign.biz/modx/ddgetdocuments/0.10.1
  * 
  * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
- **/
+ */
 
 global $modx;
 
 $result = false;
 
+//Include (MODX)EvolutionCMS.libraries.ddTools
 if(!class_exists('\ddTools')){
-	require_once($modx->config['base_path'] . 'assets/libs/ddTools/modx.ddtools.class.php');
+	require_once(
+		$modx->config['base_path'] .
+		'assets/libs/ddTools/modx.ddtools.class.php'
+	);
 }
 
 if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
-	require_once($modx->config['base_path'] . 'assets/snippets/ddGetDocuments/require.php');
+	require_once(
+		$modx->config['base_path'] .
+		'assets/snippets/ddGetDocuments/require.php'
+	);
 }
 
 //Backward compatibility
-extract(ddTools::verifyRenamedParams(
+extract(\ddTools::verifyRenamedParams(
 	$params,
 	[
 		'outputter' => 'outputFormat',
@@ -201,11 +208,11 @@ $extendersParams =
 
 if(class_exists($providerClass)){
 	//Prepare provider params
-	$providerParams = ddTools::encodedStringToArray($providerParams);
+	$providerParams = \ddTools::encodedStringToArray($providerParams);
 	//Prepare extender params
-	$extendersParams = ddTools::encodedStringToArray($extendersParams);
+	$extendersParams = \ddTools::encodedStringToArray($extendersParams);
 	//Prepare output format params
-	$outputterParams = ddTools::encodedStringToArray($outputterParams);
+	$outputterParams = \ddTools::encodedStringToArray($outputterParams);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
@@ -258,7 +265,10 @@ if(class_exists($providerClass)){
 	$extendersStorage = [];
 	
 	//Iterate through all extenders to create their instances
-	foreach($extenders as $extenderName){
+	foreach(
+		$extenders as
+		$extenderName
+	){
 		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
 		//Passing parameters to extender's constructor
 		$extender = new $extenderClass($extendersParams[$extenderName]);
@@ -285,7 +295,8 @@ if(class_exists($providerClass)){
 	//Iterate through all extenders again to apply them to the output
 	foreach(
 		$extendersStorage as
-		$extenderName => $extender
+		$extenderName =>
+		$extender
 	){
 		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
 	}

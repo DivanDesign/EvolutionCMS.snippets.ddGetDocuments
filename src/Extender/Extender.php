@@ -11,7 +11,7 @@ abstract class Extender
 {
 	/**
 	 * includeExtenderByName
-	 * @version 1.0.2 (2018-06-12)
+	 * @version 1.0.3 (2020-03-10)
 	 * 
 	 * @param $extenderName
 	 * 
@@ -21,15 +21,35 @@ abstract class Extender
 	 */
 	public final static function includeExtenderByName($extenderName){
 		$extenderName = ucfirst(strtolower($extenderName));
-		$extenderPath = $extenderName.DIRECTORY_SEPARATOR.'Extender'.'.php';
 		
-		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$extenderPath)){
+		$extenderPath =
+			$extenderName .
+			DIRECTORY_SEPARATOR .
+			'Extender' .
+			'.php'
+		;
+		
+		if(is_file(
+			__DIR__ .
+			DIRECTORY_SEPARATOR .
+			$extenderPath
+		)){
 			require_once($extenderPath);
 			
-			return __NAMESPACE__.'\\'.$extenderName.'\\'.'Extender';
+			return
+				__NAMESPACE__ .
+				'\\' .
+				$extenderName .
+				'\\' .
+				'Extender'
+			;
 		}else{
 			throw new \Exception(
-				'Extender '.$extenderName.' not found.',
+				(
+					'Extender ' .
+					$extenderName .
+					' not found.'
+				),
 				500
 			);
 		}

@@ -42,7 +42,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.2 (2018-03-19)
+	 * @version 1.0.3 (2020-03-10)
 	 * 
 	 * @param $snippetParams {array_associative}
 	 * 
@@ -66,13 +66,23 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				$this->docFieldsToSearch as
 				$docField
 			){
-				$searchQueries[] = '`' . trim($docField) . '` LIKE("%' . $this->currentQuery . '%")';
+				$searchQueries[] =
+					'`' .
+					trim($docField) .
+					'` LIKE("%' .
+					$this->currentQuery .
+					'%")'
+				;
 			}
 			
-			$snippetParams['filter'] .= ' (' . implode(
-				' OR ',
-				$searchQueries
-			) . ')';
+			$snippetParams['filter'] .=
+				' (' .
+				implode(
+					' OR ',
+					$searchQueries
+				) .
+				')'
+			;
 		}
 		
 		return $snippetParams;

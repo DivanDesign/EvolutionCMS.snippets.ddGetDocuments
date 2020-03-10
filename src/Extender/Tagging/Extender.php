@@ -22,7 +22,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * __construct
-	 * @version 1.1.1 (2019-03-19)
+	 * @version 1.1.2 (2020-03-10)
 	 * 
 	 * @param $params {array_associative}
 	 * @param $params['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
@@ -48,7 +48,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			
 			foreach (
 				$this->currentTags as
-				$index => $value
+				$index =>
+				$value
 			){
 				$this->currentTags[$index] = \ddTools::$modx->db->escape($value);
 			}
@@ -57,7 +58,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.2 (2018-03-19)
+	 * @version 1.0.3 (2020-03-10)
 	 * 
 	 * @param $snippetParams {array_associative}
 	 * 
@@ -77,14 +78,31 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			
 			$tagQueries = [];
 			
-			foreach ($this->currentTags as $currentTag){
-				$tagQueries[] = '`' . $this->tagsDocumentField . '` REGEXP "(^|' . $this->tagsDelimiter . ')' . $currentTag . '($|' . $this->tagsDelimiter . ')"';
+			foreach (
+				$this->currentTags as
+				$currentTag
+			){
+				$tagQueries[] =
+					'`' .
+					$this->tagsDocumentField .
+					'` REGEXP "(^|' .
+					$this->tagsDelimiter .
+					')' .
+					$currentTag .
+					'($|' .
+					$this->tagsDelimiter .
+					')"'
+				;
 			}
 			
-			$snippetParams['filter'] .= ' (' . implode(
-				' OR ',
-				$tagQueries
-			) . ')';
+			$snippetParams['filter'] .=
+				' (' .
+				implode(
+					' OR ',
+					$tagQueries
+				) .
+				')'
+			;
 		}
 		
 		return $snippetParams;

@@ -38,7 +38,7 @@ abstract class DataProvider
 	
 	/**
 	 * includeProviderByName
-	 * @version 1.0.4 (2019-03-19)
+	 * @version 1.0.5 (2020-03-10)
 	 * 
 	 * @param $providerName
 	 * @return string
@@ -46,15 +46,30 @@ abstract class DataProvider
 	 */
 	public final static function includeProviderByName($providerName){
 		$providerName = ucfirst(strtolower($providerName));
-		$providerPath = $providerName . DIRECTORY_SEPARATOR . 'DataProvider' . '.php';
+		$providerPath =
+			$providerName .
+			DIRECTORY_SEPARATOR .
+			'DataProvider' .
+			'.php'
+		;
 		
 		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
 			require_once($providerPath);
 			
-			return __NAMESPACE__ . '\\' . $providerName . '\\' . 'DataProvider';
+			return
+				__NAMESPACE__ .
+				'\\' .
+				$providerName .
+				'\\' .
+				'DataProvider'
+			;
 		}else{
 			throw new \Exception(
-				'Data provider ' . $providerName . ' not found.',
+				(
+					'Data provider ' .
+					$providerName .
+					' not found.'
+				),
 				500
 			);
 		}
@@ -62,7 +77,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.2 (2019-03-19)
+	 * @version 1.2.1 (2020-03-10)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -85,7 +100,8 @@ abstract class DataProvider
 		//Все параметры задают свойства объекта
 		foreach (
 			$input->providerParams as
-			$paramName => $paramValue
+			$paramName =>
+			$paramValue
 		){
 			//Validation
 			if (property_exists(
@@ -172,7 +188,7 @@ abstract class DataProvider
 	
 	/**
 	 * getResourcesDataFromDb
-	 * @version 6.1.2 (2019-03-19)
+	 * @version 6.1.3 (2020-03-10)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -203,7 +219,8 @@ abstract class DataProvider
 					//Get TVs values
 					foreach (
 						$data as
-						$docIndex => $docValue
+						$docIndex =>
+						$docValue
 					){
 						$docValue['TVs'] = json_decode(
 							$docValue['TVs'],
@@ -272,7 +289,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 3.0.2 (2019-03-19)
+	 * @version 3.0.3 (2020-03-10)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
@@ -292,7 +309,9 @@ abstract class DataProvider
 			$fieldsArray = \ddTools::prepareDocData([
 				'data' => array_flip($usedFields),
 				//Just something
-				'tvAdditionalFieldsToGet' => ['name']
+				'tvAdditionalFieldsToGet' => [
+					'name'
+				]
 			]);
 			
 			if(!empty($fieldsArray->fieldsData)){
@@ -306,7 +325,8 @@ abstract class DataProvider
 				//Check whether the current tv name is an actual tv name
 				foreach(
 					$fieldsArray->tvsAdditionalData as
-					$tvName => $tvData
+					$tvName =>
+					$tvData
 				){
 					//Pupulate the array with the current tv name
 					$result->tvs[] = $tvName;
@@ -323,7 +343,7 @@ abstract class DataProvider
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.5 (2019-03-14)
+	 * @version 1.0.6 (2020-03-10)
 	 * 
 	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
@@ -340,7 +360,11 @@ abstract class DataProvider
 		
 		//select query
 		$selectTvsQuery = 'SELECT `c`.*,';
-		$fromTvsQuery = 'FROM ' . $this->resourcesTableName . ' as `c`';
+		$fromTvsQuery =
+			'FROM ' .
+			$this->resourcesTableName .
+			' as `c`'
+		;
 		//join query
 		$joinTvsQuery = '';
 		//where query
@@ -353,20 +377,70 @@ abstract class DataProvider
 			$tvName
 		){
 			//alias of tmplvar_templates
-			$tvtAlias = '`tvt_' . $tvCounter . '`';
+			$tvtAlias =
+				'`tvt_' .
+				$tvCounter .
+				'`'
+			;
 			//alias of tmplvars
-			$tvAlias = '`tv_' . $tvCounter . '`';
+			$tvAlias =
+				'`tv_' .
+				$tvCounter .
+				'`'
+			;
 			//alias of tmplvar_contentvalues
-			$tvcvAlias = '`tvcv_' . $tvCounter . '`';
+			$tvcvAlias =
+				'`tvcv_' .
+				$tvCounter .
+				'`'
+			;
 			//select not null value from either the real value column or default
-			$selectTvsQuery .= 'coalesce(' . $tvcvAlias . '.`value`, ' . $tvAlias . '.`default_text`) as `' . $tvName . '`,';
+			$selectTvsQuery .=
+				'coalesce(' .
+				$tvcvAlias .
+				'.`value`, ' .
+				$tvAlias .
+				'.`default_text`) as `' .
+				$tvName .
+				'`,'
+			;
 			
 			$joinTvsQuery .=
-				' LEFT JOIN ' . \ddTools::$tables['site_tmplvar_templates'] . ' AS ' . $tvtAlias . ' ON ' . $tvtAlias . '.`templateid` = `c`.`template`'.
-				' LEFT JOIN ' . \ddTools::$tables['site_tmplvars'] . ' AS ' . $tvAlias . ' ON ' . $tvAlias . '.`id` = ' . $tvtAlias . '.`tmplvarid`'.
-				' LEFT JOIN ' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' AS ' . $tvcvAlias . ' ON ' . $tvcvAlias . '.`contentid` = `c`.`id` AND ' . $tvcvAlias . '.`tmplvarid` = ' . $tvAlias . '.`id`';
+				' LEFT JOIN ' .
+					\ddTools::$tables['site_tmplvar_templates'] .
+					' AS ' .
+					$tvtAlias .
+					' ON ' .
+					$tvtAlias .
+					'.`templateid` = `c`.`template`' .
+				' LEFT JOIN ' .
+					\ddTools::$tables['site_tmplvars'] .
+					' AS ' .
+					$tvAlias .
+					' ON ' .
+					$tvAlias .
+					'.`id` = ' .
+					$tvtAlias .
+					'.`tmplvarid`' .
+				' LEFT JOIN ' .
+					\ddTools::$tables['site_tmplvar_contentvalues'] .
+					' AS ' .
+					$tvcvAlias .
+					' ON ' .
+					$tvcvAlias .
+					'.`contentid` = `c`.`id` AND ' .
+					$tvcvAlias .
+					'.`tmplvarid` = ' .
+					$tvAlias .
+					'.`id`'
+			;
 			
-			$whereTvsQuery .= $tvAlias . '.`name` = "' . $tvName . '" AND';
+			$whereTvsQuery .=
+				$tvAlias .
+				'.`name` = "' .
+				$tvName .
+				'" AND'
+			;
 			
 			$tvCounter++;
 		}
@@ -375,18 +449,29 @@ abstract class DataProvider
 			$selectTvsQuery,
 			','
 		);
-		$whereTvsQuery = 'WHERE '.trim(
-			$whereTvsQuery,
-			' AND'
-		);
+		$whereTvsQuery =
+			'WHERE ' .
+			trim(
+				$whereTvsQuery,
+				' AND'
+			)
+		;
 		
 		//complete from query
-		return $selectTvsQuery . ' ' . $fromTvsQuery . ' ' . $joinTvsQuery . ' ' . $whereTvsQuery;
+		return
+			$selectTvsQuery .
+			' ' .
+			$fromTvsQuery .
+			' ' .
+			$joinTvsQuery .
+			' ' .
+			$whereTvsQuery
+		;
 	}
 	
 	/**
 	 * prepareQueryData_fromAndFilter
-	 * @version 3.0 (2019-03-19)
+	 * @version 3.0.1 (2020-03-10)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -408,10 +493,18 @@ abstract class DataProvider
 			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields->tvs)){
 				//complete from query
-				$result->from = '(' . $this->buildTVsSubQuery($usedFields->tvs) . ')';
+				$result->from =
+					'(' .
+					$this->buildTVsSubQuery($usedFields->tvs) .
+					')'
+				;
 			}
 			
-			$result->filter = '(' . $filterStr . ')';
+			$result->filter =
+				'(' .
+				$filterStr .
+				')'
+			;
 		}
 		
 		return $result;
@@ -419,7 +512,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQueryData
-	 * @version 2.1 (2019-03-19)
+	 * @version 2.1.1 (2020-03-10)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -449,7 +542,10 @@ abstract class DataProvider
 		];
 		
 		if(!empty($this->orderBy)){
-			$result->orderBy = 'ORDER BY ' . $this->orderBy;
+			$result->orderBy =
+				'ORDER BY ' .
+				$this->orderBy
+			;
 		}
 		
 		//If LIMIT needed
@@ -461,7 +557,10 @@ abstract class DataProvider
 			
 			//Prepare offset
 			if (!empty($this->offset)){
-				$result->limit .= $this->offset . ',';
+				$result->limit .=
+					$this->offset .
+					','
+				;
 			}
 			
 			//Prepare total rows
@@ -474,17 +573,27 @@ abstract class DataProvider
 		}
 		
 		if(!empty($params->resourcesIds)){
-			$result->where .= '`resources`.`id` IN (' . $params->resourcesIds . ')';
+			$result->where .=
+				'`resources`.`id` IN (' .
+				$params->resourcesIds .
+				')'
+			;
 				
 			if(!empty($fromAndFilterQueries->filter)){
-				$result->where .= ' AND ' . $fromAndFilterQueries->filter;
+				$result->where .=
+					' AND ' .
+					$fromAndFilterQueries->filter
+				;
 			}
 		}else{
 			$result->where .= $fromAndFilterQueries->filter;
 		}
 		
 		if (!empty($result->where)){
-			$result->where = 'WHERE ' . $result->where;
+			$result->where =
+				'WHERE ' .
+				$result->where
+			;
 		}
 		
 		return $result;
@@ -492,7 +601,7 @@ abstract class DataProvider
 	
 	/**
 	 * prepareQuery
-	 * @version 1.2 (2019-03-19)
+	 * @version 1.2.1 (2020-03-10)
 	 * 
 	 * @param $params {array_associative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -540,11 +649,17 @@ abstract class DataProvider
 				';
 			}
 			
-			$result .= '
-				FROM
-					' . $queryData->from . ' AS `resources`
-				' . $queryData->where . ' ' . $queryData->orderBy . ' ' . $queryData->limit . '
-			';
+			$result .=
+				'FROM ' .
+				$queryData->from .
+				' AS `resources` ' .
+				$queryData->where .
+				' ' .
+				$queryData->orderBy .
+				' ' .
+				$queryData->limit .
+				' '
+			;
 		}
 		
 		return $result;

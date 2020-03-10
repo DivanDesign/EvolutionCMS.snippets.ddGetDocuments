@@ -48,7 +48,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * get
-	 * @version 2.0.8 (2019-03-19)
+	 * @version 2.0.9 (2020-03-10)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -59,10 +59,14 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 		);
 		
 		if (!empty($this->excludeIds)){
-			$excludeIdsStr = 'AND `id` NOT IN (' . trim(implode(
-				',',
-				$this->excludeIds
-			)) . ')';
+			$excludeIdsStr =
+				'AND `id` NOT IN (' .
+				trim(implode(
+					',',
+					$this->excludeIds
+				)) .
+				')'
+			;
 		}else{
 			$excludeIdsStr = '';
 		}
