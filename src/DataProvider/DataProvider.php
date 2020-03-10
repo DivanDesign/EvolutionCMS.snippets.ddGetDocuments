@@ -4,8 +4,7 @@ namespace ddGetDocuments\DataProvider;
 
 use ddGetDocuments\Input;
 
-abstract class DataProvider
-{
+abstract class DataProvider extends \DDTools\BaseClass {
 	protected
 		/**
 		 * @property $resourcesTableName {string} — Source DB table name. Default: \ddTools::$tables['site_content'].
@@ -39,6 +38,8 @@ abstract class DataProvider
 	/**
 	 * includeProviderByName
 	 * @version 1.0.5 (2020-03-10)
+	 * 
+	 * @TODO: Remove it, use `\DDTools\BaseClass::createChildInstance` instead
 	 * 
 	 * @param $providerName
 	 * @return string
@@ -77,7 +78,7 @@ abstract class DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.2.1 (2020-03-10)
+	 * @version 1.2.2 (2020-03-10)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -98,19 +99,7 @@ abstract class DataProvider
 		}
 		
 		//Все параметры задают свойства объекта
-		foreach (
-			$input->providerParams as
-			$paramName =>
-			$paramValue
-		){
-			//Validation
-			if (property_exists(
-				$this,
-				$paramName
-			)){
-				$this->{$paramName} = $paramValue;
-			}
-		}
+		$this->setExistingProps($input->providerParams);
 		
 		//Init source DB table name
 		$this->resourcesTableName =

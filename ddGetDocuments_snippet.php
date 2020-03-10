@@ -8,7 +8,7 @@
  * @uses PHP >= 5.4.
  * @uses MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
  * @uses (MODX)EvolutionCMS >= 1.1.
- * @uses (MODX)EvolutionCMS.libraries.ddTools >= 0.22.
+ * @uses (MODX)EvolutionCMS.libraries.ddTools >= 0.30.
  * 
  * Providers:
  * @param $provider {'parent'|'select'} — Name of the provider that will be used to fetch documents. Default: 'parent'.
@@ -116,6 +116,11 @@ $snippetResult = '';
 
 global $modx;
 
+$snippetPath =
+	$modx->getConfig('base_path') .
+	'assets/snippets/ddGetDocuments/'
+;
+
 //Include (MODX)EvolutionCMS.libraries.ddTools
 if(!class_exists('\ddTools')){
 	require_once(
@@ -126,8 +131,8 @@ if(!class_exists('\ddTools')){
 
 if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 	require_once(
-		$modx->config['base_path'] .
-		'assets/snippets/ddGetDocuments/require.php'
+		$snippetPath .
+		'require.php'
 	);
 }
 
@@ -270,9 +275,17 @@ if(class_exists($providerClass)){
 		$extenders as
 		$extenderName
 	){
-		$extenderClass = \ddGetDocuments\Extender\Extender::includeExtenderByName($extenderName);
-		//Passing parameters to extender's constructor
-		$extender = new $extenderClass($extendersParams[$extenderName]);
+		$extender = \ddGetDocuments\Extender\Extender::createChildInstance([
+			'name' => $extenderName,
+			'parentDir' =>
+				$snippetPath .
+				'src' .
+				DIRECTORY_SEPARATOR .
+				'Extender'
+			,
+			//Passing parameters into constructor
+			'params' => $extendersParams[$extenderName]
+		]);
 		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extender;
 		
@@ -285,8 +298,17 @@ if(class_exists($providerClass)){
 	if ($outputter != 'raw'){
 		$outputterParams['dataProvider'] = $dataProvider;
 		
-		$outputterClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName($outputter);
-		$outputterObject = new $outputterClass($outputterParams);
+		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
+			'name' => $outputter,
+			'parentDir' =>
+				$snippetPath .
+				'src' .
+				DIRECTORY_SEPARATOR .
+				'Outputter'
+			,
+			//Passing parameters into constructor
+			'params' => $outputterParams
+		]);
 	}
 	
 	$providerResult = $dataProvider->get();

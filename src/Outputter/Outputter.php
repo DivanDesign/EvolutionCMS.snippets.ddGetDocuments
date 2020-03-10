@@ -4,8 +4,7 @@ namespace ddGetDocuments\Outputter;
 
 use ddGetDocuments\Output;
 
-abstract class Outputter
-{
+abstract class Outputter extends \DDTools\BaseClass {
 	protected
 		/**
 		 * @property $docFields {array} — Document fields including TVs used in the output.
@@ -17,6 +16,8 @@ abstract class Outputter
 	/**
 	 * includeOutputterByName
 	 * @version 1.0.3 (2019-03-11)
+	 * 
+	 * @TODO: Remove it, use `\DDTools\BaseClass::createChildInstance` instead
 	 * 
 	 * @param $parserName {string}
 	 * 
@@ -42,25 +43,14 @@ abstract class Outputter
 	
 	/**
 	 * __construct
-	 * @version 1.2.2 (2019-03-13)
+	 * @version 1.2.3 (2020-03-10)
 	 * 
 	 * @param $params {array}
 	 * @param $params['dataProvider'] {\ddGetDocuments\DataProvider\DataProvider}
 	 */
 	function __construct(array $params = []){
 		//Все параметры задают свойства объекта
-		foreach (
-			$params as
-			$paramName => $paramValue
-		){
-			//Validation
-			if (property_exists(
-				$this,
-				$paramName
-			)){
-				$this->{$paramName} = $paramValue;
-			}
-		}
+		$this->setExistingProps($params);
 		
 		//Comma separated strings
 		if (!is_array($this->docFields)){
