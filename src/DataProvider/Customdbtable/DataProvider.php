@@ -2,9 +2,6 @@
 namespace ddGetDocuments\DataProvider\Customdbtable;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-use ddGetDocuments\Input;
-
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected

@@ -5,7 +5,6 @@
 
 namespace ddGetDocuments\Extender;
 
-use ddGetDocuments\Input;
 
 abstract class Extender extends \DDTools\BaseClass {
 	/**

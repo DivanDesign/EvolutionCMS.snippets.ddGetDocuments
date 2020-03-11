@@ -2,9 +2,6 @@
 namespace ddGetDocuments\DataProvider\Select;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-use ddGetDocuments\Input;
-
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected

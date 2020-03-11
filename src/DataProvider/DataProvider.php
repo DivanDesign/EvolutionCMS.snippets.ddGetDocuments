@@ -2,8 +2,6 @@
 namespace ddGetDocuments\DataProvider;
 
 
-use ddGetDocuments\Input;
-
 abstract class DataProvider extends \DDTools\BaseClass {
 	protected
 		/**
@@ -78,11 +76,11 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.2.3 (2020-03-11)
+	 * @version 1.2.4 (2020-03-11)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
-	function __construct(Input $input){
+	function __construct(\ddGetDocuments\Input $input){
 		//Params from the snippet first
 		foreach (
 			[

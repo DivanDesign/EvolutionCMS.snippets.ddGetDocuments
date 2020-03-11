@@ -2,9 +2,6 @@
 namespace ddGetDocuments\DataProvider\Parent;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-use ddGetDocuments\Input;
-
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected
@@ -17,11 +14,11 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 	
 	/**
 	 * __construct
-	 * @version 1.1.2 (2019-03-12)
+	 * @version 1.1.3 (2020-03-11)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
-	public function __construct(Input $input){
+	public function __construct(\ddGetDocuments\Input $input){
 		//Call base constructor
 		parent::__construct($input);
 		
