@@ -156,18 +156,17 @@ if(class_exists($providerClass)){
 		$filter
 	);
 	
-	$input = new \ddGetDocuments\Input(
-		//Snippet params
-		[
+	$input = new \ddGetDocuments\Input([
+		'snippetParams' => [
 			'offset' => $offset,
 			'total' => $total,
 			'orderBy' => $orderBy,
 			'filter' => $filter
 		],
-		$providerParams,
-		$extendersParams,
-		$outputterParams
-	);
+		'providerParams' => $providerParams,
+		'extendersParams' => $extendersParams,
+		'outputterParams' => $outputterParams
+	]);
 	
 	//Extenders storage
 	$extendersStorage = [];
