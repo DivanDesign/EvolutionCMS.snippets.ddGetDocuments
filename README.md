@@ -1,6 +1,6 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments
 
-A snippet for fetching and parsing resources from the document tree by a custom rule.
+A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.
 
 
 ## Requires
@@ -19,7 +19,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>0.10.1</b> A snippet for fetching and parsing resources from the document tree by a custom rule.`.
+2. Description: `<b>1.0</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -51,7 +51,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* Default value: —
 
 
-##### When ``&provider=`parent` ``
+##### Providers → Parent (``&provider=`parent` ``)
 
 * `providerParams->parentIds`
 	* Desctription: Parent ID(s).
@@ -83,7 +83,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* **Required**
 
 
-##### When ``&provider=`select` ``
+##### Providers → Select (``&provider=`select` ``)
 
 * `providerParams->ids`
 	* Desctription: Document IDs to output.
@@ -98,7 +98,9 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* **Required**
 
 
-##### Providers → Customdbtable
+##### Providers → Customdbtable (``&provider=`customdbtable` ``)
+
+Get resources from custom DB table.
 
 * `providerParams->resourcesTableName`
 	* Desctription: DB table to get resources from.
@@ -113,26 +115,26 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* Valid values: `string`
 	* Default value: ``'`'``
 	
-* `total`
-	* Desctription: The maximum number of the resources that will be returned.
-	* Valid values: `integer`
-	* Default value: — (all)
-	
 * `filter`
 	* Desctription: The filter condition in SQL-style to be applied while resource fetching.  
 		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
 	* Valid values: `string`
 	* Default value: ``'`published` = 1 AND `deleted` = 0'``
 	
-* `offset`
-	* Desctription:  Resources offset.
-	* Valid values: `integer`
-	* Default value: `0`
-	
 * `orderBy`
 	* Desctription: A string representing the sorting rule.
 	* Valid values: `string`
 	* Default value: ``'`id` ASC'``
+	
+* `total`
+	* Desctription: The maximum number of the resources that will be returned.
+	* Valid values: `integer`
+	* Default value: — (all)
+	
+* `offset`
+	* Desctription:  Resources offset.
+	* Valid values: `integer`
+	* Default value: `0`
 
 
 #### Output format parameters
@@ -155,7 +157,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* Default value: —
 
 
-##### When ``&outputter=`string` ``
+##### Outputter → String (``&outputter=`string` ``)
 
 * `outputterParams->itemTpl`
 	* Desctription: Item template.  
@@ -221,7 +223,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* Default value: —
 
 
-##### When ``&outputter=`json` ``
+##### Outputter → Json (``&outputter=`json` ``)
 
 * `outputterParams->docFields`
 	* Desctription: Document fields to output (including TVs).
@@ -238,7 +240,7 @@ A snippet for fetching and parsing resources from the document tree by a custom 
 	* **Required**
 
 
-##### When ``&outputter=`sitemap` ``
+##### Outputter → Sitemap (``&outputter=`sitemap` ``)
 
 Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 
@@ -289,7 +291,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 		```
 
 
-##### When ``&outputter=`yandexmarket` ``
+##### Outputter → Yandexmarket (``&outputter=`yandexmarket` ``)
 
 Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
@@ -558,7 +560,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 
 
-##### When ``&extenders=`pagination` ``
+##### Extenders → Pagination (``&extenders=`pagination` ``)
 
 * `extendersParams->pagination->wrapperTpl`
 	* Desctription: Chunk to be used to output the pagination.  
@@ -661,7 +663,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 
 
-##### When ``&extenders=`tagging` ``
+##### Extenders → Tagging (``&extenders=`tagging` ``)
 
 * `extendersParams->tagging->tagsDocumentField`
 	* Desctription: The document field (TV) contains tags.
@@ -679,7 +681,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: `'tags'`
 
 
-##### When ``&extenders=`search` ``
+##### Extenders → Search (``&extenders=`search` ``)
 
 * `extendersParams->search->docFieldsToSearch`
 	* Desctription: Document fields to search in (including TVs).

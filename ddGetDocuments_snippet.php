@@ -1,13 +1,13 @@
 <?php
 /**
  * ddGetDocuments
- * @version 0.10.1 (2018-10-31)
+ * @version 1.0 (2020-03-11)
  * 
  * @see README.md
  * 
  * @link https://code.divandesign.biz/modx/ddgetdocuments
  * 
- * @copyright 2015–2018 DivanDesign {@link http://www.DivanDesign.biz }
+ * @copyright 2015–2020 DivanDesign {@link http://www.DivanDesign.biz }
  */
 
 //The snippet must return an empty string even if result is absent
