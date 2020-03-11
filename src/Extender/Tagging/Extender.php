@@ -24,12 +24,12 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 * __construct
 	 * @version 1.1.2 (2020-03-10)
 	 * 
-	 * @param $params {arrayAssociative}
-	 * @param $params['tagsDocumentField'] {stringTvName} — The document field (TV) contains tags. Default: 'tags'.
-	 * @param $params['tagsDelimiter'] {string} — Tags delimiter in the document field. Default: ', '.
-	 * @param $params['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->tagsDocumentField {stringTvName} — The document field (TV) contains tags. Default: 'tags'.
+	 * @param $params->tagsDelimiter {string} — Tags delimiter in the document field. Default: ', '.
+	 * @param $params->tagsRequestParamName {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
 	 */
-	public function __construct(array $params = []){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		

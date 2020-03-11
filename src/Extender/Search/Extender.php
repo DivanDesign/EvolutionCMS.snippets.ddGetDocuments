@@ -21,10 +21,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 * __construct
 	 * @version 1.1 (2018-06-12)
 	 * 
-	 * @param $params {arrayAssociative}
-	 * @param $params['docFieldsToSearch'] {array|string_commaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->docFieldsToSearch {array|stringCommaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
 	 */
-	public function __construct(array $params){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		

@@ -45,9 +45,9 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	 * __construct
 	 * @version 1.2.1 (2019-03-19)
 	 * 
-	 * @param $params {arrayAssociative}
+	 * @param $params {stdClass|arrayAssociative}
 	 */
-	public function __construct(array $params){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
