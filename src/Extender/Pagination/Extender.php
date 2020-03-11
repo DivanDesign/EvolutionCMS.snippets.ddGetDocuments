@@ -7,17 +7,21 @@ use ddGetDocuments\DataProvider\DataProviderOutput;
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
+		/**
+		 * @property $snippetParams {stdClass}
+		 */
 		$snippetParams,
 		//Current page index
 		$pageIndex,
 		//The parameter in $_REQUEST to get the current page index from
-		$pageIndexRequestParamName = 'page';
+		$pageIndexRequestParamName = 'page'
+	;
 	
 	protected
 		//Chunk to be used to output pages within the pagination
 		$pageTpl = '<a href="[~[*id*]~][+url+]" class="strl">[+page+]</a>',
 		//Chunk to be used to output the current page within the pagination
-		$currentPageTpl = '<a class="strl active">[+page+]</a>',
+		$currentPageTpl = '<a href="[~[*id*]~][+url+]" class="strl active">[+page+]</a>',
 		//Chunk to be used to output the pagination
 		$wrapperTpl = '<div class="pagination_container">
 	<div class="pagination clearfix">
@@ -37,15 +41,16 @@ class Extender extends \ddGetDocuments\Extender\Extender
 <small><a href="[~[*id*]~]" class="pagination_first strl">←&nbsp;<span>Первая</span></a></small>',
 		//Chunk to be used to output the navigation block to the previous page if there are no more pages before
 		$previousOffTpl = '<span class="pagination_prev">←&nbsp;<span>Предыдущая</span></span><br>
-<small><span class="pagination_first">←&nbsp;<span>Первая</span></span></small>';
+<small><span class="pagination_first">←&nbsp;<span>Первая</span></span></small>'
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.2 (2018-06-12)
+	 * @version 1.2.1 (2019-03-19)
 	 * 
-	 * @param $params {array_associative}
+	 * @param $params {stdClass|arrayAssociative}
 	 */
-	public function __construct(array $params){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
@@ -77,20 +82,28 @@ class Extender extends \ddGetDocuments\Extender\Extender
 			$this->previousOffTpl = \ddTools::$modx->getTpl((string) $this->previousOffTpl);
 		}
 		
-		$this->pageIndex = isset($_REQUEST[$this->pageIndexRequestParamName]) ? (int) $_REQUEST[$this->pageIndexRequestParamName] :	1;
+		$this->pageIndex =
+			isset($_REQUEST[$this->pageIndexRequestParamName]) ?
+			(int) $_REQUEST[$this->pageIndexRequestParamName] :
+			1
+		;
 	}
 	
 	/**
 	 * applyToSnippetParams
+	 * @version 2.0 (2020-03-11)
 	 * 
-	 * @param array $snippetParams
+	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return array
+	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams(array $snippetParams){
+	public function applyToSnippetParams($snippetParams){
 		//If “total” is set then we need to override “offset” according to the current page index
-		if(isset($snippetParams['total'])){
-			$snippetParams['offset'] = ($this->pageIndex - 1) * $snippetParams['total'];
+		if(isset($snippetParams->total)){
+			$snippetParams->offset =
+				($this->pageIndex - 1) *
+				$snippetParams->total
+			;
 		}
 		
 		$this->snippetParams = $snippetParams;
@@ -100,7 +113,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.6 (2018-06-19)
+	 * @version 1.1.9 (2020-03-11)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -110,8 +123,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$result = '';
 		
 		//Check to prevent division by zero
-		if($this->snippetParams['total'] != 0){
-			$pagesTotal = ceil($dataProviderOutput->totalFound / $this->snippetParams['total']);
+		if($this->snippetParams->total != 0){
+			$pagesTotal = ceil(
+				$dataProviderOutput->totalFound /
+				$this->snippetParams->total
+			);
 			
 			if($pagesTotal > 1){
 				$urlPrefix = '?';
@@ -133,7 +149,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					}
 					
 					if (count($currentQuery) > 0){
-						$urlPrefix .= http_build_query($currentQuery).'&';
+						$urlPrefix .=
+							http_build_query($currentQuery) .
+							'&'
+						;
 					}
 				}
 				
@@ -161,15 +180,27 @@ class Extender extends \ddGetDocuments\Extender\Extender
 					$pagesOutputText .= \ddTools::parseSource(\ddTools::parseText([
 						'text' => $pageChunk,
 						'data' => [
-							'url' => $urlPrefix.$this->pageIndexRequestParamName.'='.$pageIndex,
+							'url' =>
+								$urlPrefix.$this->pageIndexRequestParamName .
+								'=' .
+								$pageIndex
+							,
 							'page' => $pageIndex
 						]
 					]));
 				}
 				
-				$previousLinkChunk = $this->pageIndex == 1 ? $this->previousOffTpl : $this->previousTpl;
+				$previousLinkChunk =
+					$this->pageIndex == 1 ?
+					$this->previousOffTpl :
+					$this->previousTpl
+				;
 				
-				$nextLinkChunk = $this->pageIndex == $pagesTotal ? $this->nextOffTpl : $this->nextTpl;
+				$nextLinkChunk =
+					$this->pageIndex == $pagesTotal ?
+					$this->nextOffTpl :
+					$this->nextTpl
+				;
 				
 				$result = \ddTools::parseSource(\ddTools::parseText([
 					'text' => $this->wrapperTpl,
@@ -177,7 +208,16 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'previous' => \ddTools::parseSource(\ddTools::parseText([
 							'text' => $previousLinkChunk,
 							'data' => [
-								'url' => $this->pageIndex == 1 ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex - 1),
+								'url' =>
+									$this->pageIndex == 1 ?
+									'' :
+									(
+										$urlPrefix .
+										$this->pageIndexRequestParamName .
+										'=' .
+										($this->pageIndex - 1)
+									)
+								,
 								'totalPages' => $pagesTotal
 							]
 						])),
@@ -185,7 +225,16 @@ class Extender extends \ddGetDocuments\Extender\Extender
 						'next' => \ddTools::parseSource(\ddTools::parseText([
 							'text' => $nextLinkChunk,
 							'data' => [
-								'url' => $this->pageIndex == $pagesTotal ? '' : $urlPrefix.$this->pageIndexRequestParamName.'='.($this->pageIndex + 1),
+								'url' =>
+									$this->pageIndex == $pagesTotal ?
+									'' :
+									(
+										$urlPrefix .
+										$this->pageIndexRequestParamName .
+										'=' .
+										($this->pageIndex + 1)
+									)
+								,
 								'totalPages' => $pagesTotal
 							]
 						]))

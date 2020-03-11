@@ -7,22 +7,24 @@ use ddGetDocuments\DataProvider\DataProviderOutput;
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
-		$currentQuery = '';
+		$currentQuery = ''
+	;
 	
 	protected
 		$docFieldsToSearch = [
 			'pagetitle',
 			'content'
-		];
+		]
+	;
 	
 	/**
 	 * __construct
 	 * @version 1.1 (2018-06-12)
 	 * 
-	 * @param $params {array_associative}
-	 * @param $params['docFieldsToSearch'] {array|string_commaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->docFieldsToSearch {array|stringCommaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
 	 */
-	public function __construct(array $params){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
@@ -40,34 +42,47 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 2.0 (2020-03-11)
 	 * 
-	 * @param $snippetParams {array_associative}
+	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {array_associative}
+	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams(array $snippetParams){
+	public function applyToSnippetParams($snippetParams){
 		//If URL contains tags
 		if (!empty($this->currentQuery)){
 			if(
-				isset($snippetParams['filter']) &&
-				trim($snippetParams['filter']) != ''
+				isset($snippetParams->filter) &&
+				trim($snippetParams->filter) != ''
 			){
-				$snippetParams['filter'] .= ' AND';
+				$snippetParams->filter .= ' AND';
 			}else{
-				$snippetParams['filter'] = '';
+				$snippetParams->filter = '';
 			}
 			
 			$searchQueries = [];
 			
-			foreach ($this->docFieldsToSearch as $docField){
-				$searchQueries[] = '`'.trim($docField).'` LIKE("%'.$this->currentQuery.'%")';
+			foreach (
+				$this->docFieldsToSearch as
+				$docField
+			){
+				$searchQueries[] =
+					'`' .
+					trim($docField) .
+					'` LIKE("%' .
+					$this->currentQuery .
+					'%")'
+				;
 			}
 			
-			$snippetParams['filter'] .= ' ('.implode(
-				' OR ',
-				$searchQueries
-			).')';
+			$snippetParams->filter .=
+				' (' .
+				implode(
+					' OR ',
+					$searchQueries
+				) .
+				')'
+			;
 		}
 		
 		return $snippetParams;

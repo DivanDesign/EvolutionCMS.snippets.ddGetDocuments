@@ -2,18 +2,17 @@
 namespace ddGetDocuments\DataProvider\Select;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-use ddGetDocuments\Input;
-
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected
-		$ids = null,
-		$filter = null;
+		$filter = null,
+		
+		$ids = null
+	;
 	
 	/**
 	 * get
-	 * @version 1.0.1 (2018-06-21)
+	 * @version 1.0.7 (2020-03-10)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -23,9 +22,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			empty($this->orderBy) &&
 			!empty($this->ids)
 		){
-			$this->orderBy = 'FIELD (`documents`.`id`,'.$this->ids.')';
+			$this->orderBy =
+				'FIELD (`resources`.`id`,' .
+				$this->ids .
+				')'
+			;
 		}
 		
-		return $this->getSelectedDocsFromDb(['docIds' => $this->ids]);
+		return $this->getResourcesDataFromDb([
+			'resourcesIds' => $this->ids
+		]);
 	}
 }

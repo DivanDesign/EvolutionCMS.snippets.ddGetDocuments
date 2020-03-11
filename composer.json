@@ -1,12 +1,26 @@
 {
 	"name": "dd/modxevo-snippet-ddgetdocuments",
 	"type": "modxevo-snippet",
-	"description": "A snippet for fetching and parsing resources from the document tree by a custom rule.",
-	"keywords": ["modx", "modx evo", "modx evolution", "ddgetdocuments"],
+	"version": "1.0.0",
+	"description": "A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.",
+	"keywords": [
+		"modx",
+		"modx evo",
+		"modx evolution",
+		"evo",
+		"evo cms",
+		"evolutioncms",
+		"evolution cms",
+		"divandesign",
+		"dd studio",
+		"dd group",
+		"get documents",
+		"ddgetdocuments"
+	],
 	"license": "MIT",
 	"require": {
 		"php": ">=5.4.0",
-		"dd/modxevo-library-ddtools": ">=0.22",
+		"dd/modxevo-library-ddtools": ">=0.30",
 		"composer/installers": "~1.0"
 	},
 	"autoload": {

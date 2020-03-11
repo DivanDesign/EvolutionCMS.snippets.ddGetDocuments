@@ -6,7 +6,8 @@ class DataProviderOutput
 {
 	public
 		$items,
-		$totalFound;
+		$totalFound
+	;
 	
 	/**
 	 * __construct

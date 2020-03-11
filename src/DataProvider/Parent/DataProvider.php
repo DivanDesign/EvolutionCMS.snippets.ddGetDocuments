@@ -2,24 +2,23 @@
 namespace ddGetDocuments\DataProvider\Parent;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-use ddGetDocuments\Input;
-
 class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 {
 	protected
+		$filter = '`published` = 1 AND `deleted` = 0',
+		
 		$parentIds = [0],
 		$depth = 1,
-		$excludeIds = [],
-		$filter = '`published` = 1 AND `deleted` = 0';
+		$excludeIds = []
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-08-02)
+	 * @version 1.1.3 (2020-03-11)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
-	public function __construct(Input $input){
+	public function __construct(\ddGetDocuments\Input $input){
 		//Call base constructor
 		parent::__construct($input);
 		
@@ -36,11 +35,17 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 				$this->excludeIds
 			);
 		}
+		
+		//Parent IDs must be set.
+		//TODO: Does we need to to this? People must set correct parameters. Or not? :)
+		if (empty($this->parentIds)){
+			$this->parentIds = [0];
+		}
 	}
 	
 	/**
 	 * get
-	 * @version 2.0 (2018-09-10)
+	 * @version 2.0.9 (2020-03-10)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -49,47 +54,67 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
 			',',
 			$this->parentIds
 		);
-		$excludeIdsStr = trim(implode(
-			',',
-			$this->excludeIds
-		));
 		
-		$allChildrenIds = 'SELECT 
-			`id`
-		FROM 
-			' . \ddTools::$tables['site_content'] . '
-		WHERE 
-			`parent` in (' . $parentIdsStr . ')
-			' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '');
-		
-		if($parentIdsStr !== ''){
-			if($this->depth > 1){
-				$allChildrenIds = 'WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
-					SELECT 
-						`id`, `parent`, 1
-					FROM 
-						' . \ddTools::$tables['site_content'] . '
-					WHERE 
-						`parent` in (' . $parentIdsStr . ')
-						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
-					UNION ALL
-					SELECT 
-						`content`.`id`, `content`.`parent`, `recursive`.`depth`+1
-					FROM 
-						' . \ddTools::$tables['site_content'] . ' as `content` 
-					JOIN 
-						`recursive_query` as `recursive` 
-					ON 
-						`recursive`.`id` = `content`.`parent`
-					WHERE 
-						`recursive`.`depth` < ' . $this->depth . '
-						' . ($excludeIdsStr !== '' ? 'AND `id` NOT IN (' . $excludeIdsStr . ')' : '') . '
-				) SELECT 
-					DISTINCT `id`
-				FROM 
-					`recursive_query`';
-			}
+		if (!empty($this->excludeIds)){
+			$excludeIdsStr =
+				'AND `id` NOT IN (' .
+				trim(implode(
+					',',
+					$this->excludeIds
+				)) .
+				')'
+			;
+		}else{
+			$excludeIdsStr = '';
 		}
-		return $this->getSelectedDocsFromDb(['docIds' => $allChildrenIds]);
+		
+		//Need to get multiple levels
+		if($this->depth > 1){
+			$allChildrenIds = '
+				WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
+					SELECT
+						`id`,
+						`parent`,
+						1
+					FROM
+						' . $this->resourcesTableName . '
+					WHERE
+						`parent` in (' . $parentIdsStr . ')
+						' . $excludeIdsStr . '
+					UNION ALL
+					SELECT
+						`content`.`id`,
+						`content`.`parent`,
+						`recursive`.`depth`+1
+					FROM
+						' . $this->resourcesTableName . ' as `content`
+					JOIN
+						`recursive_query` as `recursive`
+					ON
+						`recursive`.`id` = `content`.`parent`
+					WHERE
+						`recursive`.`depth` < ' . $this->depth . '
+						' . $excludeIdsStr . '
+				) SELECT
+					DISTINCT `id`
+				FROM
+					`recursive_query`
+			';
+		//Just single level
+		}else{
+			$allChildrenIds = '
+				SELECT 
+					`id`
+				FROM 
+					' . $this->resourcesTableName . '
+				WHERE 
+					`parent` in (' . $parentIdsStr . ')
+					' . $excludeIdsStr
+			;
+		}
+		
+		return $this->getResourcesDataFromDb([
+			'resourcesIds' => $allChildrenIds
+		]);
 	}
 }

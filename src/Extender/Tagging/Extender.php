@@ -8,7 +8,8 @@ class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
 		//Current selected tags
-		$currentTags = [];
+		$currentTags = []
+	;
 	
 	protected
 		//The parameter in $_REQUEST to get the tags value from
@@ -16,18 +17,19 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		//A document field (TV) contains tags
 		$tagsDocumentField = 'tags',
 		//Tags delimiter
-		$tagsDelimiter = ', ';
+		$tagsDelimiter = ', '
+	;
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-06-12)
+	 * @version 1.1.2 (2020-03-10)
 	 * 
-	 * @param $params {array_associative}
-	 * @param $params['tagsDocumentField'] {string_tvName} — The document field (TV) contains tags. Default: 'tags'.
-	 * @param $params['tagsDelimiter'] {string} — Tags delimiter in the document field. Default: ', '.
-	 * @param $params['tagsRequestParamName'] {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
+	 * @param $params {stdClass|arrayAssociative}
+	 * @param $params->tagsDocumentField {stringTvName} — The document field (TV) contains tags. Default: 'tags'.
+	 * @param $params->tagsDelimiter {string} — Tags delimiter in the document field. Default: ', '.
+	 * @param $params->tagsRequestParamName {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
 	 */
-	public function __construct(array $params = []){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
@@ -44,7 +46,11 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				);
 			}
 			
-			foreach ($this->currentTags as $index => $value){
+			foreach (
+				$this->currentTags as
+				$index =>
+				$value
+			){
 				$this->currentTags[$index] = \ddTools::$modx->db->escape($value);
 			}
 		}
@@ -52,34 +58,51 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.1 (2018-06-12)
+	 * @version 2.0 (2020-03-11)
 	 * 
-	 * @param $snippetParams {array_associative}
+	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {array_associative}
+	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams(array $snippetParams){
+	public function applyToSnippetParams($snippetParams){
 		//If URL contains tags
 		if (!empty($this->currentTags)){
 			if(
-				isset($snippetParams['filter']) &&
-				trim($snippetParams['filter']) != ''
+				isset($snippetParams->filter) &&
+				trim($snippetParams->filter) != ''
 			){
-				$snippetParams['filter'] .= ' AND';
+				$snippetParams->filter .= ' AND';
 			}else{
-				$snippetParams['filter'] = '';
+				$snippetParams->filter = '';
 			}
 			
 			$tagQueries = [];
 			
-			foreach ($this->currentTags as $currentTag){
-				$tagQueries[] = '`'.$this->tagsDocumentField.'` REGEXP "(^|'.$this->tagsDelimiter.')'.$currentTag.'($|'.$this->tagsDelimiter.')"';
+			foreach (
+				$this->currentTags as
+				$currentTag
+			){
+				$tagQueries[] =
+					'`' .
+					$this->tagsDocumentField .
+					'` REGEXP "(^|' .
+					$this->tagsDelimiter .
+					')' .
+					$currentTag .
+					'($|' .
+					$this->tagsDelimiter .
+					')"'
+				;
 			}
 			
-			$snippetParams['filter'] .= ' ('.implode(
-				' OR ',
-				$tagQueries
-			).')';
+			$snippetParams->filter .=
+				' (' .
+				implode(
+					' OR ',
+					$tagQueries
+				) .
+				')'
+			;
 		}
 		
 		return $snippetParams;
