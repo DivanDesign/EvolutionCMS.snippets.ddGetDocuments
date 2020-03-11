@@ -18,7 +18,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		//Chunk to be used to output pages within the pagination
 		$pageTpl = '<a href="[~[*id*]~][+url+]" class="strl">[+page+]</a>',
 		//Chunk to be used to output the current page within the pagination
-		$currentPageTpl = '<a class="strl active">[+page+]</a>',
+		$currentPageTpl = '<a href="[~[*id*]~][+url+]" class="strl active">[+page+]</a>',
 		//Chunk to be used to output the pagination
 		$wrapperTpl = '<div class="pagination_container">
 	<div class="pagination clearfix">
