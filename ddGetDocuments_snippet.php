@@ -118,27 +118,27 @@ if(class_exists($providerClass)){
 	//Prepare provider params
 	$providerParams = \ddTools::encodedStringToArray($providerParams);
 	//Prepare extender params
-	$extendersParams = \ddTools::encodedStringToArray($extendersParams);
-	//Prepare output format params
+	$extendersParams = (object) \ddTools::encodedStringToArray($extendersParams);
+	//Prepare outputter params
 	$outputterParams = \ddTools::encodedStringToArray($outputterParams);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
 		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
 		if(count($extenders) === 1){
-			if(!isset($extendersParams[$extenders[0]])){
-				$extendersParams = [
+			if(!isset($extendersParams->{$extenders[0]})){
+				$extendersParams = (object) [
 					$extenders[0] => $extendersParams
 				];
 			}
 		}else{
-			//Make sure that for each extender there is an item in $extendersParams 
+			//Make sure that for each extender there is an item in $extendersParams
 			foreach(
 				$extenders as
 				$extenderName
 			){
-				if(!isset($extendersParams[$extenderName])){
-					$extendersParams[$extenderName] = [];
+				if(!isset($extendersParams->{$extenderName})){
+					$extendersParams->{$extenderName} = [];
 				}
 			}
 		}
@@ -186,7 +186,7 @@ if(class_exists($providerClass)){
 				'Extender'
 			,
 			//Passing parameters into constructor
-			'params' => $extendersParams[$extenderName]
+			'params' => $input->extendersParams->{$extenderName}
 		]);
 		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extender;
@@ -198,7 +198,7 @@ if(class_exists($providerClass)){
 	$dataProvider = new $providerClass($input);
 	
 	if ($outputter != 'raw'){
-		$outputterParams['dataProvider'] = $dataProvider;
+		$input->outputterParams->dataProvider = $dataProvider;
 		
 		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
 			'name' => $outputter,
@@ -209,7 +209,7 @@ if(class_exists($providerClass)){
 				'Outputter'
 			,
 			//Passing parameters into constructor
-			'params' => $outputterParams
+			'params' => $input->outputterParams
 		]);
 	}
 	

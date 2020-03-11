@@ -78,7 +78,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.2.2 (2020-03-10)
+	 * @version 1.2.3 (2020-03-11)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -93,8 +93,8 @@ abstract class DataProvider extends \DDTools\BaseClass {
 			]
 			as $paramName
 		){
-			if(isset($input->snippetParams[$paramName])){
-				$this->{$paramName} = $input->snippetParams[$paramName];
+			if(isset($input->snippetParams->{$paramName})){
+				$this->{$paramName} = $input->snippetParams->{$paramName};
 			}
 		}
 		

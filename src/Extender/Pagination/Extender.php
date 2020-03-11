@@ -7,6 +7,9 @@ use ddGetDocuments\DataProvider\DataProviderOutput;
 class Extender extends \ddGetDocuments\Extender\Extender
 {
 	private
+		/**
+		 * @property $snippetParams {stdClass}
+		 */
 		$snippetParams,
 		//Current page index
 		$pageIndex,
@@ -88,18 +91,18 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.1 (2020-03-10)
+	 * @version 2.0 (2020-03-11)
 	 * 
-	 * @param $snippetParams {arrayAssociative}
+	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {array}
+	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams(array $snippetParams){
+	public function applyToSnippetParams($snippetParams){
 		//If “total” is set then we need to override “offset” according to the current page index
-		if(isset($snippetParams['total'])){
-			$snippetParams['offset'] =
+		if(isset($snippetParams->total)){
+			$snippetParams->offset =
 				($this->pageIndex - 1) *
-				$snippetParams['total']
+				$snippetParams->total
 			;
 		}
 		
@@ -110,7 +113,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.8 (2020-03-10)
+	 * @version 1.1.9 (2020-03-11)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -120,10 +123,10 @@ class Extender extends \ddGetDocuments\Extender\Extender
 		$result = '';
 		
 		//Check to prevent division by zero
-		if($this->snippetParams['total'] != 0){
+		if($this->snippetParams->total != 0){
 			$pagesTotal = ceil(
 				$dataProviderOutput->totalFound /
-				$this->snippetParams['total']
+				$this->snippetParams->total
 			);
 			
 			if($pagesTotal > 1){

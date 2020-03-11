@@ -42,22 +42,22 @@ class Extender extends \ddGetDocuments\Extender\Extender
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 1.0.3 (2020-03-10)
+	 * @version 2.0 (2020-03-11)
 	 * 
-	 * @param $snippetParams {arrayAssociative}
+	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {arrayAssociative}
+	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams(array $snippetParams){
+	public function applyToSnippetParams($snippetParams){
 		//If URL contains tags
 		if (!empty($this->currentQuery)){
 			if(
-				isset($snippetParams['filter']) &&
-				trim($snippetParams['filter']) != ''
+				isset($snippetParams->filter) &&
+				trim($snippetParams->filter) != ''
 			){
-				$snippetParams['filter'] .= ' AND';
+				$snippetParams->filter .= ' AND';
 			}else{
-				$snippetParams['filter'] = '';
+				$snippetParams->filter = '';
 			}
 			
 			$searchQueries = [];
@@ -75,7 +75,7 @@ class Extender extends \ddGetDocuments\Extender\Extender
 				;
 			}
 			
-			$snippetParams['filter'] .=
+			$snippetParams->filter .=
 				' (' .
 				implode(
 					' OR ',
