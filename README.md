@@ -4,6 +4,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 
 
 ## Requires
+
 * PHP >= 5.4
 * MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
 * [(MODX)EvolutionCMS](https://github.com/evolution-cms/evolution) >= 1.1
@@ -699,3 +700,6 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
 
 ## [Home page →](https://code.divandesign.biz/modx/ddgetdocuments)
+
+
+<link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
