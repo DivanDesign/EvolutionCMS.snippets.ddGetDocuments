@@ -4,8 +4,7 @@ namespace ddGetDocuments\Outputter\Yandexmarket;
 
 use ddGetDocuments\Output;
 
-class Outputter extends \ddGetDocuments\Outputter\Outputter
-{
+class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	protected
 		/**
 		 * @property $templates {stdClass}

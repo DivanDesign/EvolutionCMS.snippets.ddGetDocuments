@@ -4,8 +4,7 @@ namespace ddGetDocuments\Outputter\String;
 
 use ddGetDocuments\Output;
 
-class Outputter extends \ddGetDocuments\Outputter\Outputter
-{
+class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	public
 		$placeholders = []
 	;

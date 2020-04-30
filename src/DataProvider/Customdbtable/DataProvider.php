@@ -2,8 +2,7 @@
 namespace ddGetDocuments\DataProvider\Customdbtable;
 
 
-class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
-{
+class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	protected
 		$resourcesTableName = ''
 	;

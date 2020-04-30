@@ -8,11 +8,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	/**
 	 * parse
-	 * @version 2.1.2 (2019-03-11)
+	 * @version 2.1.3 (2020-04-30)
 	 * 
 	 * @param $data {Output}
 	 * 
-	 * @return {string_json_array}
+	 * @return {stringJsonArray}
 	 */
 	public function parse(Output $data){
 		$result = [];
@@ -20,7 +20,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Пройдемся по полученным данным
 		foreach(
 			$data->provider->items as
-			$itemIndex => $itemData
+			$itemIndex =>
+			$itemData
 		){
 			$result_item = [];
 			

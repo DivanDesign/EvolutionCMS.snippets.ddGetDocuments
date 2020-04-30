@@ -2,8 +2,7 @@
 namespace ddGetDocuments\DataProvider\Select;
 
 
-class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
-{
+class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	protected
 		$filter = null,
 		

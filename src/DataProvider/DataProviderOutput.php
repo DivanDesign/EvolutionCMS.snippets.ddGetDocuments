@@ -2,8 +2,7 @@
 namespace ddGetDocuments\DataProvider;
 
 
-class DataProviderOutput
-{
+class DataProviderOutput {
 	public
 		$items,
 		$totalFound

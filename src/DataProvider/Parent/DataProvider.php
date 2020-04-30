@@ -2,8 +2,7 @@
 namespace ddGetDocuments\DataProvider\Parent;
 
 
-class DataProvider extends \ddGetDocuments\DataProvider\DataProvider
-{
+class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	protected
 		$filter = '`published` = 1 AND `deleted` = 0',
 		
