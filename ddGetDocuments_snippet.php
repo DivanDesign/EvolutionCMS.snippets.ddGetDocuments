@@ -19,11 +19,16 @@ $snippetPath =
 	$modx->getConfig('base_path') .
 	'assets/snippets/ddGetDocuments/'
 ;
+$snippetPath_src =
+	$snippetPath .
+	'src' .
+	DIRECTORY_SEPARATOR
+;
 
 //Include (MODX)EvolutionCMS.libraries.ddTools
 if(!class_exists('\ddTools')){
 	require_once(
-		$modx->config['base_path'] .
+		$modx->getConfig('base_path') .
 		'assets/libs/ddTools/modx.ddtools.class.php'
 	);
 }
@@ -77,7 +82,7 @@ $provider =
 	$provider :
 	'parent'
 ;
-$providerClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
+$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
 $providerParams =
 	isset($providerParams) ?
 	$providerParams :
@@ -114,7 +119,7 @@ $extendersParams =
 	''
 ;
 
-if(class_exists($providerClass)){
+if(class_exists($dataProviderClass)){
 	//Prepare provider params
 	$providerParams = \ddTools::encodedStringToArray($providerParams);
 	//Prepare extender params
@@ -176,35 +181,31 @@ if(class_exists($providerClass)){
 		$extenders as
 		$extenderName
 	){
-		$extender = \ddGetDocuments\Extender\Extender::createChildInstance([
+		$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
 			'name' => $extenderName,
 			'parentDir' =>
-				$snippetPath .
-				'src' .
-				DIRECTORY_SEPARATOR .
+				$snippetPath_src .
 				'Extender'
 			,
 			//Passing parameters into constructor
 			'params' => $input->extendersParams->{$extenderName}
 		]);
 		//Passing a link to the storage
-		$extendersStorage[$extenderName] = $extender;
+		$extendersStorage[$extenderName] = $extenderObject;
 		
 		//Overwrite the snippet parameters with the result of applying them to the current extender
-		$input->snippetParams = $extender->applyToSnippetParams($input->snippetParams);
+		$input->snippetParams = $extenderObject->applyToSnippetParams($input->snippetParams);
 	}
 	
-	$dataProvider = new $providerClass($input);
+	$dataProviderObject = new $dataProviderClass($input);
 	
 	if ($outputter != 'raw'){
-		$input->outputterParams->dataProvider = $dataProvider;
+		$input->outputterParams->dataProvider = $dataProviderObject;
 		
 		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
 			'name' => $outputter,
 			'parentDir' =>
-				$snippetPath .
-				'src' .
-				DIRECTORY_SEPARATOR .
+				$snippetPath_src .
 				'Outputter'
 			,
 			//Passing parameters into constructor
@@ -212,23 +213,23 @@ if(class_exists($providerClass)){
 		]);
 	}
 	
-	$providerResult = $dataProvider->get();
+	$dataProviderResult = $dataProviderObject->get();
 	
-	$data = new \ddGetDocuments\Output($providerResult);
+	$outputData = new \ddGetDocuments\Output($dataProviderResult);
 	
 	//Iterate through all extenders again to apply them to the output
 	foreach(
 		$extendersStorage as
 		$extenderName =>
-		$extender
+		$extenderObject
 	){
-		$data->extenders[$extenderName] = $extender->applyToOutput($providerResult);
+		$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
 	}
 	
 	if ($outputter == 'raw'){
-		$snippetResult = $data;
+		$snippetResult = $outputData;
 	}else{
-		$snippetResult = $outputterObject->parse($data);
+		$snippetResult = $outputterObject->parse($outputData);
 	}
 }
 
