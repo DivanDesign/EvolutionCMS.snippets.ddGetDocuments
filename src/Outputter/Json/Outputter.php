@@ -8,7 +8,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 {
 	/**
 	 * parse
-	 * @version 2.1.3 (2020-04-30)
+	 * @version 2.1.4 (2020-06-08)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -20,7 +20,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 		//Пройдемся по полученным данным
 		foreach(
 			$data->provider->items as
-			$itemIndex =>
 			$itemData
 		){
 			$result_item = [];
