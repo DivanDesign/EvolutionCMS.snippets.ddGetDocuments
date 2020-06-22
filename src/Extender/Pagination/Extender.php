@@ -112,7 +112,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToOutput
-	 * @version 1.1.9 (2020-03-11)
+	 * @version 1.2 (2020-06-22)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -236,7 +236,8 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 								,
 								'totalPages' => $pagesTotal
 							]
-						]))
+						])),
+						'totalPages' => $pagesTotal
 					]
 				]));
 			}

@@ -569,6 +569,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `[+previous+]` — HTML code of navigation block to the previous page (see parameters description below).
 		* `[+next+]` — HTML code of navigation block to the next page (see parameters description below).
 		* `[+pages+]` — HTML code of pages navigalion block (see parameters description below).
+		* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
