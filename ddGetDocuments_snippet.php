@@ -41,13 +41,13 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 }
 
 //Backward compatibility
-extract(\ddTools::verifyRenamedParams(
-	$params,
-	[
+extract(\ddTools::verifyRenamedParams([
+	'params' => $params,
+	'compliance' => [
 		'outputter' => 'outputFormat',
 		'outputterParams' => 'outputFormatParams'
 	]
-));
+]));
 
 //General
 $total =
