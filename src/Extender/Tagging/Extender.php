@@ -4,8 +4,7 @@ namespace ddGetDocuments\Extender\Tagging;
 
 use ddGetDocuments\DataProvider\DataProviderOutput;
 
-class Extender extends \ddGetDocuments\Extender\Extender
-{
+class Extender extends \ddGetDocuments\Extender\Extender {
 	private
 		//Current selected tags
 		$currentTags = []

@@ -4,8 +4,7 @@ namespace ddGetDocuments\Extender\Search;
 
 use ddGetDocuments\DataProvider\DataProviderOutput;
 
-class Extender extends \ddGetDocuments\Extender\Extender
-{
+class Extender extends \ddGetDocuments\Extender\Extender {
 	private
 		$currentQuery = ''
 	;

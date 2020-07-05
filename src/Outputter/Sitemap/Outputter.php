@@ -4,8 +4,7 @@ namespace ddGetDocuments\Outputter\Sitemap;
 
 use ddGetDocuments\Output;
 
-class Outputter extends \ddGetDocuments\Outputter\Outputter
-{
+class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	protected 
 		$priorityTVName = 'general_seo_sitemap_priority',
 		$changefreqTVName = 'general_seo_sitemap_changefreq',
@@ -56,7 +55,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	
 	/**
 	 * parse
-	 * @version 1.1.1 (2019-03-19)
+	 * @version 1.1.2 (2020-04-30)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -65,7 +64,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 	public function parse(Output $data){
 		foreach (
 			$data->provider->items as
-			$docIndex => $docData
+			$docIndex =>
+			$docData
 		){
 			//Convert date to appropriate format
 			if (isset($data->provider->items[$docIndex]['editedon'])){

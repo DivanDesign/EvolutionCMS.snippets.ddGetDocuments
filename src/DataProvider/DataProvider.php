@@ -30,7 +30,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	 */
 	private $getResourcesDataFromDb_tvsSQL = 'JSON_OBJECTAGG(
 		`tvName`.`name`,
-		`tvValue`.`value`
+		coalesce(`tvValue`.`value`, `tvName`.`default_text`)
 	)';
 	
 	/**
@@ -76,7 +76,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.2.4 (2020-03-11)
+	 * @version 1.3 (2020-05-20)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -132,7 +132,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 						LEADING "{" FROM TRIM(
 							TRAILING "}" FROM JSON_OBJECT(
 								`tvName`.`name`, 
-								`tvValue`.`value`
+								coalesce(`tvValue`.`value`, `tvName`.`default_text`)
 							)
 						)
 					)
@@ -588,7 +588,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareQuery
-	 * @version 1.2.1 (2020-03-10)
+	 * @version 1.3 (2020-05-20)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -627,11 +627,15 @@ abstract class DataProvider extends \DDTools\BaseClass {
 						SELECT
 							' . $this->getResourcesDataFromDb_tvsSQL . '
 						FROM
-							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`,
-							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
+							' . \ddTools::$tables['site_content'] . ' as `content` LEFT JOIN
+							' . \ddTools::$tables['site_tmplvar_templates'] . ' as `resTvTemplates` ON
+ 							`content`.`template` = `resTvTemplates`.`templateid` LEFT JOIN
+ 							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName` ON
+							`resTvTemplates`.`tmplvarid` = `tvName`.`id` LEFT JOIN
+							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue` ON
+							`content`.`id` = `tvValue`.`contentid` AND `tvName`.`id` = `tvValue`.`tmplvarid`
 						WHERE
-							`tvName`.`id` = `tvValue`.`tmplvarid` AND
-							`resources`.`id` = `tvValue`.`contentid`
+							`resources`.`id` = `content`.`id`
 					) as `TVs`
 				';
 			}

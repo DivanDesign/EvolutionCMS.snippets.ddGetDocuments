@@ -4,10 +4,11 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 
 
 ## Requires
+
 * PHP >= 5.4
 * MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
 * [(MODX)EvolutionCMS](https://github.com/evolution-cms/evolution) >= 1.1
-* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.30
+* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.40.1
 
 
 ## Documentation
@@ -19,7 +20,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.0</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.1</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -568,6 +569,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `[+previous+]` — HTML code of navigation block to the previous page (see parameters description below).
 		* `[+next+]` — HTML code of navigation block to the next page (see parameters description below).
 		* `[+pages+]` — HTML code of pages navigalion block (see parameters description below).
+		* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -699,3 +701,6 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
 
 ## [Home page →](https://code.divandesign.biz/modx/ddgetdocuments)
+
+
+<link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
