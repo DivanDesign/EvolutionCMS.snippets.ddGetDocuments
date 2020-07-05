@@ -76,7 +76,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.2.4 (2020-03-11)
+	 * @version 1.3 (2020-05-20)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -588,7 +588,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareQuery
-	 * @version 1.2.1 (2020-03-10)
+	 * @version 1.3 (2020-05-20)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
