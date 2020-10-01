@@ -701,7 +701,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* **Required**
 
 
-## [Home page →](https://code.divandesign.biz/modx/ddgetdocuments)
+## Links
+
+* [Home page](https://code.divandesign.biz/modx/ddgetdocuments)
+* [Telegram chat](https://t.me/dd_code)
 
 
 <link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
