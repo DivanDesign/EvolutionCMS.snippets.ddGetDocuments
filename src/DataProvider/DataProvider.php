@@ -22,7 +22,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 		$total,
 		$filter,
 		$offset,
-		$orderBy
+		$orderBy = ''
 	;
 	
 	/**
@@ -76,7 +76,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3.1 (2020-10-01)
+	 * @version 1.3.2 (2020-10-01)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -86,8 +86,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 			[
 				'total',
 				'filter',
-				'offset',
-				'orderBy'
+				'offset'
 			]
 			as $paramName
 		){

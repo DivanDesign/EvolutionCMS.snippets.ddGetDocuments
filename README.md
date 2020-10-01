@@ -50,6 +50,12 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
 	* Default value: —
+	
+* `providerParams->orderBy`
+	* Desctription: A string representing the sorting rule.  
+		TV names also can be used.
+	* Valid values: `string`
+	* Default value: —
 
 
 ##### Providers → Parent (``&provider=`parent` ``)
@@ -112,7 +118,7 @@ Get resources from custom DB table.
 #### Core parameters
 
 * `fieldDelimiter`
-	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `orderBy` and `filter`.
+	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `filter`.
 	* Valid values: `string`
 	* Default value: ``'`'``
 	
@@ -121,11 +127,6 @@ Get resources from custom DB table.
 		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
 	* Valid values: `string`
 	* Default value: ``'`published` = 1 AND `deleted` = 0'``
-	
-* `orderBy`
-	* Desctription: A string representing the sorting rule.
-	* Valid values: `string`
-	* Default value: ``'`id` ASC'``
 	
 * `total`
 	* Desctription: The maximum number of the resources that will be returned.

@@ -60,11 +60,6 @@ $offset =
 	$offset :
 	0
 ;
-$orderBy =
-	isset($orderBy) ?
-	$orderBy :
-	'`id` ASC'
-;
 $filter =
 	isset($filter) ?
 	$filter :
@@ -122,6 +117,12 @@ $extendersParams =
 if(class_exists($dataProviderClass)){
 	//Prepare provider params
 	$providerParams = \ddTools::encodedStringToArray($providerParams);
+	
+	//Backward compatibility with <= 1.1
+	if (isset($orderBy)){
+		$providerParams['orderBy'] = $orderBy;
+	}
+	
 	//Prepare extender params
 	$extendersParams = (object) \ddTools::encodedStringToArray($extendersParams);
 	//Prepare outputter params
@@ -150,11 +151,13 @@ if(class_exists($dataProviderClass)){
 	}
 	
 	//Make sure orderBy and filter looks like SQL
-	$orderBy = str_replace(
-		$fieldDelimiter,
-		'`',
-		$orderBy
-	);
+	if (!empty($providerParams['orderBy'])){
+		$providerParams['orderBy'] = str_replace(
+			$fieldDelimiter,
+			'`',
+			$providerParams['orderBy']
+		);
+	}
 	$filter = str_replace(
 		$fieldDelimiter,
 		'`',
@@ -165,7 +168,6 @@ if(class_exists($dataProviderClass)){
 		'snippetParams' => [
 			'offset' => $offset,
 			'total' => $total,
-			'orderBy' => $orderBy,
 			'filter' => $filter
 		],
 		'providerParams' => $providerParams,
