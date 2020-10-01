@@ -76,7 +76,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3 (2020-05-20)
+	 * @version 1.3.1 (2020-10-01)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
@@ -109,7 +109,18 @@ abstract class DataProvider extends \DDTools\BaseClass {
 		//Init needed resources fields
 		$this->resourcesFieldsToGet = (object) $this->resourcesFieldsToGet;
 		
-		//TODO: Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+		$this->construct_compatibilityWithOldMariaDB();
+	}
+	
+	/**
+	 * construct_compatibilityWithOldMariaDB
+	 * @version 1.0 (2020-10-01)
+	 * 
+	 * @todo Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 * 
+	 * @return {void}
+	 */
+	private function construct_compatibilityWithOldMariaDB(){
 		$dbVersion = \ddTools::$modx->db->getValue(\ddTools::$modx->db->query('SELECT VERSION()'));
 		
 		if (
