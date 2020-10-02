@@ -45,7 +45,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * __construct
-	 * @version 1.2.1 (2019-03-19)
+	 * @version 1.2.2 (2020-10-02)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 */
@@ -53,32 +53,19 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		//Call base constructor
 		parent::__construct($params);
 		
-		if($this->pageTpl != ''){
-			$this->pageTpl = \ddTools::$modx->getTpl((string) $this->pageTpl);
-		}
-		
-		if($this->currentPageTpl != ''){
-			$this->currentPageTpl = \ddTools::$modx->getTpl((string) $this->currentPageTpl);
-		}
-		
-		if($this->wrapperTpl != ''){
-			$this->wrapperTpl = \ddTools::$modx->getTpl((string) $this->wrapperTpl);
-		}
-		
-		if($this->nextTpl != ''){
-			$this->nextTpl = \ddTools::$modx->getTpl((string) $this->nextTpl);
-		}
-		
-		if($this->nextOffTpl != ''){
-			$this->nextOffTpl = \ddTools::$modx->getTpl((string) $this->nextOffTpl);
-		}
-		
-		if($this->previousTpl != ''){
-			$this->previousTpl = \ddTools::$modx->getTpl((string) $this->previousTpl);
-		}
-		
-		if($this->previousOffTpl != ''){
-			$this->previousOffTpl = \ddTools::$modx->getTpl((string) $this->previousOffTpl);
+		foreach (
+			[
+				'pageTpl',
+				'currentPageTpl',
+				'wrapperTpl',
+				'nextTpl',
+				'nextOffTpl',
+				'previousTpl',
+				'previousOffTpl'
+			] as
+			$tplName
+		){
+			$this->{$tplName} = \ddTools::$modx->getTpl((string) $this->{$tplName});
 		}
 		
 		$this->pageIndex =
