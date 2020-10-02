@@ -38,7 +38,8 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### Data provider parameters
 
 * `provider`
-	* Desctription: Name of the provider that will be used to fetch documents.
+	* Desctription: Name of the provider that will be used to fetch documents.  
+		Data provider names are case insensitive (the following names are equal: `parent`, `Parent`, `pArEnT`, etc).
 	* Valid values:
 		* `'parent'`
 		* `'select'`
@@ -142,7 +143,8 @@ Get resources from custom DB table.
 #### Output format parameters
 
 * `outputter`
-	* Desctription: Format of the output.
+	* Desctription: Format of the output.  
+		Outputter names are case insensitive (the following names are equal: `string`, `String`, `sTrInG`, etc).
 	* Valid values:
 		* `'string'`
 		* `'json'`
@@ -546,11 +548,13 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	
 * `extenders[i]`
 	* Desctription: Extender name.  
-		Be aware that the order of extender names can affect the output.
+		Be aware that the order of extender names can affect the output.  
+		Extender names are case insensitive (the following names are equal: `pagination`, `Pagination`, `pAgInAtIoN`, etc).
 	* Valid values:
 		* `'pagination'`
 		* `'tagging'`
 		* `'search'`
+		* `'sortFromURL'`
 	* **Required**
 	
 * `extendersParams`
@@ -699,6 +703,14 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringDocFieldName`
 		* `stringTvName`
 	* **Required**
+
+
+##### Extenders → SortFromURL (``&extenders=`sortFromURL` ``)
+
+* `$_GET['orderBy']`
+	* Desctription: A string representing the sorting rule similar to `providerParams->orderBy`.
+	* Valid values: `string`
+	* Default value: —
 
 
 ### Examples

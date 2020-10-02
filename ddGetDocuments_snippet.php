@@ -197,6 +197,9 @@ if(class_exists($dataProviderClass)){
 		
 		//Overwrite the snippet parameters with the result of applying them to the current extender
 		$input->snippetParams = $extenderObject->applyToSnippetParams($input->snippetParams);
+		
+		//Overwrite the data provider parameters with the result of applying them to the current extender
+		$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);
 	}
 	
 	$dataProviderObject = new $dataProviderClass($input);
