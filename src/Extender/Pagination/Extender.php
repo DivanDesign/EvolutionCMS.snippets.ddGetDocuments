@@ -2,8 +2,6 @@
 namespace ddGetDocuments\Extender\Pagination;
 
 
-use ddGetDocuments\DataProvider\DataProviderOutput;
-
 class Extender extends \ddGetDocuments\Extender\Extender {
 	private
 		/**
@@ -102,13 +100,13 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToOutput
-	 * @version 1.2.1 (2020-10-02)
+	 * @version 1.2.2 (2020-10-02)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
 	 * @return {string}
 	 */
-	public function applyToOutput(DataProviderOutput $dataProviderOutput){
+	public function applyToOutput(\ddGetDocuments\DataProvider\DataProviderOutput $dataProviderOutput){
 		$result = '';
 		
 		//Check to prevent division by zero
