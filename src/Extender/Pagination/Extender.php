@@ -77,7 +77,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 2.0 (2020-03-11)
+	 * @version 2.0.1 (2020-10-02)
 	 * 
 	 * @param $snippetParams {stdClass}
 	 * 
@@ -87,7 +87,10 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		//If “total” is set then we need to override “offset” according to the current page index
 		if(isset($snippetParams->total)){
 			$snippetParams->offset =
-				($this->pageIndex - 1) *
+				(
+					$this->pageIndex -
+					1
+				) *
 				$snippetParams->total
 			;
 		}
@@ -99,7 +102,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToOutput
-	 * @version 1.2 (2020-06-22)
+	 * @version 1.2.1 (2020-10-02)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -167,7 +170,8 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 						'text' => $pageChunk,
 						'data' => [
 							'url' =>
-								$urlPrefix.$this->pageIndexRequestParamName .
+								$urlPrefix .
+								$this->pageIndexRequestParamName .
 								'=' .
 								$pageIndex
 							,
@@ -201,7 +205,10 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 										$urlPrefix .
 										$this->pageIndexRequestParamName .
 										'=' .
-										($this->pageIndex - 1)
+										(
+											$this->pageIndex -
+											1
+										)
 									)
 								,
 								'totalPages' => $pagesTotal
@@ -218,7 +225,10 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 										$urlPrefix .
 										$this->pageIndexRequestParamName .
 										'=' .
-										($this->pageIndex + 1)
+										(
+											$this->pageIndex +
+											1
+										)
 									)
 								,
 								'totalPages' => $pagesTotal
