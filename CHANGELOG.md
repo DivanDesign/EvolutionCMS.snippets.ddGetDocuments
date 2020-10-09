@@ -1,6 +1,17 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.2 (2020-10-09)
+* \+ Extenders → SortFromURL (see README).
+* \* Parameters: The following were changed (with backward compatibility):
+	* \- `orderBy`.
+	* \+ `providerParams->orderBy`.
+* \* Refactoring.
+* \+ README:
+	* \+ Examples.
+	* \+ Links.
+
+
 ## Version 1.1 (2020-07-05)
 * \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.40.1 is required (not tested in older versions).
 * \* Improved compatibility with new versions of (MODX)EvolutionCMS.libraries.ddTools.

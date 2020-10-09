@@ -20,7 +20,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.1</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.2</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -38,7 +38,8 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### Data provider parameters
 
 * `provider`
-	* Desctription: Name of the provider that will be used to fetch documents.
+	* Desctription: Name of the provider that will be used to fetch documents.  
+		Data provider names are case insensitive (the following names are equal: `parent`, `Parent`, `pArEnT`, etc).
 	* Valid values:
 		* `'parent'`
 		* `'select'`
@@ -49,6 +50,12 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 	* Valid values:
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+	* Default value: —
+	
+* `providerParams->orderBy`
+	* Desctription: A string representing the sorting rule.  
+		TV names also can be used.
+	* Valid values: `string`
 	* Default value: —
 
 
@@ -112,7 +119,7 @@ Get resources from custom DB table.
 #### Core parameters
 
 * `fieldDelimiter`
-	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `orderBy` and `filter`.
+	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `filter`.
 	* Valid values: `string`
 	* Default value: ``'`'``
 	
@@ -121,11 +128,6 @@ Get resources from custom DB table.
 		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
 	* Valid values: `string`
 	* Default value: ``'`published` = 1 AND `deleted` = 0'``
-	
-* `orderBy`
-	* Desctription: A string representing the sorting rule.
-	* Valid values: `string`
-	* Default value: ``'`id` ASC'``
 	
 * `total`
 	* Desctription: The maximum number of the resources that will be returned.
@@ -141,7 +143,8 @@ Get resources from custom DB table.
 #### Output format parameters
 
 * `outputter`
-	* Desctription: Format of the output.
+	* Desctription: Format of the output.  
+		Outputter names are case insensitive (the following names are equal: `string`, `String`, `sTrInG`, etc).
 	* Valid values:
 		* `'string'`
 		* `'json'`
@@ -545,11 +548,13 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	
 * `extenders[i]`
 	* Desctription: Extender name.  
-		Be aware that the order of extender names can affect the output.
+		Be aware that the order of extender names can affect the output.  
+		Extender names are case insensitive (the following names are equal: `pagination`, `Pagination`, `pAgInAtIoN`, etc).
 	* Valid values:
 		* `'pagination'`
 		* `'tagging'`
 		* `'search'`
+		* `'sortFromURL'`
 	* **Required**
 	
 * `extendersParams`
@@ -700,7 +705,217 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* **Required**
 
 
-## [Home page →](https://code.divandesign.biz/modx/ddgetdocuments)
+##### Extenders → SortFromURL (``&extenders=`sortFromURL` ``)
+
+* `$_GET['orderBy']`
+	* Desctription: A string representing the sorting rule similar to `providerParams->orderBy`.
+	* Valid values: `string`
+	* Default value: —
+
+
+### Examples
+
+
+#### Simple fetching child documents from a parent with ID = `1`
+
+```html
+[[ddGetDocuments?
+	&providerParams=`{
+		"parentIds": "1",
+		"depth": 1
+	}`
+	&outputterParams=`{
+		"itemTpl": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+	}`
+]]
+```
+
+
+#### Simple fetching child documents from a parent with ID = `1` with the `filter`
+
+Add a filter that would not output everything. Let's say we need only published documents.
+
+_Don't forget about `fieldDelimiter`._
+
+```
+[[ddGetDocuments?
+	&providerParams=`{
+		"parentIds": "1",
+		"depth": 1
+	}`
+	&fieldDelimiter=`#`
+	&filter=`#published# = 1`
+	&outputterParams=`{
+		"itemTpl": "documents_item"
+	}`
+]]
+```
+
+So we can filter as much as we like (we can use `AND` and `OR`, doucument fields and TVs):
+
+```
+&filter=`
+	#published# = 1 AND
+	#hidemenu# = 0 OR
+	#SomeTVName# = 1
+`
+```
+
+
+#### Sorting by TV with the `date` type (`orderBy`)
+
+Dates in DB stored in specific format (`01-02-2017 08:59:45`) and sorting works unexpectedly at first sight.
+So, we can't just type:
+
+```
+&orderBy=`#TVName# DESC`
+```
+
+For correct working we need to convert date from DB to Unixtime for sorting:
+
+```
+&orderBy=`STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC`
+```
+
+When `TVName` — TV name for sorting by.
+
+
+#### Outputters → JSON (``&outputter=`json` ``): Fetch documents and output in JSON
+
+```
+[[ddGetDocuments?
+	&providerParams=`{"parentIds": "1"}`
+	&outputter=`json`
+]]
+```
+
+Returns:
+
+```json
+[
+	{"id": "2"},
+	{"id": "3"},
+	{"id": "4"}
+]
+```
+
+
+#### Outputters → JSON (``&outputter=`json` ``): Set documents fields to output
+
+```
+[[ddGetDocuments?
+	&providerParams=`{"parentIds": "1"}`
+	&outputter=`json`
+	&outputterParams=`{
+		"docFields": "id,pagetitle,menuindex,someTV"
+	}`
+]]
+```
+
+Returns:
+
+```json
+[
+	{
+		"id": "2",
+		"pagetitle": "About",
+		"menuindex": "0",
+		"someTV": "Some value"
+	},
+	{
+		"id": "3",
+		"pagetitle": "Partners",
+		"menuindex": "1",
+		"someTV": ""
+	},
+	{
+		"id": "4",
+		"pagetitle": "Contacts",
+		"menuindex": "2",
+		"someTV": ""
+	}
+]
+```
+
+
+#### Extenders → Pagination (``&extenders=`pagination` ``)
+
+```
+[[ddGetDocuments?
+	&providerParams=`{
+		"parentIds": "[*id*]"
+	}`
+	&fieldDelimiter=`#`
+	&filter=`#published# = 1`
+	&total=`3`
+	&orderBy=`#pub_date# DESC`
+	&outputterParams=`{
+		"itemTpl": "documents_item",
+		"wrapperTpl": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
+		"noResult": "@CODE:"
+	}`
+	&extenders=`pagination`
+	&extendersParams=`{
+		"pagination": {
+			"wrapperTpl": "general_pagination",
+			"nextTpl": "general_pagination_next",
+			"previousTpl": "general_pagination_prev",
+			"nextOffTpl": "general_pagination_nextOff",
+			"previousOffTpl": "general_pagination_prevOff",
+			"pageTpl": "general_pagination_page",
+			"currentPageTpl": "general_pagination_pageCurrent"
+		}
+	}`
+]]
+```
+
+* ``&providerParams=`{"parentIds": "[*id*]"}` `` — fetch current doc children.
+* ``&filter=`#published# = 1` `` — only published.
+* ``&outputterParams=`{"itemTpl": "documents_item"}` `` — item template (chunk name).
+* ``&outputterParams=`{"noResult": "@CODE:"}` `` — return nothing if nothing found.
+* ``&total=`3` `` — items per page.
+* ``&orderBy=`#pub_date# DESC` `` — sort by publish date, new first.
+* ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
+* ``&wrapperTpl=`@CODE:[+ddGetDocuments_items+][+extenders.pagination+]` `` — we need set where pagination will being outputted.
+
+
+#### Extenders → Search (``&extenders=`search` ``)
+
+Call the snippet at the page with search results.
+Let's specify where and how deep we will search.
+Set up filter to get only necessary documets.
+
+```
+[[ddGetDocuments?
+	&providerParams=`{
+		"parentIds": 1,
+		"depth": 3
+	}`
+	&fieldDelimiter=`#`
+	&filter=`
+		#published# = 1 AND
+		#deleted# = 0 AND
+		#template# = 11
+	`
+	&extenders=`search`
+	&extendersParams=`{
+		"docFieldsToSearch": "pagetitle,content,someTv"
+	}`
+	&outputterParams=`{
+		"itemTpl": "documents_item"
+	}
+]]
+```
+
+Then just add to the page URL `?query=Some query text` and the snippet returns only documents contain that string in the `pagetitle`, `content` or `someTv` fields.
+
+We recommend to use cashed snippet calls and turn on document caching type with $_GET parameters in CMS configuration.
+
+
+## Links
+
+* [Home page](https://code.divandesign.biz/modx/ddgetdocuments)
+* [Telegram chat](https://t.me/dd_code)
 
 
 <link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
