@@ -39,7 +39,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToSnippetParams
-	 * @version 2.0 (2020-03-11)
+	 * @version 2.0.1 (2021-01-04)
 	 * 
 	 * @param $snippetParams {stdClass}
 	 * 
@@ -48,15 +48,6 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	public function applyToSnippetParams($snippetParams){
 		//If URL contains tags
 		if (!empty($this->currentQuery)){
-			if(
-				isset($snippetParams->filter) &&
-				trim($snippetParams->filter) != ''
-			){
-				$snippetParams->filter .= ' AND';
-			}else{
-				$snippetParams->filter = '';
-			}
-			
 			$searchQueries = [];
 			
 			foreach (
@@ -70,6 +61,15 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 					$this->currentQuery .
 					'%")'
 				;
+			}
+			
+			if(
+				isset($snippetParams->filter) &&
+				trim($snippetParams->filter) != ''
+			){
+				$snippetParams->filter .= ' AND';
+			}else{
+				$snippetParams->filter = '';
 			}
 			
 			$snippetParams->filter .=
