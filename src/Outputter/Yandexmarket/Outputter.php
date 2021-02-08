@@ -592,7 +592,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.0.1 (2021-02-08)
+	 * @version 1.1 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -620,26 +620,25 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					$categoryIds_all
 				)
 			){
-				//TODO: Move getting to the condition below 
-				//Get category doc data
-				$category = \ddTools::getDocument(
-					//id
-					$id,
-					'pagetitle,id,parent',
-					//published
-					'all',
-					//deleted
-					0
-				);
-				
 				$categoryIds_all[] = $id;
 				
 				if(
 					!in_array(
-						$category['id'], 
+						$id, 
 						$categoryIds_last
 					)
 				){
+					//Get category doc data
+					$category = \ddTools::getDocument(
+						//id
+						$id,
+						'pagetitle,id,parent',
+						//published
+						'all',
+						//deleted
+						0
+					);
+					
 					//Result
 					$categoriesString .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
