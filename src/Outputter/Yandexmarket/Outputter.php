@@ -400,7 +400,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.4.2 (2021-02-08)
+	 * @version 1.4.3 (2021-02-08)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -581,6 +581,20 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		
 		//# Categories
+		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $this->parse_categories();
+		
+		
+		//Just use the “String” class
+		return $this->outputter_StringInstance->parse($data);
+	}
+	
+	/**
+	 * parse_categories
+	 * @version 1.0 (2021-02-08)
+	 *
+	 * @return {string}
+	 */
+	private function parse_categories(){
 		$categoriesString = '';
 		$this->categoryIds = array_unique($this->categoryIds);
 		$categoryIds_all = [];
@@ -679,10 +693,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			]);
 		}
 		
-		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $categoriesString;
-		
-		
-		//Just use the “String” class
-		return $this->outputter_StringInstance->parse($data);
+		return $categoriesString;
 	}
 }
