@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3.2 (2021-02-08)
+	 * @version 1.3.3 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -259,17 +259,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		
-		//# Prepare templates
-		$this->construct_prepareTemplates();
-		
-		
 		//save last parent id for category
 		$this->categoryIds_last =
 			isset($params->categoryIds_last) ?
 			trim($params->categoryIds_last) :
 			''
 		;
+		
+		
+		//# Prepare templates
+		$this->construct_prepareTemplates();
 		
 		
 		//We use the “String” Outputter as base
