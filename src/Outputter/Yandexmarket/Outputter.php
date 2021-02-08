@@ -592,19 +592,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1 (2021-02-08)
+	 * @version 1.1.1 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
 	private function parse_categories(){
 		$categoriesString = '';
-		$this->categoryIds = array_unique($this->categoryIds);
-		$categoryIds_all = [];
-		$categoryIds_last = $this->categoryIds;
 		
-		if(!empty($this->categoryIds_last)){
-			$categoryIds_last = $this->categoryIds_last;
-		}
+		$this->categoryIds = array_unique($this->categoryIds);
+		
+		$categoryIds_all = [];
+		$categoryIds_last =
+			!empty($this->categoryIds_last) ?
+			$this->categoryIds_last :
+			$this->categoryIds
+		;
 		
 		//TODO: Avoid to use global variables
 		//Return result instead of global variable using
