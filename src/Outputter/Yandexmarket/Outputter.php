@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3 (2020-03-10)
+	 * @version 1.3.1 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -161,7 +161,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->shopData_currencyId {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
 	 * @param $params->shopData_platform {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
 	 * @param $params->shopData_version {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
-	 * @param $params->categoryIds_last {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
+	 * @param $params->categoryIds_last {stringCommaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
 	 * @param $params->offerFields_price {stringTvName|''} — Поле, содержащее актуальную цену товара. @required
 	 * @param $params->offerFields_priceOld {stringTvName} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
 	 * @param $params->offerFields_picture {stringTvName} — Поле, содержащее изображение товара. Defalut: —.
@@ -186,6 +186,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	function __construct($params = []){
 		$params = (object) $params;
 		
+		
+		//# Prepare params
+		
 		//Convert params to objects
 		$this->shopData = (object) $this->shopData;
 		$this->offerFields = (object) $this->offerFields;
@@ -206,47 +209,56 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$this->templates->{$templateName} = trim($templateText);
 		}
 		
-		//Call base constructor
+		
+		//# Call base constructor
 		parent::__construct($params);
 		
-		//Save shop data and offer fields
+		
+		//# Save shop data and offer fields
 		foreach (
 			$params as
 			$paramName =>
 			$paramValue
 		){
 			//Shop data
-			if (substr(
-				$paramName,
-				0,
-				9
-			) == 'shopData_'){
+			if (
+				substr(
+					$paramName,
+					0,
+					9
+				) == 'shopData_'
+			){
 				$this->shopData->{substr(
 					$paramName,
 					9
 				)} = $paramValue;
 			//Offer field names
-			}elseif (substr(
-				$paramName,
-				0,
-				12
-			) == 'offerFields_'){
+			}elseif (
+				substr(
+					$paramName,
+					0,
+					12
+				) == 'offerFields_'
+			){
 				$this->offerFields->{substr(
 					$paramName,
 					12
 				)}->docFieldName = $paramValue;
 			//Templates
-			}elseif (substr(
-				$paramName,
-				0,
-				10
-			) == 'templates_'){
+			}elseif (
+				substr(
+					$paramName,
+					0,
+					10
+				) == 'templates_'
+			){
 				$this->templates->{substr(
 					$paramName,
 					10
 				)} = \ddTools::$modx->getTpl($paramValue);
 			}
 		}
+		
 		
 		//Offer
 		$templateData = [
@@ -288,6 +300,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'mergeAll' => false
 		]);
 		
+		
 		//Wrapper
 		$templateData = [
 			'shopData' => (array) $this->shopData,
@@ -314,12 +327,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'mergeAll' => false
 		]);
 		
+		
 		//save last parent id for category
 		$this->categoryIds_last =
 			isset($params->categoryIds_last) ?
 			trim($params->categoryIds_last) :
 			''
 		;
+		
 		
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
