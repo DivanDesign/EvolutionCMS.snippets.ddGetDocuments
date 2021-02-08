@@ -140,7 +140,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'offers_item_elem' => '<[+tagName+][+attrs+]>[+value+]</[+tagName+]>',
 // 			'offers_item_elemAdditionalParams' => '<param name="[+name+]"[+attrs+]>[+value+]</param>',
 		],
-		$categoryIds_last
+		$categoryIds_last = []
 	;
 	
 	private
@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3.4 (2021-02-08)
+	 * @version 1.4 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -240,12 +240,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		//save last parent id for category
-		$this->categoryIds_last =
-			isset($params->categoryIds_last) ?
-			trim($params->categoryIds_last) :
-			''
-		;
+		
+		//# Prepare last parent category IDs
+		if (!is_array($this->categoryIds_last)){
+			$this->categoryIds_last = explode(
+				',',
+				trim($this->categoryIds_last)
+			);
+		}
 		
 		
 		//# Prepare templates
@@ -590,7 +592,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.0 (2021-02-08)
+	 * @version 1.0.1 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -600,12 +602,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$categoryIds_all = [];
 		$categoryIds_last = $this->categoryIds;
 		
-		//TODO: Move explosion to constructor
 		if(!empty($this->categoryIds_last)){
-			$categoryIds_last = explode(
-				',',
-				$this->categoryIds_last
-			);
+			$categoryIds_last = $this->categoryIds_last;
 		}
 		
 		//TODO: Avoid to use global variables
