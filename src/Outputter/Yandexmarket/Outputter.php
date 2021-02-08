@@ -594,7 +594,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.4 (2021-02-08)
+	 * @version 1.1.5 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -618,6 +618,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			){
 				$categoryIds_all[] = $id;
 				
+				//Get category doc data
+				$category = \ddTools::getDocument(
+					//id
+					$id,
+					'pagetitle,id,parent',
+					//published
+					'all',
+					//deleted
+					0
+				);
+				
 				if(
 					//If root categories are set
 					!empty($this->categoryIds_last) &&
@@ -627,17 +638,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						$this->categoryIds_last
 					)
 				){
-					//Get category doc data
-					$category = \ddTools::getDocument(
-						//id
-						$id,
-						'pagetitle,id,parent',
-						//published
-						'all',
-						//deleted
-						0
-					);
-					
 					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
@@ -652,17 +652,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					//Get parent category
 					$result .= $getCategories($category['parent']);
 				}else{
-					//Get category doc data
-					$category = \ddTools::getDocument(
-						//id
-						$id,
-						'pagetitle,id,parent',
-						//published
-						'all',
-						//deleted
-						0
-					);
-					
 					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
