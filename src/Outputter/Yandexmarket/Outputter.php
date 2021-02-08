@@ -594,7 +594,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.6 (2021-02-08)
+	 * @version 1.1.7 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -629,7 +629,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					0
 				);
 				
-				if(
+				$hasParentCategory = 
 					//If root categories are set
 					!empty($this->categoryIds_last) &&
 					//And it is not one of the “root” category
@@ -637,30 +637,25 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						$id, 
 						$this->categoryIds_last
 					)
-				){
-					$result .= \ddTools::parseText([
-						'text' => $this->templates->categories_item,
-						'data' => [
-							'id' => $categoryDocData['id'],
-							'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
-							'parent' => $categoryDocData['parent'],
-							'attrs' => ' parentId="' . $categoryDocData['parent'] . '"'
-						],
-						'mergeAll' => false
-					]);
-					
+				;
+				
+				$result .= \ddTools::parseText([
+					'text' => $this->templates->categories_item,
+					'data' => [
+						'id' => $categoryDocData['id'],
+						'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
+						'parent' => $categoryDocData['parent'],
+						'attrs' =>
+							$hasParentCategory ?
+							' parentId="' . $categoryDocData['parent'] . '"' :
+							''
+					],
+					'mergeAll' => false
+				]);
+				
+				if($hasParentCategory){
 					//Get parent category
 					$result .= $getCategories($categoryDocData['parent']);
-				}else{
-					$result .= \ddTools::parseText([
-						'text' => $this->templates->categories_item,
-						'data' => [
-							'id' => $categoryDocData['id'],
-							'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
-							'parent' => $categoryDocData['parent']
-						],
-						'mergeAll' => false
-					]);
 				}
 			}
 			
