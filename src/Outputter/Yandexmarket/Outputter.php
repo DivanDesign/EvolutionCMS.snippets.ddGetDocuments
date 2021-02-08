@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.4 (2021-02-08)
+	 * @version 1.5 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -238,6 +238,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					10
 				)} = \ddTools::$modx->getTpl($paramValue);
 			}
+		}
+		
+		//If name doc field is not set
+		if (empty($this->offerFields->name->docFieldName)){
+			//Pagetitle will be used
+			$this->offerFields->name->docFieldName = 'pagetitle';
 		}
 		
 		
@@ -402,7 +408,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.4.3 (2021-02-08)
+	 * @version 1.4.4 (2021-02-08)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -448,19 +454,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					$offerFieldData
 				){
 					//Smart offer name
-					if ($offerFieldName == 'name'){
-						//TODO: Should it be moved to constructor?
-						//If name is not set
-						if (empty($offerFieldData->docFieldName)){
-							//Pagetitle will be used
-							$offerFieldData->docFieldName = 'pagetitle';
-						}
-						
-						//If name is empty
-						if (empty($docData[$offerFieldData->docFieldName])){
-							//Pagetitle will be used
-							$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
-						}
+					if (
+						$offerFieldName == 'name' &&
+						//If doc name is empty
+						empty($docData[$offerFieldData->docFieldName])
+					){
+						//Pagetitle will be used
+						$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
 					}
 					
 					
