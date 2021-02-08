@@ -592,7 +592,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.2 (2021-02-08)
+	 * @version 1.1.3 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -609,13 +609,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		;
 		
 		//TODO: Avoid to use global variables
-		//Return result instead of global variable using
 		$getCategories = function ($id) use (
 			$categoryIds_last, 
 			&$categoryIds_all, 
-			&$result, 
 			&$getCategories
 		){
+			$result = '';
+			
 			if(
 				!in_array(
 					$id, 
@@ -654,9 +654,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					]);
 					
 					//Get parent category
-					$getCategories($category['parent']);
+					$result .= $getCategories($category['parent']);
 				}
 			}
+			
+			return $result;
 		};
 		
 		//TODO: It is needed only if $this->categoryIds_last is not empty
@@ -664,7 +666,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$this->categoryIds as 
 			$id
 		){
-			$getCategories($id);
+			$result .= $getCategories($id);
 		}
 		
 		foreach(
