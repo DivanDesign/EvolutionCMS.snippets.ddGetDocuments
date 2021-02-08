@@ -594,7 +594,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.5 (2021-02-08)
+	 * @version 1.1.6 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
@@ -619,7 +619,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				$categoryIds_all[] = $id;
 				
 				//Get category doc data
-				$category = \ddTools::getDocument(
+				$categoryDocData = \ddTools::getDocument(
 					//id
 					$id,
 					'pagetitle,id,parent',
@@ -641,23 +641,23 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
-							'id' => $category['id'],
-							'value' => $this->escapeSpecialChars($category['pagetitle']),
-							'parent' => $category['parent'],
-							'attrs' => ' parentId="' . $category['parent'] . '"'
+							'id' => $categoryDocData['id'],
+							'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
+							'parent' => $categoryDocData['parent'],
+							'attrs' => ' parentId="' . $categoryDocData['parent'] . '"'
 						],
 						'mergeAll' => false
 					]);
 					
 					//Get parent category
-					$result .= $getCategories($category['parent']);
+					$result .= $getCategories($categoryDocData['parent']);
 				}else{
 					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
-							'id' => $category['id'],
-							'value' => $this->escapeSpecialChars($category['pagetitle']),
-							'parent' => $category['parent']
+							'id' => $categoryDocData['id'],
+							'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
+							'parent' => $categoryDocData['parent']
 						],
 						'mergeAll' => false
 					]);
