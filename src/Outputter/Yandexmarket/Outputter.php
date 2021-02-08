@@ -408,7 +408,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.4.4 (2021-02-08)
+	 * @version 1.5 (2021-02-08)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -581,6 +581,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
+		$this->categoryIds = array_unique($this->categoryIds);
+		
 		
 		//# Categories
 		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $this->parse_categories();
@@ -592,25 +594,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.3 (2021-02-08)
+	 * @version 1.1.4 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
 	private function parse_categories(){
 		$result = '';
 		
-		$this->categoryIds = array_unique($this->categoryIds);
-		
 		$categoryIds_all = [];
-		$categoryIds_last =
-			!empty($this->categoryIds_last) ?
-			$this->categoryIds_last :
-			$this->categoryIds
-		;
 		
 		//TODO: Avoid to use global variables
 		$getCategories = function ($id) use (
-			$categoryIds_last, 
 			&$categoryIds_all, 
 			&$getCategories
 		){
@@ -625,9 +619,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				$categoryIds_all[] = $id;
 				
 				if(
+					//If root categories are set
+					!empty($this->categoryIds_last) &&
+					//And it is not one of the “root” category
 					!in_array(
 						$id, 
-						$categoryIds_last
+						$this->categoryIds_last
 					)
 				){
 					//Get category doc data
@@ -641,7 +638,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						0
 					);
 					
-					//Result
 					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
@@ -655,43 +651,41 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					
 					//Get parent category
 					$result .= $getCategories($category['parent']);
+				}else{
+					//Get category doc data
+					$category = \ddTools::getDocument(
+						//id
+						$id,
+						'pagetitle,id,parent',
+						//published
+						'all',
+						//deleted
+						0
+					);
+					
+					$result .= \ddTools::parseText([
+						'text' => $this->templates->categories_item,
+						'data' => [
+							'id' => $category['id'],
+							'value' => $this->escapeSpecialChars($category['pagetitle']),
+							'parent' => $category['parent']
+						],
+						'mergeAll' => false
+					]);
 				}
 			}
 			
 			return $result;
 		};
 		
-		//TODO: It is needed only if $this->categoryIds_last is not empty
 		foreach(
-			$this->categoryIds as 
+			array_unique(array_merge(
+				$this->categoryIds,
+				$this->categoryIds_last
+			)) as 
 			$id
 		){
 			$result .= $getCategories($id);
-		}
-		
-		foreach(
-			$categoryIds_last as 
-			$id
-		){
-			$category = \ddTools::getDocument(
-				//id
-				$id,
-				'pagetitle,id,parent',
-				//published
-				'all',
-				//deleted
-				0
-			);
-			
-			$result .= \ddTools::parseText([
-				'text' => $this->templates->categories_item,
-				'data' => [
-					'id' => $category['id'],
-					'value' => $this->escapeSpecialChars($category['pagetitle']),
-					'parent' => $category['parent']
-				],
-				'mergeAll' => false
-			]);
 		}
 		
 		return $result;
