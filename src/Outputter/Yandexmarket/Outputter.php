@@ -400,33 +400,42 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.4.1 (2019-10-30)
+	 * @version 1.4.2 (2021-02-08)
 	 * 
 	 * @param $data {Output}
 	 * 
 	 * @return {string}
 	 */
 	public function parse(Output $data){
-		//Foreach all docs-items
+		//# Items
 		foreach (
+			//Foreach all docs-items
 			$data->provider->items as
 			$docIndex =>
 			$docData
 		){
 			//Correct price
 			if (
+				//Main price is not set
 				empty($docData[$this->offerFields->price->docFieldName]) &&
+				//But old price is set
 				!empty($docData[$this->offerFields->priceOld->docFieldName])
 			){
+				//Use old price as main price
 				$docData[$this->offerFields->price->docFieldName] = $docData[$this->offerFields->priceOld->docFieldName];
 				
+				//And old price is no needed
 				unset($docData[$this->offerFields->priceOld->docFieldName]);
 			}
 			
 			//Check required elements
-			if (!empty($docData[$this->offerFields->price->docFieldName])){
-				//Save category id
+			if (
+				//Price
+				!empty($docData[$this->offerFields->price->docFieldName])
+			){
+				//If category is set
 				if (is_numeric($docData[$this->offerFields->categoryId->docFieldName])){
+					//Save category ID
 					$this->categoryIds[] = $docData[$this->offerFields->categoryId->docFieldName];
 				}
 				
@@ -438,27 +447,37 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				){
 					//Smart offer name
 					if ($offerFieldName == 'name'){
+						//TODO: Should it be moved to constructor?
+						//If name is not set
 						if (empty($offerFieldData->docFieldName)){
+							//Pagetitle will be used
 							$offerFieldData->docFieldName = 'pagetitle';
 						}
 						
+						//If name is empty
 						if (empty($docData[$offerFieldData->docFieldName])){
+							//Pagetitle will be used
 							$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
 						}
 					}
 					
+					
 					//Numeric fields
 					if (
+						//If weight is set
 						$offerFieldName == 'weight' &&
+						//But invalid
 						$data->provider->items[$docIndex][$offerFieldData->docFieldName] == '0'
 					){
+						//Clear it
 						$data->provider->items[$docIndex][$offerFieldData->docFieldName] = '';
 					}
 					
+					
 					if (
-						//If is set
+						//If object field is set
 						!empty($offerFieldData->docFieldName) &&
-						//And data is set
+						//And doc data is set
 						!empty($docData[$offerFieldData->docFieldName])
 					){
 						//Boolean fields
@@ -483,6 +502,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							;
 						}
 						
+						
 						//Fields that may be set as document IDs
 						if (
 							in_array(
@@ -506,17 +526,25 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							}
 						}
 						
+						
 						//Value prefix
 						if (isset($offerFieldData->valuePrefix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $offerFieldData->valuePrefix . $data->provider->items[$docIndex][$offerFieldData->docFieldName];
+							$data->provider->items[$docIndex][$offerFieldData->docFieldName] =
+								$offerFieldData->valuePrefix .
+								$data->provider->items[$docIndex][$offerFieldData->docFieldName]
+							;
 						}
 						//Value suffix
 						if (isset($offerFieldData->valueSuffix)){
 							$data->provider->items[$docIndex][$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
 						}
 						
+						
 						//Try to search template by name
-						$templateName = 'offers_item_elem' . ucfirst($offerFieldName);
+						$templateName =
+							'offers_item_elem' .
+							ucfirst($offerFieldName)
+						;
 						if (!isset($this->templates->{$templateName})){
 							//Default element template
 							if (!isset($offerFieldData->templateName)){
@@ -525,6 +553,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								$templateName = $offerFieldData->templateName;
 							}
 						}
+						
 						
 						if (
 							//If need to use template
@@ -550,12 +579,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		//Prepare categories
+		
+		//# Categories
 		$categoriesString = '';
 		$this->categoryIds = array_unique($this->categoryIds);
 		$categoryIds_all = [];
 		$categoryIds_last = $this->categoryIds;
 		
+		//TODO: Move explosion to constructor
 		if(!empty($this->categoryIds_last)){
 			$categoryIds_last = explode(
 				',',
@@ -563,16 +594,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			);
 		}
 		
+		//TODO: Avoid to use global variables
+		//Return result instead of global variable using
 		$getCategories = function ($id) use (
 			$categoryIds_last, 
 			&$categoryIds_all, 
 			&$categoriesString, 
 			&$getCategories
 		){
-			if(!in_array(
-				$id, 
-				$categoryIds_all
-			)){
+			if(
+				!in_array(
+					$id, 
+					$categoryIds_all
+				)
+			){
+				//TODO: Move getting to the condition below 
+				//Get category doc data
 				$category = \ddTools::getDocument(
 					//id
 					$id,
@@ -582,12 +619,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					//deleted
 					0
 				);
+				
 				$categoryIds_all[] = $id;
 				
-				if(!in_array(
-					$category['id'], 
-					$categoryIds_last
-				)){
+				if(
+					!in_array(
+						$category['id'], 
+						$categoryIds_last
+					)
+				){
+					//Result
 					$categoriesString .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
@@ -598,11 +639,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						],
 						'mergeAll' => false
 					]);
+					
+					//Get parent category
 					$getCategories($category['parent']);
 				}
 			}
 		};
 		
+		//TODO: It is needed only if $this->categoryIds_last is not empty
 		foreach(
 			$this->categoryIds as 
 			$id
@@ -623,6 +667,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				//deleted
 				0
 			);
+			
 			$categoriesString .= \ddTools::parseText([
 				'text' => $this->templates->categories_item,
 				'data' => [
@@ -635,6 +680,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}
 		
 		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $categoriesString;
+		
 		
 		//Just use the “String” class
 		return $this->outputter_StringInstance->parse($data);
