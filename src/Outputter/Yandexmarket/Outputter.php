@@ -592,12 +592,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.1 (2021-02-08)
+	 * @version 1.1.2 (2021-02-08)
 	 *
 	 * @return {string}
 	 */
 	private function parse_categories(){
-		$categoriesString = '';
+		$result = '';
 		
 		$this->categoryIds = array_unique($this->categoryIds);
 		
@@ -613,7 +613,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$getCategories = function ($id) use (
 			$categoryIds_last, 
 			&$categoryIds_all, 
-			&$categoriesString, 
+			&$result, 
 			&$getCategories
 		){
 			if(
@@ -642,7 +642,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					);
 					
 					//Result
-					$categoriesString .= \ddTools::parseText([
+					$result .= \ddTools::parseText([
 						'text' => $this->templates->categories_item,
 						'data' => [
 							'id' => $category['id'],
@@ -681,7 +681,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				0
 			);
 			
-			$categoriesString .= \ddTools::parseText([
+			$result .= \ddTools::parseText([
 				'text' => $this->templates->categories_item,
 				'data' => [
 					'id' => $category['id'],
@@ -692,6 +692,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			]);
 		}
 		
-		return $categoriesString;
+		return $result;
 	}
 }
