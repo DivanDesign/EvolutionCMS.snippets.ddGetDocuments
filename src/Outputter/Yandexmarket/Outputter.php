@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3.1 (2021-02-08)
+	 * @version 1.3.2 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -260,6 +260,38 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}
 		
 		
+		//# Prepare templates
+		$this->construct_prepareTemplates();
+		
+		
+		//save last parent id for category
+		$this->categoryIds_last =
+			isset($params->categoryIds_last) ?
+			trim($params->categoryIds_last) :
+			''
+		;
+		
+		
+		//We use the “String” Outputter as base
+		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
+		$outputter_StringParams = (object) [
+			'itemTpl' => $this->templates->offers_item,
+			'wrapperTpl' => $this->templates->wrapper
+		];
+		//Transfer provider link
+		if (isset($params->dataProvider)){
+			$outputter_StringParams->dataProvider = $params->dataProvider;
+		}
+		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+	}
+	
+	/**
+	 * construct_prepareTemplates
+	 * @version 1.0 (2021-02-08)
+	 * 
+	 * @return {void}
+	 */
+	private function construct_prepareTemplates(){
 		//Offer
 		$templateData = [
 			'shopData' => (array) $this->shopData
@@ -320,33 +352,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'mergeAll' => false
 			]);
 		}
+		
 		//Prepare wrapper template
 		$this->templates->wrapper = \ddTools::parseText([
 			'text' => $this->templates->wrapper,
 			'data' => $templateData,
 			'mergeAll' => false
 		]);
-		
-		
-		//save last parent id for category
-		$this->categoryIds_last =
-			isset($params->categoryIds_last) ?
-			trim($params->categoryIds_last) :
-			''
-		;
-		
-		
-		//We use the “String” Outputter as base
-		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
-		$outputter_StringParams = (object) [
-			'itemTpl' => $this->templates->offers_item,
-			'wrapperTpl' => $this->templates->wrapper
-		];
-		//Transfer provider link
-		if (isset($params->dataProvider)){
-			$outputter_StringParams->dataProvider = $params->dataProvider;
-		}
-		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
 	}
 	
 	/**
