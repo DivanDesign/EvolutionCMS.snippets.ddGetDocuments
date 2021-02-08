@@ -150,7 +150,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3.3 (2021-02-08)
+	 * @version 1.3.4 (2021-02-08)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -187,27 +187,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$params = (object) $params;
 		
 		
-		//# Prepare params
-		
-		//Convert params to objects
-		$this->shopData = (object) $this->shopData;
-		$this->offerFields = (object) $this->offerFields;
-		foreach (
-			$this->offerFields as
-			$offerFieldName =>
-			$offerFieldValue
-		){
-			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
-		}
-		$this->templates = (object) $this->templates;
-		//Trim all templates
-		foreach (
-			$this->templates as
-			$templateName =>
-			$templateText
-		){
-			$this->templates->{$templateName} = trim($templateText);
-		}
+		//# Prepare object fields
+		$this->construct_prepareFields();
 		
 		
 		//# Call base constructor
@@ -282,6 +263,35 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
 		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+	}
+	
+	/**
+	 * construct_prepareFields
+	 * @version 1.0 (2021-02-08)
+	 * 
+	 * @return {void}
+	 */
+	private function construct_prepareFields(){
+		//Convert fields to objects
+		$this->shopData = (object) $this->shopData;
+		$this->offerFields = (object) $this->offerFields;
+		foreach (
+			$this->offerFields as
+			$offerFieldName =>
+			$offerFieldValue
+		){
+			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
+		}
+		
+		$this->templates = (object) $this->templates;
+		//Trim all templates
+		foreach (
+			$this->templates as
+			$templateName =>
+			$templateText
+		){
+			$this->templates->{$templateName} = trim($templateText);
+		}
 	}
 	
 	/**
