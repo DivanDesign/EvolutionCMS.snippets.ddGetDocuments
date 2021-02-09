@@ -7,6 +7,14 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	protected
 		/**
+		 * @property $docFields {array} — Document fields including TVs used in the output.
+		 */
+		$docFields = [
+			'id',
+			//May need for smart name
+			'pagetitle'
+		],
+		/**
 		 * @property $templates {stdClass}
 		 * @property $templates->wrapper {string}
 		 * @property $templates->offers_item {string}
@@ -408,7 +416,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.5 (2021-02-08)
+	 * @version 1.5.1 (2021-02-09)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -420,7 +428,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			//Foreach all docs-items
 			$data->provider->items as
 			$docIndex =>
-			$docData
+			//Value must be assigned by reference for modifying inside the cycle
+			&$docData
 		){
 			//Correct price
 			if (
@@ -469,10 +478,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						//If weight is set
 						$offerFieldName == 'weight' &&
 						//But invalid
-						$data->provider->items[$docIndex][$offerFieldData->docFieldName] == '0'
+						$docData[$offerFieldData->docFieldName] == '0'
 					){
 						//Clear it
-						$data->provider->items[$docIndex][$offerFieldData->docFieldName] = '';
+						$docData[$offerFieldData->docFieldName] = '';
 					}
 					
 					
@@ -497,7 +506,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								$docData[$offerFieldData->docFieldName] !== 'false'
 							)
 						){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] =
+							$docData[$offerFieldData->docFieldName] =
 								(bool) $docData[$offerFieldData->docFieldName] ?
 								'true' :
 								'false'
@@ -515,30 +524,30 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								]
 							) &&
 							//Set as document id
-							is_numeric($data->provider->items[$docIndex][$offerFieldData->docFieldName])
+							is_numeric($docData[$offerFieldData->docFieldName])
 						){
 							//Try to get pagetitle
 							$docData_fieldToGet_data = \ddTools::getDocument(
-								$data->provider->items[$docIndex][$offerFieldData->docFieldName],
+								$docData[$offerFieldData->docFieldName],
 								'pagetitle'
 							);
 							//If success
 							if (is_array($docData_fieldToGet_data)){
-								$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $docData_fieldToGet_data['pagetitle'];
+								$docData[$offerFieldData->docFieldName] = $docData_fieldToGet_data['pagetitle'];
 							}
 						}
 						
 						
 						//Value prefix
 						if (isset($offerFieldData->valuePrefix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] =
+							$docData[$offerFieldData->docFieldName] =
 								$offerFieldData->valuePrefix .
-								$data->provider->items[$docIndex][$offerFieldData->docFieldName]
+								$docData[$offerFieldData->docFieldName]
 							;
 						}
 						//Value suffix
 						if (isset($offerFieldData->valueSuffix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
+							$docData[$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
 						}
 						
 						
@@ -564,11 +573,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							!empty($offerFieldData->tagName)
 						){
 							//Final element parsing
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = \ddTools::parseText([
+							$docData[$offerFieldData->docFieldName] = \ddTools::parseText([
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
-									'value' => $this->escapeSpecialChars($data->provider->items[$docIndex][$offerFieldData->docFieldName])
+									'value' => $this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
 								],
 								'mergeAll' => false
 							]);
@@ -580,6 +589,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				unset($data->provider->items[$docIndex]);
 			}
 		}
+		
+		//Destroy unused referenced variable
+		unset($docData);
 		
 		$this->categoryIds = array_unique($this->categoryIds);
 		

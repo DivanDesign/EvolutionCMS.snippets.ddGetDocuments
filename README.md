@@ -340,7 +340,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* **Required**
 	
 * `outputterParams->offerFields_price`
-	* Desctription: A document field name, that contains offer price.
+	* Desctription: A document field name, that contains offer price.  
+		If a document field value is empty, but `outputterParams->offerFields_priceOld` is set, the last will be used instead.
 	* Valid values: `stringTvName`
 	* **Required**
 	
@@ -355,7 +356,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 	
 * `outputterParams->offerFields_name`
-	* Desctription: A document field name, that contains offer name.
+	* Desctription: A document field name, that contains offer name.  
+		If a document field value is empty, the `pagetitle` field will be used instead.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
