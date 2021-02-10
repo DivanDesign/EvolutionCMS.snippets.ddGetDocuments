@@ -116,17 +116,26 @@ $extendersParams =
 
 if(class_exists($dataProviderClass)){
 	//Prepare provider params
-	$providerParams = \ddTools::encodedStringToArray($providerParams);
+	$providerParams = \DDTools\ObjectTools::convertType([
+		'object' => $providerParams,
+		'type' => 'objectStdClass'
+	]);
 	
 	//Backward compatibility with <= 1.1
 	if (isset($orderBy)){
-		$providerParams['orderBy'] = $orderBy;
+		$providerParams->orderBy = $orderBy;
 	}
 	
 	//Prepare extender params
-	$extendersParams = (object) \ddTools::encodedStringToArray($extendersParams);
+	$extendersParams = \DDTools\ObjectTools::convertType([
+		'object' => $extendersParams,
+		'type' => 'objectStdClass'
+	]);
 	//Prepare outputter params
-	$outputterParams = \ddTools::encodedStringToArray($outputterParams);
+	$outputterParams = \DDTools\ObjectTools::convertType([
+		'object' => $outputterParams,
+		'type' => 'objectStdClass'
+	]);
 	
 	if(!empty($extenders)){
 		//If we have a single extender then make sure that extender params set as an array
@@ -151,11 +160,11 @@ if(class_exists($dataProviderClass)){
 	}
 	
 	//Make sure orderBy and filter looks like SQL
-	if (!empty($providerParams['orderBy'])){
-		$providerParams['orderBy'] = str_replace(
+	if (!empty($providerParams->orderBy)){
+		$providerParams->orderBy = str_replace(
 			$fieldDelimiter,
 			'`',
-			$providerParams['orderBy']
+			$providerParams->orderBy
 		);
 	}
 	$filter = str_replace(
