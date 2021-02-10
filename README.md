@@ -566,6 +566,11 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
 	* Default value: —
+	
+* `extendersParams->{$extenderName}`
+	* Desctription: Parameters of an extender, when the key is the extender name and the value is the extender parameters.
+	* Valid values: `object
+	* Default value: —
 
 
 ##### Extenders → Pagination (``&extenders=`pagination` ``)
