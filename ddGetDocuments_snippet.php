@@ -41,147 +41,125 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 }
 
 //Backward compatibility
-extract(\ddTools::verifyRenamedParams([
+$params = \ddTools::verifyRenamedParams([
 	'params' => $params,
 	'compliance' => [
 		'outputter' => 'outputFormat',
 		'outputterParams' => 'outputFormatParams'
+	],
+	'returnCorrectedOnly' => false
+]);
+
+//Defaults
+$params = \DDTools\ObjectTools::extend([
+	'objects' => [
+		(object) [
+			//General
+			'total' => NULL,
+			'offset' => 0,
+			'filter' => NULL,
+			'fieldDelimiter' => '',
+			
+			//Data provider
+			'provider' => 'parent',
+			'providerParams' => '',
+			
+			//Outputter
+			'outputter' => 'string',
+			'outputterParams' => '',
+			
+			//Extenders
+			'extenders' => [],
+			'extendersParams' => ''
+		],
+		$params
 	]
-]));
+]);
 
-//General
-$total =
-	isset($total) ?
-	$total :
-	null
-;
-$offset =
-	isset($offset) ?
-	$offset :
-	0
-;
-$filter =
-	isset($filter) ?
-	$filter :
-	null
-;
-$fieldDelimiter =
-	isset($fieldDelimiter) ?
-	$fieldDelimiter :
-	'`'
-;
+$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($params->provider);
 
-//Data provider
-$provider =
-	isset($provider) ?
-	$provider :
-	'parent'
-;
-$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($provider);
-$providerParams =
-	isset($providerParams) ?
-	$providerParams :
-	''
-;
+//TODO: Is it needed?
+$params->outputter = strtolower($params->outputter);
 
-//Output format
-$outputter =
-	isset($outputter) ?
-	strtolower($outputter) :
-	'string'
-;
-$outputterParams =
-	isset($outputterParams) ?
-	$outputterParams :
-	''
-;
-
-//Extenders
-$extenders =
-	(
-		isset($extenders) &&
-		!empty($extenders)
-	) ?
-	explode(
-		',',
-		trim($extenders)
-	) :
-	[]
-;
-$extendersParams =
-	isset($extendersParams) ?
-	$extendersParams :
-	''
-;
+if (is_string($params->extenders)){
+	if (!empty($params->extenders)){
+		$params->extenders = explode(
+			',',
+			trim($params->extenders)
+		);
+	}else{
+		$params->extenders = [];
+	}
+}
 
 if(class_exists($dataProviderClass)){
 	//Prepare provider params
-	$providerParams = \DDTools\ObjectTools::convertType([
-		'object' => $providerParams,
+	$params->providerParams = \DDTools\ObjectTools::convertType([
+		'object' => $params->providerParams,
 		'type' => 'objectStdClass'
 	]);
 	
 	//Backward compatibility with <= 1.1
-	if (isset($orderBy)){
-		$providerParams->orderBy = $orderBy;
+	if (isset($params->orderBy)){
+		$params->providerParams->orderBy = $params->orderBy;
 	}
 	
 	//Prepare extender params
-	$extendersParams = \DDTools\ObjectTools::convertType([
-		'object' => $extendersParams,
+	$params->extendersParams = \DDTools\ObjectTools::convertType([
+		'object' => $params->extendersParams,
 		'type' => 'objectStdClass'
 	]);
 	//Prepare outputter params
-	$outputterParams = \DDTools\ObjectTools::convertType([
-		'object' => $outputterParams,
+	$params->outputterParams = \DDTools\ObjectTools::convertType([
+		'object' => $params->outputterParams,
 		'type' => 'objectStdClass'
 	]);
 	
-	if(!empty($extenders)){
+	if(!empty($params->extenders)){
 		//If we have a single extender then make sure that extender params set as an array
 		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
-		if(count($extenders) === 1){
-			if(!isset($extendersParams->{$extenders[0]})){
-				$extendersParams = (object) [
-					$extenders[0] => $extendersParams
+		if(count($params->extenders) === 1){
+			if(!isset($params->extendersParams->{$params->extenders[0]})){
+				$params->extendersParams = (object) [
+					$params->extenders[0] => $params->extendersParams
 				];
 			}
 		}else{
-			//Make sure that for each extender there is an item in $extendersParams
+			//Make sure that for each extender there is an item in $params->extendersParams
 			foreach(
-				$extenders as
+				$params->extenders as
 				$extenderName
 			){
-				if(!isset($extendersParams->{$extenderName})){
-					$extendersParams->{$extenderName} = [];
+				if(!isset($params->extendersParams->{$extenderName})){
+					$params->extendersParams->{$extenderName} = [];
 				}
 			}
 		}
 	}
 	
 	//Make sure orderBy and filter looks like SQL
-	if (!empty($providerParams->orderBy)){
-		$providerParams->orderBy = str_replace(
-			$fieldDelimiter,
+	if (!empty($params->providerParams->orderBy)){
+		$params->providerParams->orderBy = str_replace(
+			$params->fieldDelimiter,
 			'`',
-			$providerParams->orderBy
+			$params->providerParams->orderBy
 		);
 	}
-	$filter = str_replace(
-		$fieldDelimiter,
+	$params->filter = str_replace(
+		$params->fieldDelimiter,
 		'`',
-		$filter
+		$params->filter
 	);
 	
 	$input = new \ddGetDocuments\Input([
 		'snippetParams' => [
-			'offset' => $offset,
-			'total' => $total,
-			'filter' => $filter
+			'offset' => $params->offset,
+			'total' => $params->total,
+			'filter' => $params->filter
 		],
-		'providerParams' => $providerParams,
-		'extendersParams' => $extendersParams,
-		'outputterParams' => $outputterParams
+		'providerParams' => $params->providerParams,
+		'extendersParams' => $params->extendersParams,
+		'outputterParams' => $params->outputterParams
 	]);
 	
 	//Extenders storage
@@ -189,7 +167,7 @@ if(class_exists($dataProviderClass)){
 	
 	//Iterate through all extenders to create their instances
 	foreach(
-		$extenders as
+		$params->extenders as
 		$extenderName
 	){
 		$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
@@ -213,11 +191,11 @@ if(class_exists($dataProviderClass)){
 	
 	$dataProviderObject = new $dataProviderClass($input);
 	
-	if ($outputter != 'raw'){
+	if ($params->outputter != 'raw'){
 		$input->outputterParams->dataProvider = $dataProviderObject;
 		
 		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
-			'name' => $outputter,
+			'name' => $params->outputter,
 			'parentDir' =>
 				$snippetPath_src .
 				'Outputter'
@@ -240,7 +218,7 @@ if(class_exists($dataProviderClass)){
 		$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
 	}
 	
-	if ($outputter == 'raw'){
+	if ($params->outputter == 'raw'){
 		$snippetResult = $outputData;
 	}else{
 		$snippetResult = $outputterObject->parse($outputData);
