@@ -76,99 +76,19 @@ $params = \DDTools\ObjectTools::extend([
 	]
 ]);
 
-$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($params->provider);
+$input = new \ddGetDocuments\Input($params);
 
-//TODO: Is it needed?
-$params->outputter = strtolower($params->outputter);
-
-if (is_string($params->extenders)){
-	if (!empty($params->extenders)){
-		$params->extenders = explode(
-			',',
-			trim($params->extenders)
-		);
-	}else{
-		$params->extenders = [];
-	}
-}
+$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($input->provider);
 
 if(class_exists($dataProviderClass)){
-	//Prepare provider params
-	$params->providerParams = \DDTools\ObjectTools::convertType([
-		'object' => $params->providerParams,
-		'type' => 'objectStdClass'
-	]);
-	
-	//Backward compatibility with <= 1.1
-	if (isset($params->orderBy)){
-		$params->providerParams->orderBy = $params->orderBy;
-	}
-	
-	//Prepare extender params
-	$params->extendersParams = \DDTools\ObjectTools::convertType([
-		'object' => $params->extendersParams,
-		'type' => 'objectStdClass'
-	]);
-	//Prepare outputter params
-	$params->outputterParams = \DDTools\ObjectTools::convertType([
-		'object' => $params->outputterParams,
-		'type' => 'objectStdClass'
-	]);
-	
-	if(!empty($params->extenders)){
-		//If we have a single extender then make sure that extender params set as an array
-		//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
-		if(count($params->extenders) === 1){
-			if(!isset($params->extendersParams->{$params->extenders[0]})){
-				$params->extendersParams = (object) [
-					$params->extenders[0] => $params->extendersParams
-				];
-			}
-		}else{
-			//Make sure that for each extender there is an item in $params->extendersParams
-			foreach(
-				$params->extenders as
-				$extenderName
-			){
-				if(!isset($params->extendersParams->{$extenderName})){
-					$params->extendersParams->{$extenderName} = [];
-				}
-			}
-		}
-	}
-	
-	//Make sure orderBy and filter looks like SQL
-	if (!empty($params->providerParams->orderBy)){
-		$params->providerParams->orderBy = str_replace(
-			$params->fieldDelimiter,
-			'`',
-			$params->providerParams->orderBy
-		);
-	}
-	$params->filter = str_replace(
-		$params->fieldDelimiter,
-		'`',
-		$params->filter
-	);
-	
-	$input = new \ddGetDocuments\Input([
-		'snippetParams' => [
-			'offset' => $params->offset,
-			'total' => $params->total,
-			'filter' => $params->filter
-		],
-		'providerParams' => $params->providerParams,
-		'extendersParams' => $params->extendersParams,
-		'outputterParams' => $params->outputterParams
-	]);
-	
 	//Extenders storage
 	$extendersStorage = [];
 	
 	//Iterate through all extenders to create their instances
 	foreach(
-		$params->extenders as
-		$extenderName
+		$input->extendersParams as
+		$extenderName =>
+		$extenderParams
 	){
 		$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
 			'name' => $extenderName,
@@ -177,7 +97,7 @@ if(class_exists($dataProviderClass)){
 				'Extender'
 			,
 			//Passing parameters into constructor
-			'params' => $input->extendersParams->{$extenderName}
+			'params' => $extenderParams
 		]);
 		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extenderObject;
@@ -191,11 +111,11 @@ if(class_exists($dataProviderClass)){
 	
 	$dataProviderObject = new $dataProviderClass($input);
 	
-	if ($params->outputter != 'raw'){
+	if ($input->outputter != 'raw'){
 		$input->outputterParams->dataProvider = $dataProviderObject;
 		
 		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
-			'name' => $params->outputter,
+			'name' => $input->outputter,
 			'parentDir' =>
 				$snippetPath_src .
 				'Outputter'
@@ -218,7 +138,7 @@ if(class_exists($dataProviderClass)){
 		$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
 	}
 	
-	if ($params->outputter == 'raw'){
+	if ($input->outputter == 'raw'){
 		$snippetResult = $outputData;
 	}else{
 		$snippetResult = $outputterObject->parse($outputData);
