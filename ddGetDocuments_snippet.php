@@ -40,16 +40,6 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 	);
 }
 
-//Backward compatibility
-$params = \ddTools::verifyRenamedParams([
-	'params' => $params,
-	'compliance' => [
-		'outputter' => 'outputFormat',
-		'outputterParams' => 'outputFormatParams'
-	],
-	'returnCorrectedOnly' => false
-]);
-
 $input = new \ddGetDocuments\Input($params);
 
 $dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($input->provider);

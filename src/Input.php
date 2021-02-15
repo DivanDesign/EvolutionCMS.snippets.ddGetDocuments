@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.2 (2021-02-15)
+	 * @version 4.3 (2021-02-15)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -48,6 +48,8 @@ class Input extends \DDTools\BaseClass {
 	 * @param $snippetParams->outputterParams {stdClass|arrayAssociative|stringJsonObject}
 	 */
 	public function __construct($snippetParams){
+		$snippetParams = $this->backwardCompatibility_verifyRenamedParams($snippetParams);
+		
 		//Prepare provider, outputter and extender params
 		foreach (
 			[
@@ -184,10 +186,33 @@ class Input extends \DDTools\BaseClass {
 	}
 	
 	/**
+	 * backwardCompatibility_verifyRenamedParams
+	 * @version 1.0 (2021-02-15)
+	 * 
+	 * @desc Verify renamed snippet parameters.
+	 * 
+	 * @param $snippetParams {stdClass}
+	 * 
+	 * @return {stdClass}
+	 */
+	private function backwardCompatibility_verifyRenamedParams($snippetParams){
+		$snippetParams = \ddTools::verifyRenamedParams([
+			'params' => $snippetParams,
+			'compliance' => [
+				'outputter' => 'outputFormat',
+				'outputterParams' => 'outputFormatParams'
+			],
+			'returnCorrectedOnly' => false
+		]);
+		
+		return $snippetParams;
+	}
+	
+	/**
 	 * backwardCompatibility_dataProviderParams
 	 * @version 1.0 (2021-02-15)
 	 * 
-	 * @desc Prepare snippet params preserve backward compatibility.
+	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
 	 * @param $snippetParams {stdClass}
 	 * 
