@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.1.1 (2021-02-14)
+	 * @version 4.1.2 (2021-02-14)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject} — @required
@@ -78,11 +78,11 @@ class Input extends \DDTools\BaseClass {
 		$snippetParams = $this->paramsBackwardCompatibility($snippetParams);
 		
 		
+		$snippetParams = $this->prepareExtendersParams($snippetParams);
+		
+		
 		//Set object properties from snippet parameters
 		$this->setExistingProps($snippetParams);
-		
-		
-		$snippetParams = $this->prepareExtendersParams($snippetParams);
 		
 		
 		//TODO: Is it needed?
