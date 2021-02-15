@@ -34,73 +34,73 @@ if(!class_exists('\ddGetDocuments\Input')){
 
 $input = new \ddGetDocuments\Input($params);
 
-	//Extenders storage
-	$extendersStorage = [];
-	
-	//Iterate through all extenders to create their instances
-	foreach(
-		$input->extendersParams as
-		$extenderName =>
-		$extenderParams
-	){
-		$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
-			'name' => $extenderName,
-			'parentDir' =>
-				$snippetPath_src .
-				'Extender'
-			,
-			//Passing parameters into constructor
-			'params' => $extenderParams
-		]);
-		//Passing a link to the storage
-		$extendersStorage[$extenderName] = $extenderObject;
-		
-		//Overwrite the data provider parameters with the result of applying them to the current extender
-		$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);
-	}
-	
-	$dataProviderObject = \ddGetDocuments\DataProvider\DataProvider::createChildInstance([
-		'name' => $input->provider,
+//Extenders storage
+$extendersStorage = [];
+
+//Iterate through all extenders to create their instances
+foreach(
+	$input->extendersParams as
+	$extenderName =>
+	$extenderParams
+){
+	$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
+		'name' => $extenderName,
 		'parentDir' =>
 			$snippetPath_src .
-			'DataProvider'
+			'Extender'
 		,
 		//Passing parameters into constructor
-		'params' => $input->providerParams
+		'params' => $extenderParams
 	]);
+	//Passing a link to the storage
+	$extendersStorage[$extenderName] = $extenderObject;
 	
-	if ($input->outputter != 'raw'){
-		$input->outputterParams->dataProvider = $dataProviderObject;
-		
-		$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
-			'name' => $input->outputter,
-			'parentDir' =>
-				$snippetPath_src .
-				'Outputter'
-			,
-			//Passing parameters into constructor
-			'params' => $input->outputterParams
-		]);
-	}
+	//Overwrite the data provider parameters with the result of applying them to the current extender
+	$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);
+}
+
+$dataProviderObject = \ddGetDocuments\DataProvider\DataProvider::createChildInstance([
+	'name' => $input->provider,
+	'parentDir' =>
+		$snippetPath_src .
+		'DataProvider'
+	,
+	//Passing parameters into constructor
+	'params' => $input->providerParams
+]);
+
+if ($input->outputter != 'raw'){
+	$input->outputterParams->dataProvider = $dataProviderObject;
 	
-	$dataProviderResult = $dataProviderObject->get();
-	
-	$outputData = new \ddGetDocuments\Output($dataProviderResult);
-	
-	//Iterate through all extenders again to apply them to the output
-	foreach(
-		$extendersStorage as
-		$extenderName =>
-		$extenderObject
-	){
-		$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
-	}
-	
-	if ($input->outputter == 'raw'){
-		$snippetResult = $outputData;
-	}else{
-		$snippetResult = $outputterObject->parse($outputData);
-	}
+	$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
+		'name' => $input->outputter,
+		'parentDir' =>
+			$snippetPath_src .
+			'Outputter'
+		,
+		//Passing parameters into constructor
+		'params' => $input->outputterParams
+	]);
+}
+
+$dataProviderResult = $dataProviderObject->get();
+
+$outputData = new \ddGetDocuments\Output($dataProviderResult);
+
+//Iterate through all extenders again to apply them to the output
+foreach(
+	$extendersStorage as
+	$extenderName =>
+	$extenderObject
+){
+	$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
+}
+
+if ($input->outputter == 'raw'){
+	$snippetResult = $outputData;
+}else{
+	$snippetResult = $outputterObject->parse($outputData);
+}
 
 return $snippetResult;
 ?>
