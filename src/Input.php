@@ -40,12 +40,12 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.1.3 (2021-02-15)
+	 * @version 4.2 (2021-02-15)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
-	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject} — @required
-	 * @param $snippetParams->extendersParams {stdClass|arrayAssociative|stringJsonObject} — @required
-	 * @param $snippetParams->outputterParams {stdClass|arrayAssociative|stringJsonObject} — @required
+	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
+	 * @param $snippetParams->extendersParams {stdClass|arrayAssociative|stringJsonObject}
+	 * @param $snippetParams->outputterParams {stdClass|arrayAssociative|stringJsonObject}
 	 */
 	public function __construct($snippetParams){
 		//Prepare provider, outputter and extender params
@@ -57,17 +57,27 @@ class Input extends \DDTools\BaseClass {
 			] as
 			$paramName
 		){
-			$this->{$paramName} = \DDTools\ObjectTools::extend([
-				'objects' => [
-					//Defaults
-					(object) $this->{$paramName},
-					//Given parameters 
-					\DDTools\ObjectTools::convertType([
-						'object' => $snippetParams->{$paramName},
-						'type' => 'objectStdClass'
-					])
-				]
-			]);
+			//Convert to object
+			$this->{$paramName} = (object) $this->{$paramName};
+			
+			if (
+				\DDTools\ObjectTools::isPropExists([
+					'object' => $snippetParams,
+					'propName' => $paramName
+				])
+			){
+				$this->{$paramName} = \DDTools\ObjectTools::extend([
+					'objects' => [
+						//Defaults
+						$this->{$paramName},
+						//Given parameters 
+						\DDTools\ObjectTools::convertType([
+							'object' => $snippetParams->{$paramName},
+							'type' => 'objectStdClass'
+						])
+					]
+				]);
+			}
 			
 			//No needed in snippet params
 			unset($snippetParams->{$paramName});
@@ -106,7 +116,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareExtendersParams
-	 * @version 2.0 (2021-02-15)
+	 * @version 2.1 (2021-02-15)
 	 * 
 	 * @desc Prepare extenders params.
 	 * 
@@ -115,53 +125,60 @@ class Input extends \DDTools\BaseClass {
 	 * @return {stdClass}
 	 */
 	private function prepareExtendersParams($snippetParams){
-		//Prepare extenders
-		if (is_string($snippetParams->extenders)){
-			if (!empty($snippetParams->extenders)){
-				$snippetParams->extenders = explode(
-					',',
-					trim($snippetParams->extenders)
-				);
-			}else{
-				$snippetParams->extenders = [];
-			}
-		}
-		
-		//Prepare extenders params
-		if(!empty($snippetParams->extenders)){
-			//If we have a single extender then make sure that extender params set as an array
-			//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
-			if(count($snippetParams->extenders) === 1){
-				if(
-					!\DDTools\ObjectTools::isPropExists([
-						'object' => $this->extendersParams,
-						'propName' => $snippetParams->extenders[0]
-					])
-				){
-					$this->extendersParams = (object) [
-						$snippetParams->extenders[0] => $this->extendersParams
-					];
+		if (
+			\DDTools\ObjectTools::isPropExists([
+				'object' => $snippetParams,
+				'propName' => 'extenders'
+			])
+		){
+			//Prepare extenders
+			if (is_string($snippetParams->extenders)){
+				if (!empty($snippetParams->extenders)){
+					$snippetParams->extenders = explode(
+						',',
+						trim($snippetParams->extenders)
+					);
+				}else{
+					$snippetParams->extenders = [];
 				}
-			}else{
-				//Make sure that for each extender there is an item in $this->extendersParams
-				foreach(
-					$snippetParams->extenders as
-					$extenderName
-				){
+			}
+			
+			//Prepare extenders params
+			if(!empty($snippetParams->extenders)){
+				//If we have a single extender then make sure that extender params set as an array
+				//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
+				if(count($snippetParams->extenders) === 1){
 					if(
 						!\DDTools\ObjectTools::isPropExists([
 							'object' => $this->extendersParams,
-							'propName' => $extenderName
+							'propName' => $snippetParams->extenders[0]
 						])
 					){
-						$this->extendersParams->{$extenderName} = (object) [];
+						$this->extendersParams = (object) [
+							$snippetParams->extenders[0] => $this->extendersParams
+						];
+					}
+				}else{
+					//Make sure that for each extender there is an item in $this->extendersParams
+					foreach(
+						$snippetParams->extenders as
+						$extenderName
+					){
+						if(
+							!\DDTools\ObjectTools::isPropExists([
+								'object' => $this->extendersParams,
+								'propName' => $extenderName
+							])
+						){
+							$this->extendersParams->{$extenderName} = (object) [];
+						}
 					}
 				}
 			}
+			
+			//No needed anymore, all data was saved to $this->extendersParams
+			unset($snippetParams->extenders);
 		}
-		
-		//No needed anymore, all data was saved to $this->extendersParams
-		unset($snippetParams->extenders);
 		
 		return $snippetParams;
 	}

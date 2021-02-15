@@ -50,24 +50,6 @@ $params = \ddTools::verifyRenamedParams([
 	'returnCorrectedOnly' => false
 ]);
 
-//Defaults
-$params = \DDTools\ObjectTools::extend([
-	'objects' => [
-		(object) [
-			//Data provider
-			'providerParams' => [],
-			
-			//Outputter
-			'outputterParams' => [],
-			
-			//Extenders
-			'extenders' => [],
-			'extendersParams' => []
-		],
-		$params
-	]
-]);
-
 $input = new \ddGetDocuments\Input($params);
 
 $dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($input->provider);
