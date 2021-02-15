@@ -33,7 +33,7 @@ if(!class_exists('\ddTools')){
 	);
 }
 
-if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
+if(!class_exists('\ddGetDocuments\Input')){
 	require_once(
 		$snippetPath .
 		'require.php'
@@ -42,9 +42,6 @@ if(!class_exists('\ddGetDocuments\DataProvider\DataProvider')){
 
 $input = new \ddGetDocuments\Input($params);
 
-$dataProviderClass = \ddGetDocuments\DataProvider\DataProvider::includeProviderByName($input->provider);
-
-if(class_exists($dataProviderClass)){
 	//Extenders storage
 	$extendersStorage = [];
 	
@@ -70,7 +67,15 @@ if(class_exists($dataProviderClass)){
 		$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);
 	}
 	
-	$dataProviderObject = new $dataProviderClass($input->providerParams);
+	$dataProviderObject = \ddGetDocuments\DataProvider\DataProvider::createChildInstance([
+		'name' => $input->provider,
+		'parentDir' =>
+			$snippetPath_src .
+			'DataProvider'
+		,
+		//Passing parameters into constructor
+		'params' => $input->providerParams
+	]);
 	
 	if ($input->outputter != 'raw'){
 		$input->outputterParams->dataProvider = $dataProviderObject;
@@ -104,7 +109,6 @@ if(class_exists($dataProviderClass)){
 	}else{
 		$snippetResult = $outputterObject->parse($outputData);
 	}
-}
 
 return $snippetResult;
 ?>

@@ -34,47 +34,6 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	)';
 	
 	/**
-	 * includeProviderByName
-	 * @version 1.0.5 (2020-03-10)
-	 * 
-	 * @TODO: Remove it, use `\DDTools\BaseClass::createChildInstance` instead
-	 * 
-	 * @param $providerName
-	 * @return string
-	 * @throws \Exception
-	 */
-	public final static function includeProviderByName($providerName){
-		$providerName = ucfirst(strtolower($providerName));
-		$providerPath =
-			$providerName .
-			DIRECTORY_SEPARATOR .
-			'DataProvider' .
-			'.php'
-		;
-		
-		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
-			require_once($providerPath);
-			
-			return
-				__NAMESPACE__ .
-				'\\' .
-				$providerName .
-				'\\' .
-				'DataProvider'
-			;
-		}else{
-			throw new \Exception(
-				(
-					'Data provider ' .
-					$providerName .
-					' not found.'
-				),
-				500
-			);
-		}
-	}
-	
-	/**
 	 * __construct
 	 * @version 2.0 (2021-02-15)
 	 * 
