@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.1.2 (2021-02-14)
+	 * @version 4.1.3 (2021-02-15)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject} — @required
@@ -75,7 +75,7 @@ class Input extends \DDTools\BaseClass {
 		
 		
 		//Backward compatibility
-		$snippetParams = $this->paramsBackwardCompatibility($snippetParams);
+		$snippetParams = $this->backwardCompatibility_dataProviderParams($snippetParams);
 		
 		
 		$snippetParams = $this->prepareExtendersParams($snippetParams);
@@ -167,8 +167,8 @@ class Input extends \DDTools\BaseClass {
 	}
 	
 	/**
-	 * paramsBackwardCompatibility
-	 * @version 2.0 (2021-02-15)
+	 * backwardCompatibility_dataProviderParams
+	 * @version 1.0 (2021-02-15)
 	 * 
 	 * @desc Prepare snippet params preserve backward compatibility.
 	 * 
@@ -176,7 +176,7 @@ class Input extends \DDTools\BaseClass {
 	 * 
 	 * @return {stdClass}
 	 */
-	private function paramsBackwardCompatibility($snippetParams){
+	private function backwardCompatibility_dataProviderParams($snippetParams){
 		//Move parameters from snippetParams to providerParams
 		foreach (
 			[
