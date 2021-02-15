@@ -5,10 +5,9 @@ namespace ddGetDocuments;
 class Input extends \DDTools\BaseClass {
 	public
 		/**
-		 * @property $snippetParams {stdClass}
-		 * @property $snippetParams->fieldDelimiter {string}
+		 * @property $fieldDelimiter {string}
 		 */
-		$snippetParams,
+		$fieldDelimiter = '',
 		
 		/**
 		 * @property $provider {string}
@@ -41,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.1 (2021-02-14)
+	 * @version 4.1.1 (2021-02-14)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject} — @required
@@ -49,10 +48,6 @@ class Input extends \DDTools\BaseClass {
 	 * @param $snippetParams->outputterParams {stdClass|arrayAssociative|stringJsonObject} — @required
 	 */
 	public function __construct($snippetParams){
-		//Save snippet parameters and prapare them later
-		$this->snippetParams = $snippetParams;
-		
-		
 		//Prepare provider, outputter and extender params
 		foreach (
 			[
@@ -68,26 +63,26 @@ class Input extends \DDTools\BaseClass {
 					(object) $this->{$paramName},
 					//Given parameters 
 					\DDTools\ObjectTools::convertType([
-						'object' => $this->snippetParams->{$paramName},
+						'object' => $snippetParams->{$paramName},
 						'type' => 'objectStdClass'
 					])
 				]
 			]);
 			
 			//No needed in snippet params
-			unset($this->snippetParams->{$paramName});
+			unset($snippetParams->{$paramName});
 		}
 		
 		
 		//Backward compatibility
-		$this->paramsBackwardCompatibility();
+		$snippetParams = $this->paramsBackwardCompatibility($snippetParams);
 		
 		
 		//Set object properties from snippet parameters
-		$this->setExistingProps($this->snippetParams);
+		$this->setExistingProps($snippetParams);
 		
 		
-		$this->prepareExtendersParams();
+		$snippetParams = $this->prepareExtendersParams($snippetParams);
 		
 		
 		//TODO: Is it needed?
@@ -97,13 +92,13 @@ class Input extends \DDTools\BaseClass {
 		//Make sure orderBy and filter looks like SQL
 		if (!empty($this->providerParams->orderBy)){
 			$this->providerParams->orderBy = str_replace(
-				$this->snippetParams->fieldDelimiter,
+				$this->fieldDelimiter,
 				'`',
 				$this->providerParams->orderBy
 			);
 		}
 		$this->providerParams->filter = str_replace(
-			$this->snippetParams->fieldDelimiter,
+			$this->fieldDelimiter,
 			'`',
 			$this->providerParams->filter
 		);
@@ -111,44 +106,46 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareExtendersParams
-	 * @version 1.0 (2021-02-12)
+	 * @version 2.0 (2021-02-15)
 	 * 
 	 * @desc Prepare extenders params.
 	 * 
-	 * @return {void}
+	 * @param $snippetParams {stdClass}
+	 * 
+	 * @return {stdClass}
 	 */
-	private function prepareExtendersParams(){
+	private function prepareExtendersParams($snippetParams){
 		//Prepare extenders
-		if (is_string($this->snippetParams->extenders)){
-			if (!empty($this->snippetParams->extenders)){
-				$this->snippetParams->extenders = explode(
+		if (is_string($snippetParams->extenders)){
+			if (!empty($snippetParams->extenders)){
+				$snippetParams->extenders = explode(
 					',',
-					trim($this->snippetParams->extenders)
+					trim($snippetParams->extenders)
 				);
 			}else{
-				$this->snippetParams->extenders = [];
+				$snippetParams->extenders = [];
 			}
 		}
 		
 		//Prepare extenders params
-		if(!empty($this->snippetParams->extenders)){
+		if(!empty($snippetParams->extenders)){
 			//If we have a single extender then make sure that extender params set as an array
 			//like [extenderName => [extenderParameter_1, extenderParameter_2, ...]]
-			if(count($this->snippetParams->extenders) === 1){
+			if(count($snippetParams->extenders) === 1){
 				if(
 					!\DDTools\ObjectTools::isPropExists([
 						'object' => $this->extendersParams,
-						'propName' => $this->snippetParams->extenders[0]
+						'propName' => $snippetParams->extenders[0]
 					])
 				){
 					$this->extendersParams = (object) [
-						$this->snippetParams->extenders[0] => $this->extendersParams
+						$snippetParams->extenders[0] => $this->extendersParams
 					];
 				}
 			}else{
 				//Make sure that for each extender there is an item in $this->extendersParams
 				foreach(
-					$this->snippetParams->extenders as
+					$snippetParams->extenders as
 					$extenderName
 				){
 					if(
@@ -164,18 +161,22 @@ class Input extends \DDTools\BaseClass {
 		}
 		
 		//No needed anymore, all data was saved to $this->extendersParams
-		unset($this->snippetParams->extenders);
+		unset($snippetParams->extenders);
+		
+		return $snippetParams;
 	}
 	
 	/**
 	 * paramsBackwardCompatibility
-	 * @version 1.1 (2021-02-12)
+	 * @version 2.0 (2021-02-15)
 	 * 
 	 * @desc Prepare snippet params preserve backward compatibility.
 	 * 
-	 * @return {void}
+	 * @param $snippetParams {stdClass}
+	 * 
+	 * @return {stdClass}
 	 */
-	private function paramsBackwardCompatibility(){
+	private function paramsBackwardCompatibility($snippetParams){
 		//Move parameters from snippetParams to providerParams
 		foreach (
 			[
@@ -188,14 +189,16 @@ class Input extends \DDTools\BaseClass {
 		){
 			if (
 				\DDTools\ObjectTools::isPropExists([
-					'object' => $this->snippetParams,
+					'object' => $snippetParams,
 					'propName' => $paramName
 				])
 			){
-				$this->providerParams->{$paramName} = $this->snippetParams->{$paramName};
+				$this->providerParams->{$paramName} = $snippetParams->{$paramName};
 				
-				unset($this->snippetParams->{$paramName});
+				unset($snippetParams->{$paramName});
 			}
 		}
+		
+		return $snippetParams;
 	}
 }

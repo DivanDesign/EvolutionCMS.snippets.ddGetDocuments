@@ -54,20 +54,15 @@ $params = \ddTools::verifyRenamedParams([
 $params = \DDTools\ObjectTools::extend([
 	'objects' => [
 		(object) [
-			//General
-			'fieldDelimiter' => '',
-			
 			//Data provider
-			'provider' => 'parent',
-			'providerParams' => '',
+			'providerParams' => [],
 			
 			//Outputter
-			'outputter' => 'string',
-			'outputterParams' => '',
+			'outputterParams' => [],
 			
 			//Extenders
 			'extenders' => [],
-			'extendersParams' => ''
+			'extendersParams' => []
 		],
 		$params
 	]
