@@ -76,13 +76,13 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3.3 (2021-02-12)
+	 * @version 2.0 (2021-02-15)
 	 * 
-	 * @param $input {\ddGetDocuments\Input}
+	 * @param $params {stdClass|arrayAssociative}
 	 */
-	function __construct(\ddGetDocuments\Input $input){
+	function __construct($params){
 		//Все параметры задают свойства объекта
-		$this->setExistingProps($input->providerParams);
+		$this->setExistingProps($params);
 		
 		//Init source DB table name
 		$this->resourcesTableName =

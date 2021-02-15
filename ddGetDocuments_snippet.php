@@ -103,7 +103,7 @@ if(class_exists($dataProviderClass)){
 		$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);
 	}
 	
-	$dataProviderObject = new $dataProviderClass($input);
+	$dataProviderObject = new $dataProviderClass($input->providerParams);
 	
 	if ($input->outputter != 'raw'){
 		$input->outputterParams->dataProvider = $dataProviderObject;

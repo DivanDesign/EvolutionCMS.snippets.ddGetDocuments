@@ -13,13 +13,13 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	
 	/**
 	 * __construct
-	 * @version 1.1.3 (2020-03-11)
+	 * @version 2.0 (2021-02-15)
 	 * 
-	 * @param $input {\ddGetDocuments\Input}
+	 * @param $params {stdClass|arrayAssociative}
 	 */
-	public function __construct(\ddGetDocuments\Input $input){
+	public function __construct($params){
 		//Call base constructor
-		parent::__construct($input);
+			parent::__construct($params);
 		
 		//Comma separated strings support
 		if (!is_array($this->parentIds)){
