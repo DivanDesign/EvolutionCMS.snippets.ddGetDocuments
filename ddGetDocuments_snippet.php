@@ -55,9 +55,6 @@ $params = \DDTools\ObjectTools::extend([
 	'objects' => [
 		(object) [
 			//General
-			'total' => NULL,
-			'offset' => 0,
-			'filter' => NULL,
 			'fieldDelimiter' => '',
 			
 			//Data provider
@@ -101,9 +98,6 @@ if(class_exists($dataProviderClass)){
 		]);
 		//Passing a link to the storage
 		$extendersStorage[$extenderName] = $extenderObject;
-		
-		//Overwrite the snippet parameters with the result of applying them to the current extender
-		$input->snippetParams = $extenderObject->applyToSnippetParams($input->snippetParams);
 		
 		//Overwrite the data provider parameters with the result of applying them to the current extender
 		$input->providerParams = $extenderObject->applyToDataProviderParams($input->providerParams);

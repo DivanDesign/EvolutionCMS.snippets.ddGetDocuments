@@ -18,18 +18,6 @@ abstract class Extender extends \DDTools\BaseClass {
 	}
 	
 	/**
-	 * applyToSnippetParams
-	 * @version 2.1 (2020-10-02)
-	 * 
-	 * @param $snippetParams {stdClass}
-	 * 
-	 * @return {stdClass}
-	 */
-	public function applyToSnippetParams($snippetParams){
-		return $snippetParams;
-	}
-	
-	/**
 	 * applyToDataProviderParams
 	 * @version 1.0 (2020-10-01)
 	 * 

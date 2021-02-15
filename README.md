@@ -35,6 +35,14 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 ### Parameters description
 
 
+#### Core parameters
+
+* `fieldDelimiter`
+	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `providerParams->filter`.
+	* Valid values: `string`
+	* Default value: ``'`'``
+
+
 #### Data provider parameters
 
 * `provider`
@@ -51,6 +59,22 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
 	* Default value: —
+	
+* `providerParams->filter`
+	* Desctription: The filter condition in SQL-style to be applied while resource fetching.  
+		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
+	* Valid values: `string`
+	* Default value: ``'`published` = 1 AND `deleted` = 0'``
+	
+* `providerParams->total`
+	* Desctription: The maximum number of the resources that will be returned.
+	* Valid values: `integer`
+	* Default value: — (all)
+	
+* `providerParams->offset`
+	* Desctription: Resources offset.
+	* Valid values: `integer`
+	* Default value: `0`
 	
 * `providerParams->orderBy`
 	* Desctription: A string representing the sorting rule.  
@@ -114,30 +138,6 @@ Get resources from custom DB table.
 	* Desctription: DB table to get resources from.
 	* Valid values: `string`
 	* **Required**
-
-
-#### Core parameters
-
-* `fieldDelimiter`
-	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `filter`.
-	* Valid values: `string`
-	* Default value: ``'`'``
-	
-* `filter`
-	* Desctription: The filter condition in SQL-style to be applied while resource fetching.  
-		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
-	* Valid values: `string`
-	* Default value: ``'`published` = 1 AND `deleted` = 0'``
-	
-* `total`
-	* Desctription: The maximum number of the resources that will be returned.
-	* Valid values: `integer`
-	* Default value: — (all)
-	
-* `offset`
-	* Desctription:  Resources offset.
-	* Valid values: `integer`
-	* Default value: `0`
 
 
 #### Output format parameters
@@ -738,7 +738,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 ```
 
 
-#### Simple fetching child documents from a parent with ID = `1` with the `filter`
+#### Simple fetching child documents from a parent with ID = `1` with the `providerParams->filter`
 
 Add a filter that would not output everything. Let's say we need only published documents.
 
@@ -746,12 +746,12 @@ _Don't forget about `fieldDelimiter`._
 
 ```
 [[ddGetDocuments?
+	&fieldDelimiter=`#`
 	&providerParams=`{
 		"parentIds": "1",
-		"depth": 1
+		"depth": 1,
+		"filter": "#published# = 1"
 	}`
-	&fieldDelimiter=`#`
-	&filter=`#published# = 1`
 	&outputterParams=`{
 		"itemTpl": "documents_item"
 	}`
@@ -761,27 +761,37 @@ _Don't forget about `fieldDelimiter`._
 So we can filter as much as we like (we can use `AND` and `OR`, doucument fields and TVs):
 
 ```
-&filter=`
-	#published# = 1 AND
-	#hidemenu# = 0 OR
-	#SomeTVName# = 1
-`
+[[ddGetDocuments?
+	&fieldDelimiter=`#`
+	&providerParams=`{
+		"parentIds": "1",
+		"depth": 1,
+		"filter": "#published# = 1 AND #hidemenu# = 0 OR #SomeTVName# = 1"
+	}`
+	&outputterParams=`{
+		"itemTpl": "documents_item"
+	}`
+]]
 ```
 
 
-#### Sorting by TV with the `date` type (`orderBy`)
+#### Sorting by TV with the `date` type (`providerParams->orderBy`)
 
 Dates in DB stored in specific format (`01-02-2017 08:59:45`) and sorting works unexpectedly at first sight.
 So, we can't just type:
 
 ```
-&orderBy=`#TVName# DESC`
+&providerParams=`{
+	"orderBy": "#TVName# DESC"
+}`
 ```
 
 For correct working we need to convert date from DB to Unixtime for sorting:
 
 ```
-&orderBy=`STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC`
+&providerParams=`{
+	"orderBy": "STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC"
+}`
 ```
 
 When `TVName` — TV name for sorting by.
@@ -849,13 +859,13 @@ Returns:
 
 ```
 [[ddGetDocuments?
-	&providerParams=`{
-		"parentIds": "[*id*]"
-	}`
 	&fieldDelimiter=`#`
-	&filter=`#published# = 1`
-	&total=`3`
-	&orderBy=`#pub_date# DESC`
+	&providerParams=`{
+		"parentIds": "[*id*]",
+		"filter": "#published# = 1",
+		"total": 3,
+		"orderBy": "#pub_date# DESC`"
+	}`
 	&outputterParams=`{
 		"itemTpl": "documents_item",
 		"wrapperTpl": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
@@ -877,11 +887,11 @@ Returns:
 ```
 
 * ``&providerParams=`{"parentIds": "[*id*]"}` `` — fetch current doc children.
-* ``&filter=`#published# = 1` `` — only published.
+* ``&providerParams=`{"filter": "#published# = 1"}` `` — only published.
+* ``&providerParams=`{"total": 3}` `` — items per page.
+* ``&providerParams=`{"orderBy": "#pub_date# DESC"} `` — sort by publish date, new first.
 * ``&outputterParams=`{"itemTpl": "documents_item"}` `` — item template (chunk name).
 * ``&outputterParams=`{"noResult": "@CODE:"}` `` — return nothing if nothing found.
-* ``&total=`3` `` — items per page.
-* ``&orderBy=`#pub_date# DESC` `` — sort by publish date, new first.
 * ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
 * ``&wrapperTpl=`@CODE:[+ddGetDocuments_items+][+extenders.pagination+]` `` — we need set where pagination will being outputted.
 
@@ -894,16 +904,12 @@ Set up filter to get only necessary documets.
 
 ```
 [[ddGetDocuments?
+	&fieldDelimiter=`#`
 	&providerParams=`{
 		"parentIds": 1,
-		"depth": 3
+		"depth": 3,
+		"filter": "#published# = 1 AND #deleted# = 0 AND #template# = 11"
 	}`
-	&fieldDelimiter=`#`
-	&filter=`
-		#published# = 1 AND
-		#deleted# = 0 AND
-		#template# = 11
-	`
 	&extenders=`search`
 	&extendersParams=`{
 		"docFieldsToSearch": "pagetitle,content,someTv"

@@ -38,14 +38,14 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	}
 	
 	/**
-	 * applyToSnippetParams
-	 * @version 2.0.1 (2021-01-04)
+	 * applyToDataProviderParams
+	 * @version 1.0 (2021-02-12)
 	 * 
-	 * @param $snippetParams {stdClass}
+	 * @param $dataProviderParams {stdClass}
 	 * 
 	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams($snippetParams){
+	public function applyToDataProviderParams($dataProviderParams){
 		//If URL contains tags
 		if (!empty($this->currentQuery)){
 			$searchQueries = [];
@@ -64,15 +64,15 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 			}
 			
 			if(
-				isset($snippetParams->filter) &&
-				trim($snippetParams->filter) != ''
+				isset($dataProviderParams->filter) &&
+				trim($dataProviderParams->filter) != ''
 			){
-				$snippetParams->filter .= ' AND';
+				$dataProviderParams->filter .= ' AND';
 			}else{
-				$snippetParams->filter = '';
+				$dataProviderParams->filter = '';
 			}
 			
-			$snippetParams->filter .=
+			$dataProviderParams->filter .=
 				' (' .
 				implode(
 					' OR ',
@@ -82,6 +82,6 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 			;
 		}
 		
-		return $snippetParams;
+		return $dataProviderParams;
 	}
 }

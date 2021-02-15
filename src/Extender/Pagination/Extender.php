@@ -5,9 +5,9 @@ namespace ddGetDocuments\Extender\Pagination;
 class Extender extends \ddGetDocuments\Extender\Extender {
 	private
 		/**
-		 * @property $snippetParams {stdClass}
+		 * @property $dataProviderParams {stdClass}
 		 */
-		$snippetParams,
+		$dataProviderParams,
 		//Current page index
 		$pageIndex,
 		//The parameter in $_REQUEST to get the current page index from
@@ -74,33 +74,33 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	}
 	
 	/**
-	 * applyToSnippetParams
-	 * @version 2.0.1 (2020-10-02)
+	 * applyToDataProviderParams
+	 * @version 1.0 (2020-10-02)
 	 * 
-	 * @param $snippetParams {stdClass}
+	 * @param $dataProviderParams {stdClass}
 	 * 
 	 * @return {stdClass}
 	 */
-	public function applyToSnippetParams($snippetParams){
+	public function applyToDataProviderParams($dataProviderParams){
 		//If “total” is set then we need to override “offset” according to the current page index
-		if(isset($snippetParams->total)){
-			$snippetParams->offset =
+		if(isset($dataProviderParams->total)){
+			$dataProviderParams->offset =
 				(
 					$this->pageIndex -
 					1
 				) *
-				$snippetParams->total
+				$dataProviderParams->total
 			;
 		}
 		
-		$this->snippetParams = $snippetParams;
+		$this->dataProviderParams = $dataProviderParams;
 		
-		return $snippetParams;
+		return $dataProviderParams;
 	}
 	
 	/**
 	 * applyToOutput
-	 * @version 1.2.2 (2020-10-02)
+	 * @version 1.2.3 (2021-02-12)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -110,10 +110,10 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		$result = '';
 		
 		//Check to prevent division by zero
-		if($this->snippetParams->total != 0){
+		if($this->dataProviderParams->total != 0){
 			$pagesTotal = ceil(
 				$dataProviderOutput->totalFound /
-				$this->snippetParams->total
+				$this->dataProviderParams->total
 			);
 			
 			if($pagesTotal > 1){

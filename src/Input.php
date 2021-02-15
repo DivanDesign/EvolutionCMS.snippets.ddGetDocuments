@@ -6,9 +6,6 @@ class Input extends \DDTools\BaseClass {
 	public
 		/**
 		 * @property $snippetParams {stdClass}
-		 * @property $snippetParams->offset {integer}
-		 * @property $snippetParams->total {integer}
-		 * @property $snippetParams->filter {string}
 		 * @property $snippetParams->fieldDelimiter {string}
 		 */
 		$snippetParams,
@@ -19,7 +16,12 @@ class Input extends \DDTools\BaseClass {
 		 * @property $providerParams->{$paramName} {mixed}
 		 */
 		$provider = 'parent',
-		$providerParams,
+		$providerParams = [
+			'filter' => '',
+			'offset' => 0,
+			'total' => NULL,
+			'orderBy' => ''
+		],
 		
 		/**
 		 * @property $outputter {string}
@@ -27,19 +29,19 @@ class Input extends \DDTools\BaseClass {
 		 * @property $outputterParams->{$paramName} {mixed}
 		 */
 		$outputter = 'string',
-		$outputterParams,
+		$outputterParams = [],
 		
 		/**
 		 * @property $extendersParams {stdClass}
 		 * @property $extendersParams->{$extenderName} {stdClass}
 		 * @property $extendersParams->{$extenderName}->{$paramName} {mixed}
 		 */
-		$extendersParams
+		$extendersParams = []
 	;
 	
 	/**
 	 * __construct
-	 * @version 4.0 (2021-02-12)
+	 * @version 4.1 (2021-02-14)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject} — @required
@@ -60,9 +62,16 @@ class Input extends \DDTools\BaseClass {
 			] as
 			$paramName
 		){
-			$this->{$paramName} = \DDTools\ObjectTools::convertType([
-				'object' => $this->snippetParams->{$paramName},
-				'type' => 'objectStdClass'
+			$this->{$paramName} = \DDTools\ObjectTools::extend([
+				'objects' => [
+					//Defaults
+					(object) $this->{$paramName},
+					//Given parameters 
+					\DDTools\ObjectTools::convertType([
+						'object' => $this->snippetParams->{$paramName},
+						'type' => 'objectStdClass'
+					])
+				]
 			]);
 			
 			//No needed in snippet params
@@ -93,10 +102,10 @@ class Input extends \DDTools\BaseClass {
 				$this->providerParams->orderBy
 			);
 		}
-		$this->snippetParams->filter = str_replace(
+		$this->providerParams->filter = str_replace(
 			$this->snippetParams->fieldDelimiter,
 			'`',
-			$this->snippetParams->filter
+			$this->providerParams->filter
 		);
 	}
 	
@@ -160,23 +169,33 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * paramsBackwardCompatibility
-	 * @version 1.0 (2021-02-12)
+	 * @version 1.1 (2021-02-12)
 	 * 
 	 * @desc Prepare snippet params preserve backward compatibility.
 	 * 
 	 * @return {void}
 	 */
 	private function paramsBackwardCompatibility(){
-		//Backward compatibility with <= 1.1
-		if (
-			\DDTools\ObjectTools::isPropExists([
-				'object' => $this->snippetParams,
-				'propName' => 'orderBy'
-			])
+		//Move parameters from snippetParams to providerParams
+		foreach (
+			[
+				'filter',
+				'offset',
+				'total',
+				'orderBy'
+			] as
+			$paramName
 		){
-			$this->providerParams->orderBy = $this->snippetParams->orderBy;
-			
-			unset($this->snippetParams->orderBy);
+			if (
+				\DDTools\ObjectTools::isPropExists([
+					'object' => $this->snippetParams,
+					'propName' => $paramName
+				])
+			){
+				$this->providerParams->{$paramName} = $this->snippetParams->{$paramName};
+				
+				unset($this->snippetParams->{$paramName});
+			}
 		}
 	}
 }

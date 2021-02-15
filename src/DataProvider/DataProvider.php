@@ -20,8 +20,8 @@ abstract class DataProvider extends \DDTools\BaseClass {
 			'tvs' => []
 		],
 		$total,
-		$filter,
-		$offset,
+		$filter = '',
+		$offset = 0,
 		$orderBy = ''
 	;
 	
@@ -76,25 +76,11 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3.2 (2020-10-01)
+	 * @version 1.3.3 (2021-02-12)
 	 * 
 	 * @param $input {\ddGetDocuments\Input}
 	 */
 	function __construct(\ddGetDocuments\Input $input){
-		//Params from the snippet first
-		foreach (
-			[
-				'total',
-				'filter',
-				'offset'
-			]
-			as $paramName
-		){
-			if(isset($input->snippetParams->{$paramName})){
-				$this->{$paramName} = $input->snippetParams->{$paramName};
-			}
-		}
-		
 		//Все параметры задают свойства объекта
 		$this->setExistingProps($input->providerParams);
 		
