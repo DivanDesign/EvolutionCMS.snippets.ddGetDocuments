@@ -17,4 +17,6 @@ require_once('src/Outputter/Outputter.php');
 require_once('src/Outputter/String/Outputter.php');
 require_once('src/DataProvider/DataProvider.php');
 require_once('src/DataProvider/Parent/DataProvider.php');
+
+require_once('src/Snippet.php');
 ?>
