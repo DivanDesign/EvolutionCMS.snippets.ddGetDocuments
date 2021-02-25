@@ -14,12 +14,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			//May need for smart name
 			'pagetitle'
 		],
+		
 		/**
-		 * @property $templates {stdClass}
-		 * @property $templates->wrapper {string}
-		 * @property $templates->offers_item {string}
-		 * @property $templates->offers_item_elem {string}
-		 * @property $templates->offers_item_elemParam {string}
+		 * @property $shopData {stdClass}
+		 * @property $shopData->{$name} {string}
 		 */
 		$shopData = [
 			'shopName' => '',
@@ -28,6 +26,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'platform' => '(MODX) Evolution CMS',
 			'version' => '[(settings_version)]'
 		],
+		
+		/**
+		 * @property $offerFields {stdClass}
+		 * @property $offerFields->{$fieldName} {stdClass}
+		 * @property $offerFields->{$fieldName}->docFieldName {string} — Название поля документа, содержащего значение.
+		 * @property $offerFields->{$fieldName}->tagName {string} — Имя тега для вывода.
+		 * @property $offerFields->{$fieldName}->valuePrefix {string} — Префикс, который будет добавлен к значению при выводе.
+		 * @property $offerFields->{$fieldName}->valueSuffix {string} — Суффикс, который будет добавлен к значению при выводе.
+		 * @property $offerFields->{$fieldName}->templateName {string} — Название шаблона, по которому парсить вывод.
+		 */
 		$offerFields = [
 			'name' => [
 				'docFieldName' => 'pagetitle',
@@ -103,6 +111,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'templateName' => ''
 			]
 		],
+		
+		/**
+		 * @property $templates {stdClass}
+		 * @property $templates->wrapper {string}
+		 * @property $templates->offers_item {string}
+		 * @property $templates->offers_item_elem {string}
+		 * @property $templates->offers_item_elemParam {string}
+		 */
 		$templates = [
 			'wrapper' => '
 				<?xml version="1.0" encoding="utf-8"?>
@@ -148,6 +164,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'offers_item_elem' => '<[+tagName+][+attrs+]>[+value+]</[+tagName+]>',
 // 			'offers_item_elemAdditionalParams' => '<param name="[+name+]"[+attrs+]>[+value+]</param>',
 		],
+		
 		$categoryIds_last = []
 	;
 	
