@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.3.1 (2021-02-24)
+	 * @version 4.3.2 (2021-02-25)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -100,18 +100,19 @@ class Input extends \DDTools\BaseClass {
 		
 		
 		//Make sure orderBy and filter looks like SQL
-		if (!empty($this->providerParams->orderBy)){
-			$this->providerParams->orderBy = str_replace(
+		foreach (
+			[
+				'filter',
+				'orderBy'
+			] as
+			$paramName
+		){
+			$this->providerParams->{$paramName} = str_replace(
 				$this->fieldDelimiter,
 				'`',
-				$this->providerParams->orderBy
+				$this->providerParams->{$paramName}
 			);
 		}
-		$this->providerParams->filter = str_replace(
-			$this->fieldDelimiter,
-			'`',
-			$this->providerParams->filter
-		);
 	}
 	
 	/**
