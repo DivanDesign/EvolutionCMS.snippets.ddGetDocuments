@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.4 (2021-02-26)
+	 * @version 4.4.1 (2021-02-26)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -79,18 +79,17 @@ class Input extends \DDTools\BaseClass {
 				]);
 			}
 			
-			//No needed in snippet params
+			//Remove it to prevent overwriting through `$this->setExistingProps`
 			unset($snippetParams->{$paramName});
 		}
 		
 		
 		//Backward compatibility
-		$snippetParams = $this->backwardCompatibility_dataProviderParams($snippetParams);
-		
+		$this->backwardCompatibility_dataProviderParams($snippetParams);
 		$this->backwardCompatibility_outputterParams();
 		
 		
-		$snippetParams = $this->prepareExtendersParams($snippetParams);
+		$this->prepareExtendersParams($snippetParams);
 		
 		
 		//Set object properties from snippet parameters
@@ -119,13 +118,13 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareExtendersParams
-	 * @version 2.1 (2021-02-15)
+	 * @version 3.0 (2021-02-26)
 	 * 
 	 * @desc Prepare extenders params.
 	 * 
 	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {stdClass}
+	 * @return {void}
 	 */
 	private function prepareExtendersParams($snippetParams){
 		if (
@@ -178,23 +177,18 @@ class Input extends \DDTools\BaseClass {
 					}
 				}
 			}
-			
-			//No needed anymore, all data was saved to $this->extendersParams
-			unset($snippetParams->extenders);
 		}
-		
-		return $snippetParams;
 	}
 	
 	/**
 	 * backwardCompatibility_dataProviderParams
-	 * @version 1.0 (2021-02-15)
+	 * @version 2.0 (2021-02-26)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
 	 * @param $snippetParams {stdClass}
 	 * 
-	 * @return {stdClass}
+	 * @return {void}
 	 */
 	private function backwardCompatibility_dataProviderParams($snippetParams){
 		//Move parameters from snippetParams to providerParams
@@ -214,12 +208,8 @@ class Input extends \DDTools\BaseClass {
 				])
 			){
 				$this->providerParams->{$paramName} = $snippetParams->{$paramName};
-				
-				unset($snippetParams->{$paramName});
 			}
 		}
-		
-		return $snippetParams;
 	}
 	
 	/**
