@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.3.2 (2021-02-25)
+	 * @version 4.4 (2021-02-26)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -86,6 +86,8 @@ class Input extends \DDTools\BaseClass {
 		
 		//Backward compatibility
 		$snippetParams = $this->backwardCompatibility_dataProviderParams($snippetParams);
+		
+		$this->backwardCompatibility_outputterParams();
 		
 		
 		$snippetParams = $this->prepareExtendersParams($snippetParams);
@@ -218,5 +220,85 @@ class Input extends \DDTools\BaseClass {
 		}
 		
 		return $snippetParams;
+	}
+	
+	/**
+	 * backwardCompatibility_outputterParams
+	 * @version 1.0 (2021-02-25)
+	 * 
+	 * @desc Prepare data provider params preserve backward compatibility.
+	 * 
+	 * @return {void}
+	 */
+	private function backwardCompatibility_outputterParams(){
+		if (
+			$this->outputter == 'yandexmarket' &&
+			//If required shopData is not set, then we need to provide backward compatibility
+			!\DDTools\ObjectTools::isPropExists([
+				'object' => $this->outputterParams,
+				'propName' => 'shopData'
+			])
+		){
+			//If shopData is not set, then offerFields and templates are not set too
+			$this->outputterParams->shopData = (object) [];
+			$this->outputterParams->offerFields = (object) [];
+			$this->outputterParams->templates = (object) [];
+			
+			foreach (
+				$this->outputterParams as
+				$paramName =>
+				$paramValue
+			){
+				$targetGroupName = NULL;
+				$targetParamName = NULL;
+				
+				//$this->outputterParams->shopData
+				if (
+					substr(
+						$paramName,
+						0,
+						9
+					) == 'shopData_'
+				){
+					$targetGroupName = 'shopData';
+					$targetParamName = substr(
+						$paramName,
+						9
+					);
+				//$this->outputterParams->offerFields
+				}elseif (
+					substr(
+						$paramName,
+						0,
+						12
+					) == 'offerFields_'
+				){
+					$targetGroupName = 'offerFields';
+					$targetParamName = substr(
+						$paramName,
+						12
+					);
+				//$this->outputterParams->templates
+				}elseif (
+					substr(
+						$paramName,
+						0,
+						10
+					) == 'templates_'
+				){
+					$targetGroupName = 'offerFields';
+					$targetParamName = substr(
+						$paramName,
+						10
+					);
+				}
+				
+				if (!is_null($targetGroupName)){
+					$this->outputterParams->{$targetGroupName}->{$targetParamName} = $paramValue;
+					
+					unset($this->outputterParams->{$paramName});
+				}
+			}
+		}
 	}
 }

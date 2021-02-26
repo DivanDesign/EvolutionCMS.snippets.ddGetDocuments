@@ -299,32 +299,37 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 
 Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
-* `outputterParams->shopData_shopName`
+* `outputterParams->shopData`
+	* Desctription: Shop data.
+	* Valid values: `object`
+	* **Required**
+	
+* `outputterParams->shopData->shopName`
 	* Desctription: Short shop name, length <= 20.
 	* Valid values: `string`
 	* **Required**
 	
-* `outputterParams->shopData_companyName`
+* `outputterParams->shopData->companyName`
 	* Desctription: Company legal name. Internal data that not be displayed but required by Yandex.
 	* Valid values: `string`
 	* **Required**
 	
-* `outputterParams->shopData_agency`
+* `outputterParams->shopData->agency`
 	* Desctription: 	Web developers agency name.
 	* Valid values: `string`
 	* Default value: —
 	
-* `outputterParams->shopData_currencyId`
+* `outputterParams->shopData->currencyId`
 	* Desctription: Currency code (see [Yandex docs](https://yandex.ru/support/partnermarket/currencies.html)).
 	* Valid values: `string`
 	* Default value: `'RUR'`
 	
-* `outputterParams->shopData_platform`
+* `outputterParams->shopData->platform`
 	* Desctription: `<platform>` tag content.
 	* Valid values: `string`
 	* Default value: `'(MODX) Evolution CMS'`
 	
-* `outputterParams->shopData_version`
+* `outputterParams->shopData->version`
 	* Desctription: `<version>` tag content.
 	* Valid values: `string`
 	* Default value: `'[(settings_version)]'`
@@ -339,23 +344,28 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values: `integer`
 	* **Required**
 	
-* `outputterParams->offerFields_price`
+* `outputterParams->offerFields`
+	* Desctription: Offer fields parameters.
+	* Valid values: `object`
+	* **Required**
+	
+* `outputterParams->offerFields->price`
 	* Desctription: A document field name, that contains offer price.  
-		If a document field value is empty, but `outputterParams->offerFields_priceOld` is set, the last will be used instead.
+		If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
 	* Valid values: `stringTvName`
 	* **Required**
 	
-* `outputterParams->offerFields_priceOld`
-	* Desctription: A document field name, that contains old offer price (must be less then `outputterParams->offerFields_price` or will not be used).
+* `outputterParams->offerFields->priceOld`
+	* Desctription: A document field name, that contains old offer price (must be less then `outputterParams->offerFields->price` or will not be used).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_picture`
+* `outputterParams->offerFields->picture`
 	* Desctription: A document field name, that contains offer picture.
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_name`
+* `outputterParams->offerFields->name`
 	* Desctription: A document field name, that contains offer name.  
 		If a document field value is empty, the `pagetitle` field will be used instead.
 	* Valid values:
@@ -363,59 +373,59 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: `'pagetitle'`
 	
-* `outputterParams->offerFields_model`
+* `outputterParams->offerFields->model`
 	* Desctription: A document field name, that contains offer model.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_model`
+* `outputterParams->offerFields->model`
 	* Desctription: A document field name, that contains offer vendor.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_available`
+* `outputterParams->offerFields->available`
 	* Desctription: A document field name, that contains offer availability status (`true`|`false`).
 	* Valid values:
 		* `stringTvName`
 		* `''` — always display `'true'`.
 	* Default value: `''`
 	
-* `outputterParams->offerFields_description`
+* `outputterParams->offerFields->description`
 	* Desctription: A document field name, that contains offer description (less than 3 000 chars).
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_salesNotes`
+* `outputterParams->offerFields->salesNotes`
 	* Desctription: A document field name, that contains offer <[sales_notes](https://yandex.ru/support/partnermarket/elements/sales_notes.html)>.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_manufacturerWarranty`
+* `outputterParams->offerFields->manufacturerWarranty`
 	* Desctription: A document field name, that contains offer manufacturer warraynty status (`true`|`false`).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_countryOfOrigin`
+* `outputterParams->offerFields->countryOfOrigin`
 	* Desctription: A document field name, that contains offer country of origin.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_homeCourierDelivery`
+* `outputterParams->offerFields->homeCourierDelivery`
 	* Desctription: A document field name, that contains offer courier delivery status (`true`|`false`).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_dimensions`
+* `outputterParams->offerFields->dimensions`
 	* Desctription: A document field name, that contains offer dimensions (length, width, height) including packaging.  
 		Specify dimensions in centimeters. Format: three positive numbers with accuracy of 0.001, using a dot as the decimal separator.  
 		The numbers must be separated by the slash character `/` without spaces.
@@ -424,7 +434,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_weight`
+* `outputterParams->offerFields->weight`
 	* Desctription: Item weight in kilograms including packaging.  
 		Some categories have limits on the minimum or maximum weight.  
 		[Download a list of minimum and maximum weight values](https://download.cdn.yandex.net/support/ru/partnermarket/yandex.market-weight.xlsx).  
@@ -435,21 +445,26 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_additionalParams`
+* `outputterParams->offerFields->additionalParams`
 	* Desctription: A document field name, that contains offer <[param](https://yandex.ru/support/partnermarket/param.html)> elements.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_customData`
+* `outputterParams->offerFields->customData`
 	* Desctription: A document field name, that contains custom text that must be inserted before `</offer>`.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->templates_wrapper`
+* `outputterParams->templates`
+	* Desctription: Templates.
+	* Valid values: `object`
+	* Default value: —
+	
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -478,7 +493,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 			</yml_catalog>
 		```
 	
-* `outputterParams->templates_categories_item`
+* `outputterParams->templates->categories_item`
 	* Desctription: Category item template.
 		Available placeholders:
 		* `[+id+]` — Category doc ID. 
@@ -495,7 +510,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		</category>
 		```
 	
-* `outputterParams->templates_offers_item`
+* `outputterParams->templates->offers_item`
 	* Desctription: Offer item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -529,8 +544,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		</offer>
 		```
 	
-* `outputterParams->{'templates_offers_item_elem' . $FieldName}`
-	* Desctription: You can set custom template for any offer element. Specify an element name in accordance with offerFields_ parameters, e. g. `outputterParams->templates_offers_item_elemCountryOfOrigin`.  
+* `outputterParams->templates->{'offers_item_elem' . $FieldName}`
+	* Desctription: You can set custom template for any offer element. Specify an element name in accordance with `offerFields->` parameters, e. g. `outputterParams->templates->offers_item_elemCountryOfOrigin`.  
 		Available placeholders:
 		* `[+tagName+]` — Element tag name.
 		* `[+value+]` — Element value.
