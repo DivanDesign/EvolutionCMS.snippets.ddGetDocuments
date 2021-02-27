@@ -971,6 +971,7 @@ We recommend to use cashed snippet calls and turn on document caching type with 
 
 * [Home page](https://code.divandesign.biz/modx/ddgetdocuments)
 * [Telegram chat](https://t.me/dd_code)
+* [Packagist](https://packagist.org/packages/dd/evolutioncms-snippets-ddgetdocuments)
 
 
 <link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
