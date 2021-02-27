@@ -35,6 +35,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		 * @property $offerFields->{$fieldName}->valuePrefix {string} — Префикс, который будет добавлен к значению при выводе.
 		 * @property $offerFields->{$fieldName}->valueSuffix {string} — Суффикс, который будет добавлен к значению при выводе.
 		 * @property $offerFields->{$fieldName}->templateName {string} — Название шаблона, по которому парсить вывод.
+		 * @property $offerFields->{$fieldName}->disableEscaping {boolean} — Отключить экранирование специальных символов?
 		 */
 		$offerFields = [
 			'name' => [
@@ -176,7 +177,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0 (2021-02-25)
+	 * @version 2.1 (2021-02-27)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -254,7 +255,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$offerFieldName =>
 			$offerFieldParamValue
 		){
-			$this->offerFields->{$offerFieldName}->docFieldName = $offerFieldParamValue;
+			//If parameter set as full data
+			if (is_object($offerFieldParamValue)){
+				$this->offerFields->{$offerFieldName} = \DDTools\ObjectTools::extend([
+					'objects' => [
+						$this->offerFields->{$offerFieldName},
+						$offerFieldParamValue
+					]
+				]);
+			//If parameter set as doc field name only
+			}else{
+				$this->offerFields->{$offerFieldName}->docFieldName = $offerFieldParamValue;
+			}
 		}
 		
 		//Remove from params to prevent overwriting through `$this->setExistingProps`
@@ -442,7 +454,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.5.1 (2021-02-09)
+	 * @version 1.6 (2021-02-27)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -603,7 +615,19 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
-									'value' => $this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
+									'value' =>
+										//If escaping is disabled
+										(
+											\DDTools\ObjectTools::isPropExists([
+												'object' => $offerFieldData,
+												'propName' => 'disableEscaping'
+											]) &&
+											$offerFieldData->disableEscaping
+										) ?
+										//Unescaped value
+										$docData[$offerFieldData->docFieldName] :
+										//Escaped value
+										$this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
 								],
 								'mergeAll' => false
 							]);

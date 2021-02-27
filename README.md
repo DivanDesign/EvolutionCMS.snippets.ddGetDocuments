@@ -349,6 +349,23 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values: `object`
 	* **Required**
 	
+* `outputterParams->offerFields->{$fieldName}`
+	* Desctription: Offer field parameter.
+	* Valid values:
+		* `string` — the parameter can be set as a document field name
+		* `object` — or as an object with additional params (see below)
+	* Default value: —
+	
+* `outputterParams->offerFields->{$fieldName}->docFieldName`
+	* Desctription: A document field name that contains offer field value.
+	* Valid values: `stringTvName`
+	* **Required**
+	
+* `outputterParams->offerFields->{$fieldName}->disableEscaping`
+	* Desctription: You can disable escaping special characters (`'`, `"`, `&`, `<`, `>`) in the field value.
+	* Valid values: `boolean`
+	* Default value: `false`
+	
 * `outputterParams->offerFields->price`
 	* Desctription: A document field name, that contains offer price.  
 		If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
