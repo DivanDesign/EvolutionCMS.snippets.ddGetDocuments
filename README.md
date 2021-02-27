@@ -366,6 +366,16 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values: `boolean`
 	* Default value: `false`
 	
+* `outputterParams->offerFields->{$fieldName}->valuePrefix`
+	* Desctription: You can set custom string that will be added before the field value.
+	* Valid values: `string`
+	* Default value: —
+	
+* `outputterParams->offerFields->{$fieldName}->valueSuffix`
+	* Desctription: You can set custom string that will be added after the field value.
+	* Valid values: `string`
+	* Default value: —
+	
 * `outputterParams->offerFields->price`
 	* Desctription: A document field name, that contains offer price.  
 		If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
