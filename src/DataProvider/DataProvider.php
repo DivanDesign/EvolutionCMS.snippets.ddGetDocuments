@@ -20,8 +20,8 @@ abstract class DataProvider extends \DDTools\BaseClass {
 			'tvs' => []
 		],
 		$total,
-		$filter,
-		$offset,
+		$filter = '',
+		$offset = 0,
 		$orderBy = ''
 	;
 	
@@ -34,69 +34,14 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	)';
 	
 	/**
-	 * includeProviderByName
-	 * @version 1.0.5 (2020-03-10)
-	 * 
-	 * @TODO: Remove it, use `\DDTools\BaseClass::createChildInstance` instead
-	 * 
-	 * @param $providerName
-	 * @return string
-	 * @throws \Exception
-	 */
-	public final static function includeProviderByName($providerName){
-		$providerName = ucfirst(strtolower($providerName));
-		$providerPath =
-			$providerName .
-			DIRECTORY_SEPARATOR .
-			'DataProvider' .
-			'.php'
-		;
-		
-		if(is_file(__DIR__.DIRECTORY_SEPARATOR.$providerPath)){
-			require_once($providerPath);
-			
-			return
-				__NAMESPACE__ .
-				'\\' .
-				$providerName .
-				'\\' .
-				'DataProvider'
-			;
-		}else{
-			throw new \Exception(
-				(
-					'Data provider ' .
-					$providerName .
-					' not found.'
-				),
-				500
-			);
-		}
-	}
-	
-	/**
 	 * __construct
-	 * @version 1.3.2 (2020-10-01)
+	 * @version 2.0 (2021-02-15)
 	 * 
-	 * @param $input {\ddGetDocuments\Input}
+	 * @param $params {stdClass|arrayAssociative}
 	 */
-	function __construct(\ddGetDocuments\Input $input){
-		//Params from the snippet first
-		foreach (
-			[
-				'total',
-				'filter',
-				'offset'
-			]
-			as $paramName
-		){
-			if(isset($input->snippetParams->{$paramName})){
-				$this->{$paramName} = $input->snippetParams->{$paramName};
-			}
-		}
-		
+	function __construct($params){
 		//Все параметры задают свойства объекта
-		$this->setExistingProps($input->providerParams);
+		$this->setExistingProps($params);
 		
 		//Init source DB table name
 		$this->resourcesTableName =

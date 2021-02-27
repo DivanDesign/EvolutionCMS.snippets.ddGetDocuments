@@ -8,7 +8,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 * PHP >= 5.4
 * MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
 * [(MODX)EvolutionCMS](https://github.com/evolution-cms/evolution) >= 1.1
-* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.40.1
+* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.42
 
 
 ## Documentation
@@ -20,7 +20,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.2</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.3</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -33,6 +33,14 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 
 
 ### Parameters description
+
+
+#### Core parameters
+
+* `fieldDelimiter`
+	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `providerParams->filter`.
+	* Valid values: `string`
+	* Default value: ``'`'``
 
 
 #### Data provider parameters
@@ -51,6 +59,22 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
 	* Default value: —
+	
+* `providerParams->filter`
+	* Desctription: The filter condition in SQL-style to be applied while resource fetching.  
+		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
+	* Valid values: `string`
+	* Default value: ``'`published` = 1 AND `deleted` = 0'``
+	
+* `providerParams->total`
+	* Desctription: The maximum number of the resources that will be returned.
+	* Valid values: `integer`
+	* Default value: — (all)
+	
+* `providerParams->offset`
+	* Desctription: Resources offset.
+	* Valid values: `integer`
+	* Default value: `0`
 	
 * `providerParams->orderBy`
 	* Desctription: A string representing the sorting rule.  
@@ -114,30 +138,6 @@ Get resources from custom DB table.
 	* Desctription: DB table to get resources from.
 	* Valid values: `string`
 	* **Required**
-
-
-#### Core parameters
-
-* `fieldDelimiter`
-	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `filter`.
-	* Valid values: `string`
-	* Default value: ``'`'``
-	
-* `filter`
-	* Desctription: The filter condition in SQL-style to be applied while resource fetching.  
-		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
-	* Valid values: `string`
-	* Default value: ``'`published` = 1 AND `deleted` = 0'``
-	
-* `total`
-	* Desctription: The maximum number of the resources that will be returned.
-	* Valid values: `integer`
-	* Default value: — (all)
-	
-* `offset`
-	* Desctription:  Resources offset.
-	* Valid values: `integer`
-	* Default value: `0`
 
 
 #### Output format parameters
@@ -299,32 +299,37 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 
 Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
-* `outputterParams->shopData_shopName`
+* `outputterParams->shopData`
+	* Desctription: Shop data.
+	* Valid values: `object`
+	* **Required**
+	
+* `outputterParams->shopData->shopName`
 	* Desctription: Short shop name, length <= 20.
 	* Valid values: `string`
 	* **Required**
 	
-* `outputterParams->shopData_companyName`
+* `outputterParams->shopData->companyName`
 	* Desctription: Company legal name. Internal data that not be displayed but required by Yandex.
 	* Valid values: `string`
 	* **Required**
 	
-* `outputterParams->shopData_agency`
+* `outputterParams->shopData->agency`
 	* Desctription: 	Web developers agency name.
 	* Valid values: `string`
 	* Default value: —
 	
-* `outputterParams->shopData_currencyId`
+* `outputterParams->shopData->currencyId`
 	* Desctription: Currency code (see [Yandex docs](https://yandex.ru/support/partnermarket/currencies.html)).
 	* Valid values: `string`
 	* Default value: `'RUR'`
 	
-* `outputterParams->shopData_platform`
+* `outputterParams->shopData->platform`
 	* Desctription: `<platform>` tag content.
 	* Valid values: `string`
 	* Default value: `'(MODX) Evolution CMS'`
 	
-* `outputterParams->shopData_version`
+* `outputterParams->shopData->version`
 	* Desctription: `<version>` tag content.
 	* Valid values: `string`
 	* Default value: `'[(settings_version)]'`
@@ -339,81 +344,115 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values: `integer`
 	* **Required**
 	
-* `outputterParams->offerFields_price`
-	* Desctription: A document field name, that contains offer price.
+* `outputterParams->offerFields`
+	* Desctription: Offer fields parameters.
+	* Valid values: `object`
+	* **Required**
+	
+* `outputterParams->offerFields->{$fieldName}`
+	* Desctription: Offer field parameter.
+	* Valid values:
+		* `string` — the parameter can be set as a document field name
+		* `object` — or as an object with additional params (see below)
+	* Default value: —
+	
+* `outputterParams->offerFields->{$fieldName}->docFieldName`
+	* Desctription: A document field name that contains offer field value.
 	* Valid values: `stringTvName`
 	* **Required**
 	
-* `outputterParams->offerFields_priceOld`
-	* Desctription: A document field name, that contains old offer price (must be less then `outputterParams->offerFields_price` or will not be used).
+* `outputterParams->offerFields->{$fieldName}->disableEscaping`
+	* Desctription: You can disable escaping special characters (`'`, `"`, `&`, `<`, `>`) in the field value.
+	* Valid values: `boolean`
+	* Default value: `false`
+	
+* `outputterParams->offerFields->{$fieldName}->valuePrefix`
+	* Desctription: You can set custom string that will be added before the field value.
+	* Valid values: `string`
+	* Default value: —
+	
+* `outputterParams->offerFields->{$fieldName}->valueSuffix`
+	* Desctription: You can set custom string that will be added after the field value.
+	* Valid values: `string`
+	* Default value: —
+	
+* `outputterParams->offerFields->price`
+	* Desctription: A document field name, that contains offer price.  
+		If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
+	* Valid values: `stringTvName`
+	* **Required**
+	
+* `outputterParams->offerFields->priceOld`
+	* Desctription: A document field name, that contains old offer price (must be less then `outputterParams->offerFields->price` or will not be used).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_picture`
+* `outputterParams->offerFields->picture`
 	* Desctription: A document field name, that contains offer picture.
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_name`
-	* Desctription: A document field name, that contains offer name.
+* `outputterParams->offerFields->name`
+	* Desctription: A document field name, that contains offer name.  
+		If a document field value is empty, the `pagetitle` field will be used instead.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: `'pagetitle'`
 	
-* `outputterParams->offerFields_model`
+* `outputterParams->offerFields->model`
 	* Desctription: A document field name, that contains offer model.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_model`
+* `outputterParams->offerFields->model`
 	* Desctription: A document field name, that contains offer vendor.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_available`
+* `outputterParams->offerFields->available`
 	* Desctription: A document field name, that contains offer availability status (`true`|`false`).
 	* Valid values:
 		* `stringTvName`
 		* `''` — always display `'true'`.
 	* Default value: `''`
 	
-* `outputterParams->offerFields_description`
+* `outputterParams->offerFields->description`
 	* Desctription: A document field name, that contains offer description (less than 3 000 chars).
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_salesNotes`
+* `outputterParams->offerFields->salesNotes`
 	* Desctription: A document field name, that contains offer <[sales_notes](https://yandex.ru/support/partnermarket/elements/sales_notes.html)>.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_manufacturerWarranty`
+* `outputterParams->offerFields->manufacturerWarranty`
 	* Desctription: A document field name, that contains offer manufacturer warraynty status (`true`|`false`).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_countryOfOrigin`
+* `outputterParams->offerFields->countryOfOrigin`
 	* Desctription: A document field name, that contains offer country of origin.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_homeCourierDelivery`
+* `outputterParams->offerFields->homeCourierDelivery`
 	* Desctription: A document field name, that contains offer courier delivery status (`true`|`false`).
 	* Valid values: `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_dimensions`
+* `outputterParams->offerFields->dimensions`
 	* Desctription: A document field name, that contains offer dimensions (length, width, height) including packaging.  
 		Specify dimensions in centimeters. Format: three positive numbers with accuracy of 0.001, using a dot as the decimal separator.  
 		The numbers must be separated by the slash character `/` without spaces.
@@ -422,7 +461,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_weight`
+* `outputterParams->offerFields->weight`
 	* Desctription: Item weight in kilograms including packaging.  
 		Some categories have limits on the minimum or maximum weight.  
 		[Download a list of minimum and maximum weight values](https://download.cdn.yandex.net/support/ru/partnermarket/yandex.market-weight.xlsx).  
@@ -433,21 +472,26 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_additionalParams`
+* `outputterParams->offerFields->additionalParams`
 	* Desctription: A document field name, that contains offer <[param](https://yandex.ru/support/partnermarket/param.html)> elements.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->offerFields_customData`
+* `outputterParams->offerFields->customData`
 	* Desctription: A document field name, that contains custom text that must be inserted before `</offer>`.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->templates_wrapper`
+* `outputterParams->templates`
+	* Desctription: Templates.
+	* Valid values: `object`
+	* Default value: —
+	
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -476,7 +520,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 			</yml_catalog>
 		```
 	
-* `outputterParams->templates_categories_item`
+* `outputterParams->templates->categories_item`
 	* Desctription: Category item template.
 		Available placeholders:
 		* `[+id+]` — Category doc ID. 
@@ -493,7 +537,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		</category>
 		```
 	
-* `outputterParams->templates_offers_item`
+* `outputterParams->templates->offers_item`
 	* Desctription: Offer item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -527,8 +571,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		</offer>
 		```
 	
-* `outputterParams->{'templates_offers_item_elem' . $FieldName}`
-	* Desctription: You can set custom template for any offer element. Specify an element name in accordance with offerFields_ parameters, e. g. `outputterParams->templates_offers_item_elemCountryOfOrigin`.  
+* `outputterParams->templates->{'offers_item_elem' . $FieldName}`
+	* Desctription: You can set custom template for any offer element. Specify an element name in accordance with `offerFields->` parameters, e. g. `outputterParams->templates->offers_item_elemCountryOfOrigin`.  
 		Available placeholders:
 		* `[+tagName+]` — Element tag name.
 		* `[+value+]` — Element value.
@@ -563,6 +607,11 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values:
 		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+	* Default value: —
+	
+* `extendersParams->{$extenderName}`
+	* Desctription: Parameters of an extender, when the key is the extender name and the value is the extender parameters.
+	* Valid values: `object
 	* Default value: —
 
 
@@ -731,7 +780,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 ```
 
 
-#### Simple fetching child documents from a parent with ID = `1` with the `filter`
+#### Simple fetching child documents from a parent with ID = `1` with the `providerParams->filter`
 
 Add a filter that would not output everything. Let's say we need only published documents.
 
@@ -739,12 +788,12 @@ _Don't forget about `fieldDelimiter`._
 
 ```
 [[ddGetDocuments?
+	&fieldDelimiter=`#`
 	&providerParams=`{
 		"parentIds": "1",
-		"depth": 1
+		"depth": 1,
+		"filter": "#published# = 1"
 	}`
-	&fieldDelimiter=`#`
-	&filter=`#published# = 1`
 	&outputterParams=`{
 		"itemTpl": "documents_item"
 	}`
@@ -754,27 +803,37 @@ _Don't forget about `fieldDelimiter`._
 So we can filter as much as we like (we can use `AND` and `OR`, doucument fields and TVs):
 
 ```
-&filter=`
-	#published# = 1 AND
-	#hidemenu# = 0 OR
-	#SomeTVName# = 1
-`
+[[ddGetDocuments?
+	&fieldDelimiter=`#`
+	&providerParams=`{
+		"parentIds": "1",
+		"depth": 1,
+		"filter": "#published# = 1 AND #hidemenu# = 0 OR #SomeTVName# = 1"
+	}`
+	&outputterParams=`{
+		"itemTpl": "documents_item"
+	}`
+]]
 ```
 
 
-#### Sorting by TV with the `date` type (`orderBy`)
+#### Sorting by TV with the `date` type (`providerParams->orderBy`)
 
 Dates in DB stored in specific format (`01-02-2017 08:59:45`) and sorting works unexpectedly at first sight.
 So, we can't just type:
 
 ```
-&orderBy=`#TVName# DESC`
+&providerParams=`{
+	"orderBy": "#TVName# DESC"
+}`
 ```
 
 For correct working we need to convert date from DB to Unixtime for sorting:
 
 ```
-&orderBy=`STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC`
+&providerParams=`{
+	"orderBy": "STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC"
+}`
 ```
 
 When `TVName` — TV name for sorting by.
@@ -842,13 +901,13 @@ Returns:
 
 ```
 [[ddGetDocuments?
-	&providerParams=`{
-		"parentIds": "[*id*]"
-	}`
 	&fieldDelimiter=`#`
-	&filter=`#published# = 1`
-	&total=`3`
-	&orderBy=`#pub_date# DESC`
+	&providerParams=`{
+		"parentIds": "[*id*]",
+		"filter": "#published# = 1",
+		"total": 3,
+		"orderBy": "#pub_date# DESC`"
+	}`
 	&outputterParams=`{
 		"itemTpl": "documents_item",
 		"wrapperTpl": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
@@ -870,11 +929,11 @@ Returns:
 ```
 
 * ``&providerParams=`{"parentIds": "[*id*]"}` `` — fetch current doc children.
-* ``&filter=`#published# = 1` `` — only published.
+* ``&providerParams=`{"filter": "#published# = 1"}` `` — only published.
+* ``&providerParams=`{"total": 3}` `` — items per page.
+* ``&providerParams=`{"orderBy": "#pub_date# DESC"} `` — sort by publish date, new first.
 * ``&outputterParams=`{"itemTpl": "documents_item"}` `` — item template (chunk name).
 * ``&outputterParams=`{"noResult": "@CODE:"}` `` — return nothing if nothing found.
-* ``&total=`3` `` — items per page.
-* ``&orderBy=`#pub_date# DESC` `` — sort by publish date, new first.
 * ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
 * ``&wrapperTpl=`@CODE:[+ddGetDocuments_items+][+extenders.pagination+]` `` — we need set where pagination will being outputted.
 
@@ -887,16 +946,12 @@ Set up filter to get only necessary documets.
 
 ```
 [[ddGetDocuments?
+	&fieldDelimiter=`#`
 	&providerParams=`{
 		"parentIds": 1,
-		"depth": 3
+		"depth": 3,
+		"filter": "#published# = 1 AND #deleted# = 0 AND #template# = 11"
 	}`
-	&fieldDelimiter=`#`
-	&filter=`
-		#published# = 1 AND
-		#deleted# = 0 AND
-		#template# = 11
-	`
 	&extenders=`search`
 	&extendersParams=`{
 		"docFieldsToSearch": "pagetitle,content,someTv"
@@ -916,6 +971,7 @@ We recommend to use cashed snippet calls and turn on document caching type with 
 
 * [Home page](https://code.divandesign.biz/modx/ddgetdocuments)
 * [Telegram chat](https://t.me/dd_code)
+* [Packagist](https://packagist.org/packages/dd/evolutioncms-snippets-ddgetdocuments)
 
 
 <link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />

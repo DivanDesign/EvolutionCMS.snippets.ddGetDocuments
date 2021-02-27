@@ -1,6 +1,29 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.3 (2021-02-27)
+* \* Attention! (MODX)Evolution.libraries.ddTools >= 0.42 is required.
+* \* Parameters: The following parameters were moved from Snippet to Provider (with backward compatibility):
+	* \* `filter` → `providerParams->filter`.
+	* \* `offset` → `providerParams->offset`.
+	* \* `total` → `providerParams->total`.
+* \* Outputters → Yandexmarket:
+	* \* Fixed smart name and price preparation.
+	* \* Parameters: Structure was changed, added an additional nesting level for `shopData`, `offerFields` and `templates` (with backward compatibility).
+	* \+ Added the ability to disable escaping special characters (`'`, `"`, `&`, `<`, `>`) in the field value (see `outputterParams->offerFields->{$fieldName}->disableEscaping`).
+	* \+ Also you can set a custom string that will be added before or after the field value (see `outputterParams->offerFields->{$fieldName}->valuePrefix` and `outputterParams->offerFields->{$fieldName}->valueSuffix`).
+* \+ Added the ability to run snippet without DB requests and PHP `eval`:
+	```php
+	\DDTools\Snippet::runSnippet([
+		'name' => 'ddGetDocuments',
+		'params' => $params
+	]);
+	```
+* \+ README:
+	* \+ Parameters description → Extenders parameters → `extendersParams->{$extenderName}`.
+	* \+ Links → Packagist.
+
+
 ## Version 1.2 (2020-10-09)
 * \+ Extenders → SortFromURL (see README).
 * \* Parameters: The following were changed (with backward compatibility):

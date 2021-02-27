@@ -7,11 +7,17 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	protected
 		/**
-		 * @property $templates {stdClass}
-		 * @property $templates->wrapper {string}
-		 * @property $templates->offers_item {string}
-		 * @property $templates->offers_item_elem {string}
-		 * @property $templates->offers_item_elemParam {string}
+		 * @property $docFields {array} — Document fields including TVs used in the output.
+		 */
+		$docFields = [
+			'id',
+			//May need for smart name
+			'pagetitle'
+		],
+		
+		/**
+		 * @property $shopData {stdClass}
+		 * @property $shopData->{$name} {string}
 		 */
 		$shopData = [
 			'shopName' => '',
@@ -20,6 +26,17 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'platform' => '(MODX) Evolution CMS',
 			'version' => '[(settings_version)]'
 		],
+		
+		/**
+		 * @property $offerFields {stdClass}
+		 * @property $offerFields->{$fieldName} {stdClass}
+		 * @property $offerFields->{$fieldName}->docFieldName {string} — Название поля документа, содержащего значение.
+		 * @property $offerFields->{$fieldName}->tagName {string} — Имя тега для вывода.
+		 * @property $offerFields->{$fieldName}->valuePrefix {string} — Префикс, который будет добавлен к значению при выводе.
+		 * @property $offerFields->{$fieldName}->valueSuffix {string} — Суффикс, который будет добавлен к значению при выводе.
+		 * @property $offerFields->{$fieldName}->templateName {string} — Название шаблона, по которому парсить вывод.
+		 * @property $offerFields->{$fieldName}->disableEscaping {boolean} — Отключить экранирование специальных символов?
+		 */
 		$offerFields = [
 			'name' => [
 				'docFieldName' => 'pagetitle',
@@ -95,6 +112,15 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'templateName' => ''
 			]
 		],
+		
+		/**
+		 * @property $templates {stdClass}
+		 * @property $templates->wrapper {string}
+		 * @property $templates->categories_item {string}
+		 * @property $templates->offers_item {string}
+		 * @property $templates->offers_item_elem {string}
+		 * @property $templates->{'offers_item_elem' . $FieldName} {string}
+		 */
 		$templates = [
 			'wrapper' => '
 				<?xml version="1.0" encoding="utf-8"?>
@@ -140,7 +166,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'offers_item_elem' => '<[+tagName+][+attrs+]>[+value+]</[+tagName+]>',
 // 			'offers_item_elemAdditionalParams' => '<param name="[+name+]"[+attrs+]>[+value+]</param>',
 		],
-		$categoryIds_last
+		
+		$categoryIds_last = []
 	;
 	
 	private
@@ -150,43 +177,156 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.3 (2020-03-10)
+	 * @version 2.1 (2021-02-27)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
-	 * @param $params->shopData_shopName {string} — Короткое название магазина, не более 20 символов. @required
-	 * @param $params->shopData_companyName {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
-	 * @param $params->shopData_agency {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
-	 * @param $params->shopData_currencyId {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
-	 * @param $params->shopData_platform {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
-	 * @param $params->shopData_version {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
-	 * @param $params->categoryIds_last {string_commaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
-	 * @param $params->offerFields_price {stringTvName|''} — Поле, содержащее актуальную цену товара. @required
-	 * @param $params->offerFields_priceOld {stringTvName} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
-	 * @param $params->offerFields_picture {stringTvName} — Поле, содержащее изображение товара. Defalut: —.
-	 * @param $params->offerFields_name {stringDocFieldName|stringTvName} — Поле, содержащее модель товара. Default: 'pagetitle'.
-	 * @param $params->offerFields_model {stringDocFieldName|stringTvName} — Поле, содержащее модель товара. Defalut: —.
-	 * @param $params->offerFields_vendor {stringDocFieldName|stringTvName} — Поле, содержащее производителя товара. Defalut: —.
-	 * @param $params->offerFields_available {stringDocFieldName|''} — Поле, содержащее статус товара ('true'|'false'). Default: '' (всегда выводить 'true').
-	 * @param $params->offerFields_description {stringDocFieldName|stringTvName} — Поле, содержащее описание предложения (длина текста — не более 3000 символов). Default: —.
-	 * @param $params->offerFields_salesNotes {stringDocFieldName|stringTvName} — Поле, содержащее «sales_notes» (https://yandex.ru/support/partnermarket/elements/sales_notes.html). Default: —.
-	 * @param $params->offerFields_manufacturerWarranty {stringTvName} — Поле, содержащее наличие официальной гарантии производителя ('true'|'false'). Default: —.
-	 * @param $params->offerFields_countryOfOrigin {stringDocFieldName|stringTvName} — Поле, содержащее страну производства товара. Default: —.
-	 * @param $params->offerFields_homeCourierDelivery {stringTvName} — Поле, содержащее возможность курьерской доставки по региону магазина ('true'|'false'). Default: —.
-	 * @param $params->offerFields_dimensions {stringDocFieldName|stringTvName} — Поле, содержащее габариты товара (длина, ширина, высота) в упаковке (размеры укажите в сантиметрах, формат: три положительных числа с точностью 0.001, разделитель целой и дробной части — точка, числа должны быть разделены символом «/» без пробелов). Default: —.
-	 * @param $params->offerFields_weight {stringDocFieldName|stringTvName} — Поле, содержащее вес товара в килограммах с учетом упаковки (формат: положительное число с точностью 0.001, разделитель целой и дробной части — точка). Default: —.
-	 * @param $params->offerFields_additionalParams {stringDocFieldName|stringTvName} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
-	 * @param $params->offerFields_customData {stringDocFieldName|stringTvName} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
-	 * @param $params->templates_wrapper {stringChunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params->templates_categories_item {stringChunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
-	 * @param $params->templates_offers_item {stringChunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params->{'templates_offers_item_elem' . $FieldName} {stringChunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params->templates_offers_item_elemCountryOfOrigin. Default: —.
+	 * @param $params->shopData {stdClass} — Shop data. @required
+	 * @param $params->shopData->shopName {string} — Короткое название магазина, не более 20 символов. @required
+	 * @param $params->shopData->companyName {string} — Полное наименование компании, владеющей магазином. Не публикуется, используется для внутренней идентификации. @required
+	 * @param $params->shopData->agency {string} — Наименование агентства, которое оказывает техническую поддержку магазину и отвечает за работоспособность сайта. Default: —.
+	 * @param $params->shopData->currencyId {string} — Currency code (https://yandex.ru/support/partnermarket/currencies.html). Default: 'RUR'.
+	 * @param $params->shopData->platform {string} — Содержимое тега `<platform>`. Default: '(MODX) Evolution CMS'.
+	 * @param $params->shopData->version {string} — Содержимое тега `<version>`. Default: '[(settings_version)]'.
+	 * @param $params->offerFields {stdClass} — Offer fields parameters.
+	 * @param $params->offerFields->price {stringTvName|''} — Поле, содержащее актуальную цену товара. @required
+	 * @param $params->offerFields->priceOld {stringTvName} — Поле, содержащее старую цену товара (должна быть выше актуальной цены). Default: —.
+	 * @param $params->offerFields->picture {stringTvName} — Поле, содержащее изображение товара. Defalut: —.
+	 * @param $params->offerFields->name {stringDocFieldName|stringTvName} — Поле, содержащее модель товара. Default: 'pagetitle'.
+	 * @param $params->offerFields->model {stringDocFieldName|stringTvName} — Поле, содержащее модель товара. Defalut: —.
+	 * @param $params->offerFields->vendor {stringDocFieldName|stringTvName} — Поле, содержащее производителя товара. Defalut: —.
+	 * @param $params->offerFields->available {stringDocFieldName|''} — Поле, содержащее статус товара ('true'|'false'). Default: '' (всегда выводить 'true').
+	 * @param $params->offerFields->description {stringDocFieldName|stringTvName} — Поле, содержащее описание предложения (длина текста — не более 3000 символов). Default: —.
+	 * @param $params->offerFields->salesNotes {stringDocFieldName|stringTvName} — Поле, содержащее «sales_notes» (https://yandex.ru/support/partnermarket/elements/sales_notes.html). Default: —.
+	 * @param $params->offerFields->manufacturerWarranty {stringTvName} — Поле, содержащее наличие официальной гарантии производителя ('true'|'false'). Default: —.
+	 * @param $params->offerFields->countryOfOrigin {stringDocFieldName|stringTvName} — Поле, содержащее страну производства товара. Default: —.
+	 * @param $params->offerFields->homeCourierDelivery {stringTvName} — Поле, содержащее возможность курьерской доставки по региону магазина ('true'|'false'). Default: —.
+	 * @param $params->offerFields->dimensions {stringDocFieldName|stringTvName} — Поле, содержащее габариты товара (длина, ширина, высота) в упаковке (размеры укажите в сантиметрах, формат: три положительных числа с точностью 0.001, разделитель целой и дробной части — точка, числа должны быть разделены символом «/» без пробелов). Default: —.
+	 * @param $params->offerFields->weight {stringDocFieldName|stringTvName} — Поле, содержащее вес товара в килограммах с учетом упаковки (формат: положительное число с точностью 0.001, разделитель целой и дробной части — точка). Default: —.
+	 * @param $params->offerFields->additionalParams {stringDocFieldName|stringTvName} — Поле, содержащее элементы «param» (https://yandex.ru/support/partnermarket/param.html). Default: —.
+	 * @param $params->offerFields->customData {stringDocFieldName|stringTvName} — Поле, содержащее произвольный текст, который будет вставлен перед закрывающим тегом «</offer>». Default: —.
+	 * @param $params->templates {stdClass} — Templates. Default: —
+	 * @param $params->templates->wrapper {stringChunkName|string} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params->templates->categories_item {stringChunkName|string} — Available placeholders: [+id+], [+value+], [+parent+]. Default: '<category id="[+id+]"[+attrs+]>[+value+]</category>'.
+	 * @param $params->templates->offers_item {stringChunkName|string} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params->templates->{'offers_item_elem' . $FieldName} {stringChunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params->templates_offers_item_elemCountryOfOrigin. Default: —.
+	 * @param $params->categoryIds_last {stringCommaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
 	 */
 	function __construct($params = []){
 		$params = (object) $params;
 		
-		//Convert params to objects
+		
+		//# Prepare object fields
+		$this->construct_prepareFields();
+		
+		
+		//# Save shopData and templates
+		foreach(
+			[
+				'shopData',
+				'templates'
+			] as
+			$fieldName
+		){
+			//If parameter is passed
+			if (
+				\DDTools\ObjectTools::isPropExists([
+					'object' => $params,
+					'propName' => $fieldName
+				])
+			){
+				$this->{$fieldName} = \DDTools\ObjectTools::extend([
+					'objects' => [
+						$this->{$fieldName},
+						$params->{$fieldName}
+					]
+				]);
+				
+				//Remove from params to prevent overwriting through `$this->setExistingProps`
+				unset($params->{$fieldName});
+			}
+		}
+		
+		
+		//# Save offerFields
+		foreach (
+			$params->offerFields as
+			$offerFieldName =>
+			$offerFieldParamValue
+		){
+			//If parameter set as full data
+			if (is_object($offerFieldParamValue)){
+				$this->offerFields->{$offerFieldName} = \DDTools\ObjectTools::extend([
+					'objects' => [
+						$this->offerFields->{$offerFieldName},
+						$offerFieldParamValue
+					]
+				]);
+			//If parameter set as doc field name only
+			}else{
+				$this->offerFields->{$offerFieldName}->docFieldName = $offerFieldParamValue;
+			}
+		}
+		
+		//Remove from params to prevent overwriting through `$this->setExistingProps`
+		unset($params->offerFields);
+		
+		//If name doc field is not set
+		if (empty($this->offerFields->name->docFieldName)){
+			//Pagetitle will be used
+			$this->offerFields->name->docFieldName = 'pagetitle';
+		}
+		
+		
+		//# Prepare templates
+		foreach (
+			$this->templates as
+			$templateName =>
+			$templateValue
+		){
+			$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+		}
+		
+		
+		//# Call base constructor
+		parent::__construct($params);
+		
+		
+		//# Prepare last parent category IDs
+		if (!is_array($this->categoryIds_last)){
+			$this->categoryIds_last = explode(
+				',',
+				trim($this->categoryIds_last)
+			);
+		}
+		
+		
+		//# Prepare templates
+		$this->construct_prepareTemplates();
+		
+		
+		//We use the “String” Outputter as base
+		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
+		$outputter_StringParams = (object) [
+			'itemTpl' => $this->templates->offers_item,
+			'wrapperTpl' => $this->templates->wrapper
+		];
+		//Transfer provider link
+		if (isset($params->dataProvider)){
+			$outputter_StringParams->dataProvider = $params->dataProvider;
+		}
+		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+	}
+	
+	/**
+	 * construct_prepareFields
+	 * @version 1.0 (2021-02-08)
+	 * 
+	 * @return {void}
+	 */
+	private function construct_prepareFields(){
+		//Convert fields to objects
 		$this->shopData = (object) $this->shopData;
 		$this->offerFields = (object) $this->offerFields;
 		foreach (
@@ -196,6 +336,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		){
 			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
 		}
+		
 		$this->templates = (object) $this->templates;
 		//Trim all templates
 		foreach (
@@ -205,49 +346,15 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		){
 			$this->templates->{$templateName} = trim($templateText);
 		}
-		
-		//Call base constructor
-		parent::__construct($params);
-		
-		//Save shop data and offer fields
-		foreach (
-			$params as
-			$paramName =>
-			$paramValue
-		){
-			//Shop data
-			if (substr(
-				$paramName,
-				0,
-				9
-			) == 'shopData_'){
-				$this->shopData->{substr(
-					$paramName,
-					9
-				)} = $paramValue;
-			//Offer field names
-			}elseif (substr(
-				$paramName,
-				0,
-				12
-			) == 'offerFields_'){
-				$this->offerFields->{substr(
-					$paramName,
-					12
-				)}->docFieldName = $paramValue;
-			//Templates
-			}elseif (substr(
-				$paramName,
-				0,
-				10
-			) == 'templates_'){
-				$this->templates->{substr(
-					$paramName,
-					10
-				)} = \ddTools::$modx->getTpl($paramValue);
-			}
-		}
-		
+	}
+	
+	/**
+	 * construct_prepareTemplates
+	 * @version 1.0 (2021-02-08)
+	 * 
+	 * @return {void}
+	 */
+	private function construct_prepareTemplates(){
 		//Offer
 		$templateData = [
 			'shopData' => (array) $this->shopData
@@ -288,6 +395,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'mergeAll' => false
 		]);
 		
+		
 		//Wrapper
 		$templateData = [
 			'shopData' => (array) $this->shopData,
@@ -307,31 +415,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'mergeAll' => false
 			]);
 		}
+		
 		//Prepare wrapper template
 		$this->templates->wrapper = \ddTools::parseText([
 			'text' => $this->templates->wrapper,
 			'data' => $templateData,
 			'mergeAll' => false
 		]);
-		
-		//save last parent id for category
-		$this->categoryIds_last =
-			isset($params->categoryIds_last) ?
-			trim($params->categoryIds_last) :
-			''
-		;
-		
-		//We use the “String” Outputter as base
-		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
-		$outputter_StringParams = (object) [
-			'itemTpl' => $this->templates->offers_item,
-			'wrapperTpl' => $this->templates->wrapper
-		];
-		//Transfer provider link
-		if (isset($params->dataProvider)){
-			$outputter_StringParams->dataProvider = $params->dataProvider;
-		}
-		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
 	}
 	
 	/**
@@ -364,33 +454,43 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.4.1 (2019-10-30)
+	 * @version 1.6 (2021-02-27)
 	 * 
 	 * @param $data {Output}
 	 * 
 	 * @return {string}
 	 */
 	public function parse(Output $data){
-		//Foreach all docs-items
+		//# Items
 		foreach (
+			//Foreach all docs-items
 			$data->provider->items as
 			$docIndex =>
-			$docData
+			//Value must be assigned by reference for modifying inside the cycle
+			&$docData
 		){
 			//Correct price
 			if (
+				//Main price is not set
 				empty($docData[$this->offerFields->price->docFieldName]) &&
+				//But old price is set
 				!empty($docData[$this->offerFields->priceOld->docFieldName])
 			){
+				//Use old price as main price
 				$docData[$this->offerFields->price->docFieldName] = $docData[$this->offerFields->priceOld->docFieldName];
 				
+				//And old price is no needed
 				unset($docData[$this->offerFields->priceOld->docFieldName]);
 			}
 			
 			//Check required elements
-			if (!empty($docData[$this->offerFields->price->docFieldName])){
-				//Save category id
+			if (
+				//Price
+				!empty($docData[$this->offerFields->price->docFieldName])
+			){
+				//If category is set
 				if (is_numeric($docData[$this->offerFields->categoryId->docFieldName])){
+					//Save category ID
 					$this->categoryIds[] = $docData[$this->offerFields->categoryId->docFieldName];
 				}
 				
@@ -401,28 +501,32 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					$offerFieldData
 				){
 					//Smart offer name
-					if ($offerFieldName == 'name'){
-						if (empty($offerFieldData->docFieldName)){
-							$offerFieldData->docFieldName = 'pagetitle';
-						}
-						
-						if (empty($docData[$offerFieldData->docFieldName])){
-							$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
-						}
+					if (
+						$offerFieldName == 'name' &&
+						//If doc name is empty
+						empty($docData[$offerFieldData->docFieldName])
+					){
+						//Pagetitle will be used
+						$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
 					}
+					
 					
 					//Numeric fields
 					if (
+						//If weight is set
 						$offerFieldName == 'weight' &&
-						$data->provider->items[$docIndex][$offerFieldData->docFieldName] == '0'
+						//But invalid
+						$docData[$offerFieldData->docFieldName] == '0'
 					){
-						$data->provider->items[$docIndex][$offerFieldData->docFieldName] = '';
+						//Clear it
+						$docData[$offerFieldData->docFieldName] = '';
 					}
 					
+					
 					if (
-						//If is set
+						//If object field is set
 						!empty($offerFieldData->docFieldName) &&
-						//And data is set
+						//And doc data is set
 						!empty($docData[$offerFieldData->docFieldName])
 					){
 						//Boolean fields
@@ -440,12 +544,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								$docData[$offerFieldData->docFieldName] !== 'false'
 							)
 						){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] =
+							$docData[$offerFieldData->docFieldName] =
 								(bool) $docData[$offerFieldData->docFieldName] ?
 								'true' :
 								'false'
 							;
 						}
+						
 						
 						//Fields that may be set as document IDs
 						if (
@@ -457,30 +562,38 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 								]
 							) &&
 							//Set as document id
-							is_numeric($data->provider->items[$docIndex][$offerFieldData->docFieldName])
+							is_numeric($docData[$offerFieldData->docFieldName])
 						){
 							//Try to get pagetitle
 							$docData_fieldToGet_data = \ddTools::getDocument(
-								$data->provider->items[$docIndex][$offerFieldData->docFieldName],
+								$docData[$offerFieldData->docFieldName],
 								'pagetitle'
 							);
 							//If success
 							if (is_array($docData_fieldToGet_data)){
-								$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $docData_fieldToGet_data['pagetitle'];
+								$docData[$offerFieldData->docFieldName] = $docData_fieldToGet_data['pagetitle'];
 							}
 						}
 						
+						
 						//Value prefix
 						if (isset($offerFieldData->valuePrefix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = $offerFieldData->valuePrefix . $data->provider->items[$docIndex][$offerFieldData->docFieldName];
+							$docData[$offerFieldData->docFieldName] =
+								$offerFieldData->valuePrefix .
+								$docData[$offerFieldData->docFieldName]
+							;
 						}
 						//Value suffix
 						if (isset($offerFieldData->valueSuffix)){
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
+							$docData[$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
 						}
 						
+						
 						//Try to search template by name
-						$templateName = 'offers_item_elem' . ucfirst($offerFieldName);
+						$templateName =
+							'offers_item_elem' .
+							ucfirst($offerFieldName)
+						;
 						if (!isset($this->templates->{$templateName})){
 							//Default element template
 							if (!isset($offerFieldData->templateName)){
@@ -490,6 +603,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							}
 						}
 						
+						
 						if (
 							//If need to use template
 							!empty($templateName) &&
@@ -497,11 +611,23 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							!empty($offerFieldData->tagName)
 						){
 							//Final element parsing
-							$data->provider->items[$docIndex][$offerFieldData->docFieldName] = \ddTools::parseText([
+							$docData[$offerFieldData->docFieldName] = \ddTools::parseText([
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
-									'value' => $this->escapeSpecialChars($data->provider->items[$docIndex][$offerFieldData->docFieldName])
+									'value' =>
+										//If escaping is disabled
+										(
+											\DDTools\ObjectTools::isPropExists([
+												'object' => $offerFieldData,
+												'propName' => 'disableEscaping'
+											]) &&
+											$offerFieldData->disableEscaping
+										) ?
+										//Unescaped value
+										$docData[$offerFieldData->docFieldName] :
+										//Escaped value
+										$this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
 								],
 								'mergeAll' => false
 							]);
@@ -514,30 +640,48 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		//Prepare categories
-		$categoriesString = '';
+		//Destroy unused referenced variable
+		unset($docData);
+		
 		$this->categoryIds = array_unique($this->categoryIds);
+		
+		
+		//# Categories
+		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $this->parse_categories();
+		
+		
+		//Just use the “String” class
+		return $this->outputter_StringInstance->parse($data);
+	}
+	
+	/**
+	 * parse_categories
+	 * @version 1.1.7 (2021-02-08)
+	 *
+	 * @return {string}
+	 */
+	private function parse_categories(){
+		$result = '';
+		
 		$categoryIds_all = [];
-		$categoryIds_last = $this->categoryIds;
 		
-		if(!empty($this->categoryIds_last)){
-			$categoryIds_last = explode(
-				',',
-				$this->categoryIds_last
-			);
-		}
-		
+		//TODO: Avoid to use global variables
 		$getCategories = function ($id) use (
-			$categoryIds_last, 
 			&$categoryIds_all, 
-			&$categoriesString, 
 			&$getCategories
 		){
-			if(!in_array(
-				$id, 
-				$categoryIds_all
-			)){
-				$category = \ddTools::getDocument(
+			$result = '';
+			
+			if(
+				!in_array(
+					$id, 
+					$categoryIds_all
+				)
+			){
+				$categoryIds_all[] = $id;
+				
+				//Get category doc data
+				$categoryDocData = \ddTools::getDocument(
 					//id
 					$id,
 					'pagetitle,id,parent',
@@ -546,61 +690,50 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					//deleted
 					0
 				);
-				$categoryIds_all[] = $id;
 				
-				if(!in_array(
-					$category['id'], 
-					$categoryIds_last
-				)){
-					$categoriesString .= \ddTools::parseText([
-						'text' => $this->templates->categories_item,
-						'data' => [
-							'id' => $category['id'],
-							'value' => $this->escapeSpecialChars($category['pagetitle']),
-							'parent' => $category['parent'],
-							'attrs' => ' parentId="' . $category['parent'] . '"'
-						],
-						'mergeAll' => false
-					]);
-					$getCategories($category['parent']);
+				$hasParentCategory = 
+					//If root categories are set
+					!empty($this->categoryIds_last) &&
+					//And it is not one of the “root” category
+					!in_array(
+						$id, 
+						$this->categoryIds_last
+					)
+				;
+				
+				$result .= \ddTools::parseText([
+					'text' => $this->templates->categories_item,
+					'data' => [
+						'id' => $categoryDocData['id'],
+						'value' => $this->escapeSpecialChars($categoryDocData['pagetitle']),
+						'parent' => $categoryDocData['parent'],
+						'attrs' =>
+							$hasParentCategory ?
+							' parentId="' . $categoryDocData['parent'] . '"' :
+							''
+					],
+					'mergeAll' => false
+				]);
+				
+				if($hasParentCategory){
+					//Get parent category
+					$result .= $getCategories($categoryDocData['parent']);
 				}
 			}
+			
+			return $result;
 		};
 		
 		foreach(
-			$this->categoryIds as 
+			array_unique(array_merge(
+				$this->categoryIds,
+				$this->categoryIds_last
+			)) as 
 			$id
 		){
-			$getCategories($id);
+			$result .= $getCategories($id);
 		}
 		
-		foreach(
-			$categoryIds_last as 
-			$id
-		){
-			$category = \ddTools::getDocument(
-				//id
-				$id,
-				'pagetitle,id,parent',
-				//published
-				'all',
-				//deleted
-				0
-			);
-			$categoriesString .= \ddTools::parseText([
-				'text' => $this->templates->categories_item,
-				'data' => [
-					'id' => $category['id'],
-					'value' => $this->escapeSpecialChars($category['pagetitle']),
-					'parent' => $category['parent']
-				],
-				'mergeAll' => false
-			]);
-		}
-		
-		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $categoriesString;
-		
-		//Just use the “String” class
-		return $this->outputter_StringInstance->parse($data);
+		return $result;
 	}
 }
