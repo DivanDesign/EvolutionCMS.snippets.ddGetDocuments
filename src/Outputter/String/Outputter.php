@@ -68,7 +68,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 2.1.2 (2019-03-19)
+	 * @version 2.1.3 (2021-02-28)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -85,18 +85,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'totalFound' => $data->provider->totalFound
 		];
 		
-		$generalPlaceholders = array_merge(
-			$generalPlaceholders,
-			$this->placeholders
-		);
+		$generalPlaceholders = \DDTools\ObjectTools::extend([
+			'objects' => [
+				$generalPlaceholders,
+				$this->placeholders
+			]
+		]);
 		
 		if(isset($data->extenders)){
-			$generalPlaceholders = array_merge(
-				$generalPlaceholders,
-				[
-					'extenders' => $data->extenders
+			$generalPlaceholders = \DDTools\ObjectTools::extend([
+				'objects' => [
+					$generalPlaceholders,
+					[
+						'extenders' => $data->extenders
+					]
 				]
-			);
+			]);
 			
 			$generalPlaceholders = \ddTools::unfoldArray($generalPlaceholders);
 		}
@@ -123,14 +127,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				
 				$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
 					'text' => $chunkName,
-					'data' => array_merge(
-						$item,
-						$generalPlaceholders,
-						[
-							'itemNumber' => $index + 1,
-							'itemNumberZeroBased' => $index
+					'data' => \DDTools\ObjectTools::extend([
+						'objects' => [
+							$item,
+							$generalPlaceholders,
+							[
+								'itemNumber' => $index + 1,
+								'itemNumberZeroBased' => $index
+							]
 						]
-					)
+					])
 				]));
 			}
 		}
@@ -159,12 +165,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}elseif($this->wrapperTpl !== null){
 			$result = \ddTools::parseText([
 				'text' => \ddTools::$modx->getTpl($this->wrapperTpl),
-				'data' => array_merge(
-					$generalPlaceholders,
-					[
-						'ddGetDocuments_items' => $result
+				'data' => \DDTools\ObjectTools::extend([
+					'objects' => [
+						$generalPlaceholders,
+						[
+							'ddGetDocuments_items' => $result
+						]
 					]
-				)
+				])
 			]);
 		}
 		

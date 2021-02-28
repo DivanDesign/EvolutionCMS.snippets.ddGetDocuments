@@ -1,6 +1,10 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.3.1 (2021-02-28)
+* \* Outputters → String → Parameters → `outputterParams->placeholders`: Fixed critical error when the parameter is used.
+
+
 ## Version 1.3 (2021-02-27)
 * \* Attention! (MODX)Evolution.libraries.ddTools >= 0.42 is required.
 * \* Parameters: The following parameters were moved from Snippet to Provider (with backward compatibility):
