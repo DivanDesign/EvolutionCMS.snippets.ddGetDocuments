@@ -43,7 +43,7 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3 (2020-03-10)
+	 * @version 1.3.1 (2021-03-09)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
@@ -65,7 +65,7 @@ abstract class Outputter extends \DDTools\BaseClass {
 		if (empty($this->docFields)){
 			//We need something
 			$this->docFields = ['id'];
-		}else if (isset($params->dataProvider)){
+		}elseif (isset($params->dataProvider)){
 			//Ask dataProvider to get them
 			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
 		}
