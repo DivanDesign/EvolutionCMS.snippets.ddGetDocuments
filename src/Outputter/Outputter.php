@@ -10,7 +10,13 @@ abstract class Outputter extends \DDTools\BaseClass {
 		 * @property $docFields {array} — Document fields including TVs used in the output.
 		 * @property $docFields[i] {string} — Field name.
 		 */
-		$docFields = ['id']
+		$docFields = ['id'],
+		
+		/**
+		 * @property $templates {stdClass}
+		 * @property $templates->{$templateName} {string}
+		 */
+		$templates = []
 	;
 	
 	/**
@@ -43,13 +49,45 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3.1 (2021-03-09)
+	 * @version 1.4 (2021-07-09)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
 	 */
 	function __construct($params = []){
 		$params = (object) $params;
+		
+		
+		//# Prepare templates
+		$this->templates = (object) $this->templates;
+		
+		//If parameter is passed
+		if (
+			\DDTools\ObjectTools::isPropExists([
+				'object' => $params,
+				'propName' => 'templates'
+			])
+		){
+			//Estend defaults
+			$this->templates = \DDTools\ObjectTools::extend([
+				'objects' => [
+					$this->templates,
+					$params->templates
+				]
+			]);
+			
+			//Remove from params to prevent overwriting through `$this->setExistingProps`
+			unset($params->templates);
+		}
+		
+		foreach (
+			$this->templates as
+			$templateName =>
+			$templateValue
+		){
+			$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+		}
+		
 		
 		//Все параметры задают свойства объекта
 		$this->setExistingProps($params);
