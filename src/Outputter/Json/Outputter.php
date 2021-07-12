@@ -4,11 +4,10 @@ namespace ddGetDocuments\Outputter\Json;
 
 use ddGetDocuments\Output;
 
-class Outputter extends \ddGetDocuments\Outputter\Outputter
-{
+class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.1.4 (2020-06-08)
+	 * @version 2.2 (2021-07-12)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -30,6 +29,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter
 				$docField
 			){
 				$result_item[$docField] = $itemData[$docField];
+				
+				//If template for this field is set
+				if (
+					\DDTools\ObjectTools::isPropExists([
+						'object' => $this->templates,
+						'propName' => $docField
+					])
+				){
+					$result_item[$docField] = \ddTools::parseSource(\ddTools::parseText([
+						'text' => $this->templates->{$docField},
+						'data' => [
+							'value' => $result_item[$docField]
+						]
+					]));
+				}
 			}
 			
 			$result[] = $result_item;

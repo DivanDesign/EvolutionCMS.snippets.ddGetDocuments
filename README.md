@@ -242,6 +242,25 @@ Get resources from custom DB table.
 		* `stringDocFieldName`
 		* `stringTvName`
 	* **Required**
+	
+* `outputterParams->templates`
+	* Desctription: Templates.
+	* Valid values: `object`
+	* Default value: —
+	
+* `outputterParams->templates->{$docFieldName}`
+	* Desctription:
+		You can use templates for some document fields.  
+		Templates will be used before JSON conversion of results. So you don't need to care about characters escaping.  
+		
+		It is useful for manipulations with doc field values through running snippets.  
+		
+		Available placeholders:
+		* `[+value+]` — document field value
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* **Required**
 
 
 ##### Outputter → Sitemap (``&outputter=`sitemap` ``)
