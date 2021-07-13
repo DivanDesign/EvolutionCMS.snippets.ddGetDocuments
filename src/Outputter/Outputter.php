@@ -49,7 +49,7 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.4 (2021-07-09)
+	 * @version 1.5 (2021-07-13)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
@@ -85,7 +85,10 @@ abstract class Outputter extends \DDTools\BaseClass {
 			$templateName =>
 			$templateValue
 		){
-			$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+			//Exclude null values
+			if (is_string($templateValue)){
+				$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+			}
 		}
 		
 		
