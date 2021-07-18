@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.4.1 (2021-02-26)
+	 * @version 4.4.2 (2021-07-18)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -84,6 +84,9 @@ class Input extends \DDTools\BaseClass {
 		}
 		
 		
+		$this->outputter = strtolower($this->outputter);
+		
+		
 		//Backward compatibility
 		$this->backwardCompatibility_dataProviderParams($snippetParams);
 		$this->backwardCompatibility_outputterParams();
@@ -94,10 +97,6 @@ class Input extends \DDTools\BaseClass {
 		
 		//Set object properties from snippet parameters
 		$this->setExistingProps($snippetParams);
-		
-		
-		//TODO: Is it needed?
-		$this->outputter = strtolower($this->outputter);
 		
 		
 		//Make sure orderBy and filter looks like SQL
