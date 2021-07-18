@@ -49,7 +49,7 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.5 (2021-07-13)
+	 * @version 1.5.1 (2021-07-13)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
@@ -57,40 +57,10 @@ abstract class Outputter extends \DDTools\BaseClass {
 	function __construct($params = []){
 		$params = (object) $params;
 		
-		
-		//# Prepare templates
-		$this->templates = (object) $this->templates;
-		
-		//If parameter is passed
-		if (
-			\DDTools\ObjectTools::isPropExists([
-				'object' => $params,
-				'propName' => 'templates'
-			])
-		){
-			//Estend defaults
-			$this->templates = \DDTools\ObjectTools::extend([
-				'objects' => [
-					$this->templates,
-					$params->templates
-				]
-			]);
-			
-			//Remove from params to prevent overwriting through `$this->setExistingProps`
-			unset($params->templates);
-		}
-		
-		foreach (
-			$this->templates as
-			$templateName =>
-			$templateValue
-		){
-			//Exclude null values
-			if (is_string($templateValue)){
-				$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
-			}
-		}
-		
+		//Prepare templates
+		$this->construct_prepareFields_templates($params);
+		//Remove from params to prevent overwriting through `$this->setExistingProps`
+		unset($params->templates);
 		
 		//Все параметры задают свойства объекта
 		$this->setExistingProps($params);
@@ -109,6 +79,43 @@ abstract class Outputter extends \DDTools\BaseClass {
 		}elseif (isset($params->dataProvider)){
 			//Ask dataProvider to get them
 			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
+		}
+	}
+	
+	/**
+	 * construct_prepareFields_templates
+	 * @version 1.0 (2021-07-13)
+	 * 
+	 * @param $params {stdClass|arrayAssociative} — See __construct.
+	 */
+	protected function construct_prepareFields_templates($params){
+		$this->templates = (object) $this->templates;
+		
+		//If parameter is passed
+		if (
+			\DDTools\ObjectTools::isPropExists([
+				'object' => $params,
+				'propName' => 'templates'
+			])
+		){
+			//Extend defaults
+			$this->templates = \DDTools\ObjectTools::extend([
+				'objects' => [
+					$this->templates,
+					$params->templates
+				]
+			]);
+		}
+		
+		foreach (
+			$this->templates as
+			$templateName =>
+			$templateValue
+		){
+			//Exclude null values
+			if (is_string($templateValue)){
+				$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+			}
 		}
 	}
 	

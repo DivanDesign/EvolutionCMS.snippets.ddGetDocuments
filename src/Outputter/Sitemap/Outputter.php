@@ -8,8 +8,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	protected 
 		$priorityTVName = 'general_seo_sitemap_priority',
 		$changefreqTVName = 'general_seo_sitemap_changefreq',
-		$itemTpl = '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
-		$wrapperTpl = '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'
+		$templates = [
+			'item' => '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
+			'wrapper' => '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'
+		]
 	;
 	
 	private
@@ -18,21 +20,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2020-03-10)
+	 * @version 2.0 (2021-07-13)
 	 * 
-	 * @param $params {arrayAssociative}
+	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
 	 * @param $params->changefreqTVName {stringTvName} — Name of TV which sets the change frequency. Default: 'general_seo_sitemap_changefreq'.
-	 * @param $params->itemTpl {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
-	 * @param $params->wrapperTpl {stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
+	 * @param $params->templates {stdClass|arrayAssociative} — Templates. Default: —.
+	 * @param $params->templates->item {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
+	 * @param $params->templates->wrapper {string|stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
 	 */
 	function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
 		//Prepare item template
-		$this->itemTpl = \ddTools::parseText([
-			'text' => $this->itemTpl,
+		$this->templates->item = \ddTools::parseText([
+			'text' => $this->templates->item,
 			'data' => [
 				'priorityTVName' => $this->priorityTVName,
 				'changefreqTVName' => $this->changefreqTVName
@@ -43,8 +46,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = (object) [
-			'itemTpl' => $this->itemTpl,
-			'wrapperTpl' => $this->wrapperTpl
+			'templates' => $this->templates
 		];
 		//Transfer provider link
 		if (isset($params->dataProvider)){

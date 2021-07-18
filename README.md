@@ -159,11 +159,16 @@ Get resources from custom DB table.
 		* `stirngJsonObject`
 		* `stringQueryFormated`
 	* Default value: —
+	
+* `outputterParams->templates`
+	* Desctription: Output templates.
+	* Valid values: `object`
+	* Default value: —
 
 
 ##### Outputter → String (``&outputter=`string` ``)
 
-* `outputterParams->itemTpl`
+* `outputterParams->templates->item`
 	* Desctription: Item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -176,21 +181,21 @@ Get resources from custom DB table.
 		* `string` — use inline templates starting with `@CODE:`
 	* **Required**
 	
-* `outputterParams->itemTplFirst`
-	* Desctription: Template for the first item. Has the same placeholders as `outputterParams->itemTpl`.
+* `outputterParams->templates->itemFirst`
+	* Desctription: Template for the first item. Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* Default value: == `outputterParams->itemTpl`.
+	* Default value: == `outputterParams->templates->item`.
 	
-* `outputterParams->itemTplLast`
-	* Desctription: Template for the last item. Has the same placeholders as `outputterParams->itemTpl`.
+* `outputterParams->templates->itemLast`
+	* Desctription: Template for the last item. Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* Default value: == `outputterParams->itemTpl`.
+	* Default value: == `outputterParams->templates->item`.
 	
-* `outputterParams->wrapperTpl`
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -202,9 +207,17 @@ Get resources from custom DB table.
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: —
 	
+* `outputterParams->templates->noResults`
+	* Desctription: A chunk or text to output when no items found.  
+		Has the same placeholders as `outputterParams->templates->wrapper`.
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: —
+	
 * `outputterParams->placeholders`
 	* Desctription:
-		Additional data has to be passed into `itemTpl`, `itemTplFirst`, `itemTplLast` and `wrapperTpl`.  
+		Additional data has to be passed into `templates->item`, `templates->itemFirst`, `templates->itemLast` and `templates->wrapper`.  
 		Arrays are supported too: `some[a]=one&some[b]=two` => `[+some.a+]`, `[+some.b+]`; `some[]=one&some[]=two` => `[+some.0+]`, `[some.1]`.
 	* Valid values: `object`
 	* Default value: —
@@ -218,13 +231,6 @@ Get resources from custom DB table.
 	* Desctription: The string that combines items while rendering.
 	* Valid values: `string`
 	* Default value: `''`
-	
-* `outputterParams->noResults`
-	* Desctription: A chunk or text to output when no items found.  Has the same placeholders as `outputterParams->wrapperTpl`.
-	* Valid values:
-		* `stringChunkName`
-		* `string` — use inline templates starting with `@CODE:`
-	* Default value: —
 
 
 ##### Outputter → Json (``&outputter=`json` ``)
@@ -242,11 +248,6 @@ Get resources from custom DB table.
 		* `stringDocFieldName`
 		* `stringTvName`
 	* **Required**
-	
-* `outputterParams->templates`
-	* Desctription: Templates.
-	* Valid values: `object`
-	* Default value: —
 	
 * `outputterParams->templates->{$docFieldName}`
 	* Desctription:
@@ -277,7 +278,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 	* Valid values: `stringTvName`
 	* Default value: `'general_seo_sitemap_changefreq'`
 	
-* `outputterParams->itemTpl`
+* `outputterParams->templates->item`
 	* Desctription: Item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -297,7 +298,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 		</url>
 		```
 	
-* `outputterParams->wrapperTpl`
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -503,11 +504,6 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
-	* Default value: —
-	
-* `outputterParams->templates`
-	* Desctription: Templates.
-	* Valid values: `object`
 	* Default value: —
 	
 * `outputterParams->templates->wrapper`
@@ -793,7 +789,9 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		"depth": 1
 	}`
 	&outputterParams=`{
-		"itemTpl": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+		"templates": {
+			"item": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+		}
 	}`
 ]]
 ```
@@ -814,7 +812,9 @@ _Don't forget about `fieldDelimiter`._
 		"filter": "#published# = 1"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates": {
+			"item": "documents_item"
+		}
 	}`
 ]]
 ```
@@ -830,7 +830,9 @@ So we can filter as much as we like (we can use `AND` and `OR`, doucument fields
 		"filter": "#published# = 1 AND #hidemenu# = 0 OR #SomeTVName# = 1"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates: {
+			"item": "documents_item"
+		}
 	}`
 ]]
 ```
@@ -928,9 +930,11 @@ Returns:
 		"orderBy": "#pub_date# DESC`"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item",
-		"wrapperTpl": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
-		"noResult": "@CODE:"
+		"templates": {
+			"item": "documents_item",
+			"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
+			"noResults": "@CODE:"
+		}
 	}`
 	&extenders=`pagination`
 	&extendersParams=`{
@@ -951,10 +955,10 @@ Returns:
 * ``&providerParams=`{"filter": "#published# = 1"}` `` — only published.
 * ``&providerParams=`{"total": 3}` `` — items per page.
 * ``&providerParams=`{"orderBy": "#pub_date# DESC"} `` — sort by publish date, new first.
-* ``&outputterParams=`{"itemTpl": "documents_item"}` `` — item template (chunk name).
-* ``&outputterParams=`{"noResult": "@CODE:"}` `` — return nothing if nothing found.
+* ``&outputterParams=`{"templates": {"item": "documents_item"}}` `` — item template (chunk name).
+* ``&outputterParams=`{"templates": {"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]"}}` `` — we need set where pagination will being outputted.
+* ``&outputterParams=`{"templates": {"noResults": "@CODE:"}}` `` — return nothing if nothing found.
 * ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
-* ``&wrapperTpl=`@CODE:[+ddGetDocuments_items+][+extenders.pagination+]` `` — we need set where pagination will being outputted.
 
 
 #### Extenders → Search (``&extenders=`search` ``)
@@ -976,7 +980,9 @@ Set up filter to get only necessary documets.
 		"docFieldsToSearch": "pagetitle,content,someTv"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates": {
+			"item": "documents_item"
+		}
 	}
 ]]
 ```

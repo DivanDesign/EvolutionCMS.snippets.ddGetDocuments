@@ -177,7 +177,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.1.1 (2021-07-09)
+	 * @version 2.1.2 (2021-07-12)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -291,8 +291,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = (object) [
-			'itemTpl' => $this->templates->offers_item,
-			'wrapperTpl' => $this->templates->wrapper
+			'templates' => (object) [
+				'item' => $this->templates->offers_item,
+				'wrapper' => $this->templates->wrapper
+			]
 		];
 		//Transfer provider link
 		if (isset($params->dataProvider)){

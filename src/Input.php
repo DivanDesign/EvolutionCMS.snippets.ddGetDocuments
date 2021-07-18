@@ -213,7 +213,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * backwardCompatibility_outputterParams
-	 * @version 1.0.1 (2021-07-18)
+	 * @version 1.1 (2021-07-18)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
@@ -221,9 +221,66 @@ class Input extends \DDTools\BaseClass {
 	 */
 	private function backwardCompatibility_outputterParams(){
 		switch ($this->outputter){
+			case 'string':
+				$this->backwardCompatibility_outputterParams_moveTemplates([
+					'item' => 'itemTpl',
+					'itemFirst' => 'itemTplFirst',
+					'itemLast' => 'itemTplLast',
+					'wrapper' => 'wrapperTpl',
+					'noResults' => 'noResults'
+				]);
+			break;
+			
+			case 'sitemap':
+				$this->backwardCompatibility_outputterParams_moveTemplates([
+					'item' => 'itemTpl',
+					'wrapper' => 'wrapperTpl'
+				]);
+			break;
+			
 			case 'yandexmarket':
 				$this->backwardCompatibility_outputterParams_yandexmarket();
 			break;
+		}
+	}
+	
+	/**
+	 * backwardCompatibility_outputterParams_moveTemplates
+	 * @version 1.0 (2021-07-18)
+	 * 
+	 * @desc Moves required templates from $this->outputterParams to $this->outputterParams->templates.
+	 * 
+	 * @param $complianceArray {arrayAssociative} — Compliance between new and old names. @required
+	 * @param $complianceArray[$newName] {string} — Key is a new name, value is an old name. @required
+	 * 
+	 * @return {void}
+	 */
+	private function backwardCompatibility_outputterParams_moveTemplates($complianceArray){
+		if (
+			//If required templates is not set, then we need to provide backward compatibility
+			!\DDTools\ObjectTools::isPropExists([
+				'object' => $this->outputterParams,
+				'propName' => 'templates'
+			])
+		){
+			$this->outputterParams->templates = (object) [];
+			
+			foreach(
+				$complianceArray as
+				$newName =>
+				$oldName
+			){
+				if (
+					\DDTools\ObjectTools::isPropExists([
+						'object' => $this->outputterParams,
+						'propName' => $oldName
+					])
+				){
+					$this->outputterParams->templates->{$newName} = $this->outputterParams->{$oldName};
+					
+					unset($this->outputterParams->{$oldName});
+				}
+			}
 		}
 	}
 	
