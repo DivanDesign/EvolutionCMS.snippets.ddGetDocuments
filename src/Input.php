@@ -213,15 +213,28 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * backwardCompatibility_outputterParams
-	 * @version 1.0 (2021-02-25)
+	 * @version 1.0.1 (2021-07-18)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
 	 * @return {void}
 	 */
 	private function backwardCompatibility_outputterParams(){
+		switch ($this->outputter){
+			case 'yandexmarket':
+				$this->backwardCompatibility_outputterParams_yandexmarket();
+			break;
+		}
+	}
+	
+	/**
+	 * backwardCompatibility_outputterParams_yandexmarket
+	 * @version 1.0 (2021-07-18)
+	 * 
+	 * @return {void}
+	 */
+	private function backwardCompatibility_outputterParams_yandexmarket(){
 		if (
-			$this->outputter == 'yandexmarket' &&
 			//If required shopData is not set, then we need to provide backward compatibility
 			!\DDTools\ObjectTools::isPropExists([
 				'object' => $this->outputterParams,
