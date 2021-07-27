@@ -18,6 +18,9 @@
 		"ddgetdocuments"
 	],
 	"homepage": "https://code.divandesign.biz/modx/ddgetdocuments",
+	"support": {
+		"chat": "https://t.me/dd_code"
+	},
 	"authors": [
 		{
 			"name": "DD Group",
