@@ -5,10 +5,10 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 
 ## Requires
 
-* PHP >= 5.4
+* PHP >= 5.6
 * MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
 * [(MODX)EvolutionCMS](https://github.com/evolution-cms/evolution) >= 1.1
-* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.42
+* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.50
 
 
 ## Documentation
@@ -56,8 +56,12 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 * `providerParams`
 	* Desctription: Parameters to be passed to the provider.
 	* Valid values:
-		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
 	* Default value: —
 	
 * `providerParams->filter`
@@ -156,8 +160,12 @@ Get resources from custom DB table.
 * `outputterParams`
 	* Desctription: Parameters to be passed to the specified outputter.
 	* Valid values:
-		* `stirngJsonObject`
-		* `stringQueryFormated`
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
+		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
 	* Default value: —
 	
 * `outputterParams->templates`
@@ -620,8 +628,12 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Desctription: Parameters to be passed to their corresponding extensions.  
 		You can avoid extender name if you are using only one extender (see examples below).
 	* Valid values:
-		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
 	* Default value: —
 	
 * `extendersParams->{$extenderName}`
