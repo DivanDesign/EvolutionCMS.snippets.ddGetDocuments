@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.4.1 (2021-02-26)
+	 * @version 4.4.2 (2021-07-18)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -84,6 +84,9 @@ class Input extends \DDTools\BaseClass {
 		}
 		
 		
+		$this->outputter = strtolower($this->outputter);
+		
+		
 		//Backward compatibility
 		$this->backwardCompatibility_dataProviderParams($snippetParams);
 		$this->backwardCompatibility_outputterParams();
@@ -94,10 +97,6 @@ class Input extends \DDTools\BaseClass {
 		
 		//Set object properties from snippet parameters
 		$this->setExistingProps($snippetParams);
-		
-		
-		//TODO: Is it needed?
-		$this->outputter = strtolower($this->outputter);
 		
 		
 		//Make sure orderBy and filter looks like SQL
@@ -214,15 +213,85 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * backwardCompatibility_outputterParams
-	 * @version 1.0 (2021-02-25)
+	 * @version 1.1 (2021-07-18)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
 	 * @return {void}
 	 */
 	private function backwardCompatibility_outputterParams(){
+		switch ($this->outputter){
+			case 'string':
+				$this->backwardCompatibility_outputterParams_moveTemplates([
+					'item' => 'itemTpl',
+					'itemFirst' => 'itemTplFirst',
+					'itemLast' => 'itemTplLast',
+					'wrapper' => 'wrapperTpl',
+					'noResults' => 'noResults'
+				]);
+			break;
+			
+			case 'sitemap':
+				$this->backwardCompatibility_outputterParams_moveTemplates([
+					'item' => 'itemTpl',
+					'wrapper' => 'wrapperTpl'
+				]);
+			break;
+			
+			case 'yandexmarket':
+				$this->backwardCompatibility_outputterParams_yandexmarket();
+			break;
+		}
+	}
+	
+	/**
+	 * backwardCompatibility_outputterParams_moveTemplates
+	 * @version 1.0 (2021-07-18)
+	 * 
+	 * @desc Moves required templates from $this->outputterParams to $this->outputterParams->templates.
+	 * 
+	 * @param $complianceArray {arrayAssociative} — Compliance between new and old names. @required
+	 * @param $complianceArray[$newName] {string} — Key is a new name, value is an old name. @required
+	 * 
+	 * @return {void}
+	 */
+	private function backwardCompatibility_outputterParams_moveTemplates($complianceArray){
 		if (
-			$this->outputter == 'yandexmarket' &&
+			//If required templates is not set, then we need to provide backward compatibility
+			!\DDTools\ObjectTools::isPropExists([
+				'object' => $this->outputterParams,
+				'propName' => 'templates'
+			])
+		){
+			$this->outputterParams->templates = (object) [];
+			
+			foreach(
+				$complianceArray as
+				$newName =>
+				$oldName
+			){
+				if (
+					\DDTools\ObjectTools::isPropExists([
+						'object' => $this->outputterParams,
+						'propName' => $oldName
+					])
+				){
+					$this->outputterParams->templates->{$newName} = $this->outputterParams->{$oldName};
+					
+					unset($this->outputterParams->{$oldName});
+				}
+			}
+		}
+	}
+	
+	/**
+	 * backwardCompatibility_outputterParams_yandexmarket
+	 * @version 1.0 (2021-07-18)
+	 * 
+	 * @return {void}
+	 */
+	private function backwardCompatibility_outputterParams_yandexmarket(){
+		if (
 			//If required shopData is not set, then we need to provide backward compatibility
 			!\DDTools\ObjectTools::isPropExists([
 				'object' => $this->outputterParams,

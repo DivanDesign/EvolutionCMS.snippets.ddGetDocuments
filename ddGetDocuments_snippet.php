@@ -1,7 +1,7 @@
 <?php
 /**
  * ddGetDocuments
- * @version 1.3.1 (2021-02-28)
+ * @version 1.4 (2021-07-27)
  * 
  * @see README.md
  * 

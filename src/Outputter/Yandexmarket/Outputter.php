@@ -177,7 +177,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.1 (2021-02-27)
+	 * @version 2.1.2 (2021-07-12)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -221,31 +221,23 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$this->construct_prepareFields();
 		
 		
-		//# Save shopData and templates
-		foreach(
-			[
-				'shopData',
-				'templates'
-			] as
-			$fieldName
+		//# Save shopData
+		//If parameter is passed
+		if (
+			\DDTools\ObjectTools::isPropExists([
+				'object' => $params,
+				'propName' => 'shopData'
+			])
 		){
-			//If parameter is passed
-			if (
-				\DDTools\ObjectTools::isPropExists([
-					'object' => $params,
-					'propName' => $fieldName
-				])
-			){
-				$this->{$fieldName} = \DDTools\ObjectTools::extend([
-					'objects' => [
-						$this->{$fieldName},
-						$params->{$fieldName}
-					]
-				]);
-				
-				//Remove from params to prevent overwriting through `$this->setExistingProps`
-				unset($params->{$fieldName});
-			}
+			$this->shopData = \DDTools\ObjectTools::extend([
+				'objects' => [
+					$this->shopData,
+					$params->shopData
+				]
+			]);
+			
+			//Remove from params to prevent overwriting through `$this->setExistingProps`
+			unset($params->shopData);
 		}
 		
 		
@@ -279,16 +271,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}
 		
 		
-		//# Prepare templates
-		foreach (
-			$this->templates as
-			$templateName =>
-			$templateValue
-		){
-			$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
-		}
-		
-		
 		//# Call base constructor
 		parent::__construct($params);
 		
@@ -309,8 +291,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		//We use the “String” Outputter as base
 		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = (object) [
-			'itemTpl' => $this->templates->offers_item,
-			'wrapperTpl' => $this->templates->wrapper
+			'templates' => (object) [
+				'item' => $this->templates->offers_item,
+				'wrapper' => $this->templates->wrapper
+			]
 		];
 		//Transfer provider link
 		if (isset($params->dataProvider)){
@@ -321,7 +305,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareFields
-	 * @version 1.0 (2021-02-08)
+	 * @version 1.0.1 (2021-07-09)
 	 * 
 	 * @return {void}
 	 */
@@ -337,7 +321,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
 		}
 		
-		$this->templates = (object) $this->templates;
 		//Trim all templates
 		foreach (
 			$this->templates as

@@ -5,10 +5,10 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 
 ## Requires
 
-* PHP >= 5.4
+* PHP >= 5.6
 * MySQL >= 8 or MariaDB >= 10.3.10 (not tested in older versions).
 * [(MODX)EvolutionCMS](https://github.com/evolution-cms/evolution) >= 1.1
-* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.42
+* [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.50
 
 
 ## Documentation
@@ -17,19 +17,44 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 ### Installation
 
 
-#### 1. Elements → Snippets: Create a new snippet with the following data
+#### Manually
+
+
+##### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.3.1</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.4</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
 
 
-#### 2. Elements → Manage Files:
+##### 2. Elements → Manage Files:
 
 1. Create a new folder `assets/snippets/ddGetDocuments/`.
 2. Extract the archive to the folder (except `ddGetDocuments_snippet.php`).
+
+
+#### Using [(MODX)EvolutionCMS.libraries.ddInstaller](https://github.com/DivanDesign/EvolutionCMS.libraries.ddInstaller)
+
+Just run the following PHP code in your sources or [Console](https://github.com/vanchelo/MODX-Evolution-Ajax-Console):
+
+```php
+//Include (MODX)EvolutionCMS.libraries.ddInstaller
+require_once(
+	$modx->getConfig('base_path') .
+	'assets/libs/ddInstaller/require.php'
+);
+
+//Install (MODX)EvolutionCMS.snippets.ddGetDocuments
+\DDInstaller::install([
+	'url' => 'https://github.com/DivanDesign/EvolutionCMS.snippets.ddGetDocuments',
+	'type' => 'snippet'
+]);
+```
+
+* If `ddGetDocuments` is not exist on your site, `ddInstaller` will just install it.
+* If `ddGetDocuments` is already exist on your site, `ddInstaller` will check it version and update it if needed.
 
 
 ### Parameters description
@@ -56,8 +81,12 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 * `providerParams`
 	* Desctription: Parameters to be passed to the provider.
 	* Valid values:
-		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
 	* Default value: —
 	
 * `providerParams->filter`
@@ -156,14 +185,23 @@ Get resources from custom DB table.
 * `outputterParams`
 	* Desctription: Parameters to be passed to the specified outputter.
 	* Valid values:
-		* `stirngJsonObject`
-		* `stringQueryFormated`
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
+		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
+	* Default value: —
+	
+* `outputterParams->templates`
+	* Desctription: Output templates.
+	* Valid values: `object`
 	* Default value: —
 
 
 ##### Outputter → String (``&outputter=`string` ``)
 
-* `outputterParams->itemTpl`
+* `outputterParams->templates->item`
 	* Desctription: Item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -176,21 +214,21 @@ Get resources from custom DB table.
 		* `string` — use inline templates starting with `@CODE:`
 	* **Required**
 	
-* `outputterParams->itemTplFirst`
-	* Desctription: Template for the first item. Has the same placeholders as `outputterParams->itemTpl`.
+* `outputterParams->templates->itemFirst`
+	* Desctription: Template for the first item. Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* Default value: == `outputterParams->itemTpl`.
+	* Default value: == `outputterParams->templates->item`.
 	
-* `outputterParams->itemTplLast`
-	* Desctription: Template for the last item. Has the same placeholders as `outputterParams->itemTpl`.
+* `outputterParams->templates->itemLast`
+	* Desctription: Template for the last item. Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* Default value: == `outputterParams->itemTpl`.
+	* Default value: == `outputterParams->templates->item`.
 	
-* `outputterParams->wrapperTpl`
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -202,9 +240,17 @@ Get resources from custom DB table.
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: —
 	
+* `outputterParams->templates->noResults`
+	* Desctription: A chunk or text to output when no items found.  
+		Has the same placeholders as `outputterParams->templates->wrapper`.
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: —
+	
 * `outputterParams->placeholders`
 	* Desctription:
-		Additional data has to be passed into `itemTpl`, `itemTplFirst`, `itemTplLast` and `wrapperTpl`.  
+		Additional data has to be passed into `templates->item`, `templates->itemFirst`, `templates->itemLast` and `templates->wrapper`.  
 		Arrays are supported too: `some[a]=one&some[b]=two` => `[+some.a+]`, `[+some.b+]`; `some[]=one&some[]=two` => `[+some.0+]`, `[some.1]`.
 	* Valid values: `object`
 	* Default value: —
@@ -218,13 +264,6 @@ Get resources from custom DB table.
 	* Desctription: The string that combines items while rendering.
 	* Valid values: `string`
 	* Default value: `''`
-	
-* `outputterParams->noResults`
-	* Desctription: A chunk or text to output when no items found.  Has the same placeholders as `outputterParams->wrapperTpl`.
-	* Valid values:
-		* `stringChunkName`
-		* `string` — use inline templates starting with `@CODE:`
-	* Default value: —
 
 
 ##### Outputter → Json (``&outputter=`json` ``)
@@ -242,6 +281,20 @@ Get resources from custom DB table.
 		* `stringDocFieldName`
 		* `stringTvName`
 	* **Required**
+	
+* `outputterParams->templates->{$docFieldName}`
+	* Desctription:
+		You can use templates for some document fields.  
+		Templates will be used before JSON conversion of results. So you don't need to care about characters escaping.  
+		
+		It is useful for manipulations with doc field values through running snippets.  
+		
+		Available placeholders:
+		* `[+value+]` — document field value
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* **Required**
 
 
 ##### Outputter → Sitemap (``&outputter=`sitemap` ``)
@@ -258,7 +311,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 	* Valid values: `stringTvName`
 	* Default value: `'general_seo_sitemap_changefreq'`
 	
-* `outputterParams->itemTpl`
+* `outputterParams->templates->item`
 	* Desctription: Item template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -278,7 +331,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 		</url>
 		```
 	
-* `outputterParams->wrapperTpl`
+* `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
 		* `[+`any document field or tv name`+]` — Any document field name or TV.
@@ -486,11 +539,6 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		* `stringTvName`
 	* Default value: —
 	
-* `outputterParams->templates`
-	* Desctription: Templates.
-	* Valid values: `object`
-	* Default value: —
-	
 * `outputterParams->templates->wrapper`
 	* Desctription: Wrapper template.  
 		Available placeholders:
@@ -605,8 +653,12 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Desctription: Parameters to be passed to their corresponding extensions.  
 		You can avoid extender name if you are using only one extender (see examples below).
 	* Valid values:
-		* `stirngJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
+		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
 		* `stringQueryFormated` — as [Query string](https://en.wikipedia.org/wiki/Query_string)
+		* It can also be set as a native PHP object or array (e. g. for calls through `$modx->runSnippet`):
+			* `arrayAssociative`
+			* `object`
 	* Default value: —
 	
 * `extendersParams->{$extenderName}`
@@ -774,7 +826,9 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		"depth": 1
 	}`
 	&outputterParams=`{
-		"itemTpl": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+		"templates": {
+			"item": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+		}
 	}`
 ]]
 ```
@@ -795,7 +849,9 @@ _Don't forget about `fieldDelimiter`._
 		"filter": "#published# = 1"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates": {
+			"item": "documents_item"
+		}
 	}`
 ]]
 ```
@@ -811,7 +867,9 @@ So we can filter as much as we like (we can use `AND` and `OR`, doucument fields
 		"filter": "#published# = 1 AND #hidemenu# = 0 OR #SomeTVName# = 1"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates: {
+			"item": "documents_item"
+		}
 	}`
 ]]
 ```
@@ -909,9 +967,11 @@ Returns:
 		"orderBy": "#pub_date# DESC`"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item",
-		"wrapperTpl": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
-		"noResult": "@CODE:"
+		"templates": {
+			"item": "documents_item",
+			"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
+			"noResults": "@CODE:"
+		}
 	}`
 	&extenders=`pagination`
 	&extendersParams=`{
@@ -932,10 +992,10 @@ Returns:
 * ``&providerParams=`{"filter": "#published# = 1"}` `` — only published.
 * ``&providerParams=`{"total": 3}` `` — items per page.
 * ``&providerParams=`{"orderBy": "#pub_date# DESC"} `` — sort by publish date, new first.
-* ``&outputterParams=`{"itemTpl": "documents_item"}` `` — item template (chunk name).
-* ``&outputterParams=`{"noResult": "@CODE:"}` `` — return nothing if nothing found.
+* ``&outputterParams=`{"templates": {"item": "documents_item"}}` `` — item template (chunk name).
+* ``&outputterParams=`{"templates": {"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]"}}` `` — we need set where pagination will being outputted.
+* ``&outputterParams=`{"templates": {"noResults": "@CODE:"}}` `` — return nothing if nothing found.
 * ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
-* ``&wrapperTpl=`@CODE:[+ddGetDocuments_items+][+extenders.pagination+]` `` — we need set where pagination will being outputted.
 
 
 #### Extenders → Search (``&extenders=`search` ``)
@@ -957,7 +1017,9 @@ Set up filter to get only necessary documets.
 		"docFieldsToSearch": "pagetitle,content,someTv"
 	}`
 	&outputterParams=`{
-		"itemTpl": "documents_item"
+		"templates": {
+			"item": "documents_item"
+		}
 	}
 ]]
 ```
@@ -965,6 +1027,29 @@ Set up filter to get only necessary documets.
 Then just add to the page URL `?query=Some query text` and the snippet returns only documents contain that string in the `pagetitle`, `content` or `someTv` fields.
 
 We recommend to use cashed snippet calls and turn on document caching type with $_GET parameters in CMS configuration.
+
+
+#### Run the snippet through `\DDTools\Snippet::runSnippet` without DB and eval
+
+```php
+//Include (MODX)EvolutionCMS.libraries.ddTools
+require_once(
+	$modx->getConfig('base_path') .
+	'assets/libs/ddTools/modx.ddtools.class.php'
+);
+
+//Run (MODX)EvolutionCMS.snippets.ddGetDocuments
+\DDTools\Snippet::runSnippet([
+	'name' => 'ddGetDocuments',
+	'params' => [
+		//It is convenient to set the parameter as a native PHP array or object
+		'providerParams' => [
+			'parentIds' => 1
+		],
+		'outputter' => 'json'
+	]
+]);
+```
 
 
 ## Links

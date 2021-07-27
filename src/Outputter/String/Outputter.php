@@ -10,65 +10,61 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	;
 	
 	protected
-		$itemTpl = null,
-		$itemTplFirst = null,
-		$itemTplLast = null,
-		$wrapperTpl = null,
-		$noResults = null,
+		$templates = [
+			'item' =>  null,
+			'itemFirst' =>  null,
+			'itemLast' =>  null,
+			'wrapper' =>  null,
+			'noResults' => null
+		],
 		$itemGlue = ''
 	;
 	
 	/**
-	 * __construct
-	 * @version 1.2 (2020-03-10)
+	 * construct_prepareFields_templates
+	 * @version 1.0 (2021-07-13)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — @required
-	 * @param $params->itemTpl {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
-	 * @param $params->itemTplFirst {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params->itemTpl;
-	 * @param $params->itemTplLast {stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params->itemTpl;
-	 * @param $params->wrapperTpl {stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
-	 * @param $params->noResults {stringChunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+].
-	 * @param $params->placeholders {arrayAssociative}. Additional data has to be passed into “itemTpl”, “itemTplFirst”, “itemTplLast” and “wrapperTpl”. Default: [].
+	 * @param $params->templates {stdClass|arrayAssociative} — Templates. @required
+	 * @param $params->templates->item {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. @required
+	 * @param $params->templates->itemFirst {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params->templates->item;
+	 * @param $params->templates->itemLast {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: $params->templates->item;
+	 * @param $params->templates->wrapper {string|stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+].
+	 * @param $params->templates->noResults {string|stringChunkName} — A chunk or text to output when no items found. Available placeholders: [+any of extender placeholders+].
+	 * @param $params->placeholders {arrayAssociative}. Additional data has to be passed into “templates->item”, “templates->itemFirst”, “templates->itemLast” and “templates->wrapper”. Default: [].
 	 * @param $params->placeholders[name] {string} — Key for placeholder name and value for placeholder value. @required
 	 * @param $params->itemGlue {string} — The string that combines items while rendering. Default: ''.
 	 */
-	public function __construct($params){
-		$params = (object) $params;
+	protected function construct_prepareFields_templates($params){
+		//Call base method
+		parent::construct_prepareFields_templates($params);
 		
 		//Prepare item templates
-		if (isset($params->itemTpl)){
-			//All items
-			$params->itemTpl = \ddTools::$modx->getTpl($params->itemTpl);
-			
-			$textToGetPlaceholdersFrom = $params->itemTpl;
+		if (is_string($this->templates->item)){
+			$textToGetPlaceholdersFrom = $this->templates->item;
 			
 			//First item
-			if (isset($params->itemTplFirst)){
-				$params->itemTplFirst = \ddTools::$modx->getTpl($params->itemTplFirst);
-				$textToGetPlaceholdersFrom .= $params->itemTplFirst;
+			if (is_string($this->templates->itemFirst)){
+				$textToGetPlaceholdersFrom .= $this->templates->itemFirst;
 			}else{
-				$params->itemTplFirst = $params->itemTpl;
+				$this->templates->itemFirst = $this->templates->item;
 			}
 			//Last item
-			if (isset($params->itemTplLast)){
-				$params->itemTplLast = \ddTools::$modx->getTpl($params->itemTplLast);
-				$textToGetPlaceholdersFrom .= $params->itemTplFirst;
+			if (is_string($this->templates->itemLast)){
+				$textToGetPlaceholdersFrom .= $this->templates->itemLast;
 			}else{
-				$params->itemTplLast = $params->itemTpl;
+				$this->templates->itemLast = $this->templates->item;
 			}
 			
-			$params->docFields = \ddTools::getPlaceholdersFromText([
+			$this->docFields = \ddTools::getPlaceholdersFromText([
 				'text' => $textToGetPlaceholdersFrom
 			]);
 		}
-		
-		//Call base constructor
-		parent::__construct($params);
 	}
 	
 	/**
 	 * parse
-	 * @version 2.1.3 (2021-02-28)
+	 * @version 2.1.4 (2021-07-13)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -108,7 +104,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		if(
 			is_array($data->provider->items) &&
 			//Item template is set
-			$this->itemTpl !== null
+			$this->templates->item !== null
 		){
 			$maxIndex = $total - 1;
 			//Foreach items
@@ -118,11 +114,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			){
 				//Prepare item output template
 				if($index == 0){
-					$chunkName = $this->itemTplFirst;
+					$chunkName = $this->templates->itemFirst;
 				}elseif($index == $maxIndex){
-					$chunkName = $this->itemTplLast;
+					$chunkName = $this->templates->itemLast;
 				}else{
-					$chunkName = $this->itemTpl;
+					$chunkName = $this->templates->item;
 				}
 				
 				$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
@@ -149,22 +145,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		//If no items found and “noResults” is not empty
 		if(
 			$total == 0 &&
-			$this->noResults !== null &&
-			$this->noResults != ''
+			$this->templates->noResults !== null &&
+			$this->templates->noResults != ''
 		){
-			$chunkContent = \ddTools::$modx->getChunk($this->noResults);
-			
-			if(!is_null($chunkContent)){
-				$result = \ddTools::parseSource(\ddTools::parseText([
-					'text' => \ddTools::$modx->getTpl($this->noResults),
-					'data' => $generalPlaceholders
-				]));
-			}else{
-				$result = $this->noResults;
-			}
-		}elseif($this->wrapperTpl !== null){
+			$result = \ddTools::parseSource(\ddTools::parseText([
+				'text' => $this->templates->noResults,
+				'data' => $generalPlaceholders
+			]));
+		}elseif($this->templates->wrapper !== null){
 			$result = \ddTools::parseText([
-				'text' => \ddTools::$modx->getTpl($this->wrapperTpl),
+				'text' => $this->templates->wrapper,
 				'data' => \DDTools\ObjectTools::extend([
 					'objects' => [
 						$generalPlaceholders,

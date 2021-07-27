@@ -1,6 +1,27 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.4 (2021-07-27)
+* \* Attention! PHP >= 5.6 is required.
+* \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.50 is required.
+* \+ Parameters → `providerParams`, `outputterParams`, `extendersParams`: Can also be set as [HJSON](https://hjson.github.io/) or as a native PHP object or array (e. g. for calls through `$modx->runSnippet`).
+* \+ You can just call `\DDTools\Snippet::runSnippet` to run the snippet without DB and eval (see README → Examples).
+* \+ Outputters → Json → Parameters → `outputterParams->templates`: The new parameters. You can use templates for some document fields.
+* \* Outputters → String → Parameters → `outputterParams->templates`: The following parameters moved here (with backward compatibility):
+	* \* `outputterParams->itemTpl` → `outputterParams->templates->item`.
+	* \* `outputterParams->itemTplFirst` → `outputterParams->templates->itemFirst`.
+	* \* `outputterParams->itemTplLast` → `outputterParams->templates->itemLast`.
+	* \* `outputterParams->wrapperTpl` → `outputterParams->templates->wrapper`.
+	* \* `outputterParams->noResults` → `outputterParams->templates->noResults`.
+* \* Outputters → Sitemap → Parameters → `outputterParams->templates`: The following parameters moved here (with backward compatibility):
+	* \* `outputterParams->itemTpl` → `outputterParams->templates->item`.
+	* \* `outputterParams->wrapperTpl` → `outputterParams->templates->wrapper`.
+* \+ README → Documentation → Installation → Using (MODX)EvolutionCMS.libraries.ddInstaller.
+* \+ Composer.json.
+	* \+ `support`.
+	* \+ `authors`: Added missed authors.
+
+
 ## Version 1.3.1 (2021-02-28)
 * \* Outputters → String → Parameters → `outputterParams->placeholders`: Fixed critical error when the parameter is used.
 

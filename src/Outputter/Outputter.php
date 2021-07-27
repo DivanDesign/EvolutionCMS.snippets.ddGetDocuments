@@ -10,7 +10,13 @@ abstract class Outputter extends \DDTools\BaseClass {
 		 * @property $docFields {array} — Document fields including TVs used in the output.
 		 * @property $docFields[i] {string} — Field name.
 		 */
-		$docFields = ['id']
+		$docFields = ['id'],
+		
+		/**
+		 * @property $templates {stdClass}
+		 * @property $templates->{$templateName} {string}
+		 */
+		$templates = []
 	;
 	
 	/**
@@ -43,13 +49,18 @@ abstract class Outputter extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 1.3 (2020-03-10)
+	 * @version 1.5.1 (2021-07-13)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
 	 */
 	function __construct($params = []){
 		$params = (object) $params;
+		
+		//Prepare templates
+		$this->construct_prepareFields_templates($params);
+		//Remove from params to prevent overwriting through `$this->setExistingProps`
+		unset($params->templates);
 		
 		//Все параметры задают свойства объекта
 		$this->setExistingProps($params);
@@ -65,9 +76,46 @@ abstract class Outputter extends \DDTools\BaseClass {
 		if (empty($this->docFields)){
 			//We need something
 			$this->docFields = ['id'];
-		}else if (isset($params->dataProvider)){
+		}elseif (isset($params->dataProvider)){
 			//Ask dataProvider to get them
 			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
+		}
+	}
+	
+	/**
+	 * construct_prepareFields_templates
+	 * @version 1.0 (2021-07-13)
+	 * 
+	 * @param $params {stdClass|arrayAssociative} — See __construct.
+	 */
+	protected function construct_prepareFields_templates($params){
+		$this->templates = (object) $this->templates;
+		
+		//If parameter is passed
+		if (
+			\DDTools\ObjectTools::isPropExists([
+				'object' => $params,
+				'propName' => 'templates'
+			])
+		){
+			//Extend defaults
+			$this->templates = \DDTools\ObjectTools::extend([
+				'objects' => [
+					$this->templates,
+					$params->templates
+				]
+			]);
+		}
+		
+		foreach (
+			$this->templates as
+			$templateName =>
+			$templateValue
+		){
+			//Exclude null values
+			if (is_string($templateValue)){
+				$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+			}
 		}
 	}
 	
