@@ -3,7 +3,7 @@ namespace ddGetDocuments;
 
 class Snippet extends \DDTools\Snippet {
 	protected
-		$version = '1.2',
+		$version = '1.4.0',
 		
 		$renamedParamsCompliance = [
 			'outputter' => 'outputFormat',
