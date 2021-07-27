@@ -1004,6 +1004,29 @@ Then just add to the page URL `?query=Some query text` and the snippet returns o
 We recommend to use cashed snippet calls and turn on document caching type with $_GET parameters in CMS configuration.
 
 
+#### Run the snippet through `\DDTools\Snippet::runSnippet` without DB and eval
+
+```php
+//Include (MODX)EvolutionCMS.libraries.ddTools
+require_once(
+	$modx->getConfig('base_path') .
+	'assets/libs/ddTools/modx.ddtools.class.php'
+);
+
+//Run (MODX)EvolutionCMS.snippets.ddGetDocuments
+\DDTools\Snippet::runSnippet([
+	'name' => 'ddGetDocuments',
+	'params' => [
+		//It is convenient to set the parameter as a native PHP array or object
+		'providerParams' => [
+			'parentIds' => 1
+		],
+		'outputter' => 'json'
+	]
+]);
+```
+
+
 ## Links
 
 * [Home page](https://code.divandesign.biz/modx/ddgetdocuments)
