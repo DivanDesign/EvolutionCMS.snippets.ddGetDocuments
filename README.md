@@ -11,16 +11,13 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 * [(MODX)EvolutionCMS.libraries.ddTools](https://code.divandesign.biz/modx/ddtools) >= 0.50
 
 
-## Documentation
+## Installation
 
 
-### Installation
+### Manually
 
 
-#### Manually
-
-
-##### 1. Elements → Snippets: Create a new snippet with the following data
+#### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
 2. Description: `<b>1.4</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
@@ -29,13 +26,13 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
 
 
-##### 2. Elements → Manage Files:
+#### 2. Elements → Manage Files:
 
 1. Create a new folder `assets/snippets/ddGetDocuments/`.
 2. Extract the archive to the folder (except `ddGetDocuments_snippet.php`).
 
 
-#### Using [(MODX)EvolutionCMS.libraries.ddInstaller](https://github.com/DivanDesign/EvolutionCMS.libraries.ddInstaller)
+### Using [(MODX)EvolutionCMS.libraries.ddInstaller](https://github.com/DivanDesign/EvolutionCMS.libraries.ddInstaller)
 
 Just run the following PHP code in your sources or [Console](https://github.com/vanchelo/MODX-Evolution-Ajax-Console):
 
@@ -57,10 +54,10 @@ require_once(
 * If `ddGetDocuments` is already exist on your site, `ddInstaller` will check it version and update it if needed.
 
 
-### Parameters description
+## Parameters description
 
 
-#### Core parameters
+### Core parameters
 
 * `fieldDelimiter`
 	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->groupBy`, `providerParams->orderBy` and `providerParams->filter`.
@@ -68,7 +65,7 @@ require_once(
 	* Default value: ``'`'``
 
 
-#### Data provider parameters
+### Data provider parameters
 
 * `provider`
 	* Desctription: Name of the provider that will be used to fetch documents.  
@@ -122,7 +119,7 @@ require_once(
 	* Default value: —
 
 
-##### Providers → Parent (``&provider=`parent` ``)
+#### Providers → Parent (``&provider=`parent` ``)
 
 * `providerParams->parentIds`
 	* Desctription: Parent ID(s).
@@ -154,7 +151,7 @@ require_once(
 	* **Required**
 
 
-##### Providers → Select (``&provider=`select` ``)
+#### Providers → Select (``&provider=`select` ``)
 
 * `providerParams->ids`
 	* Desctription: Document IDs to output.
@@ -169,7 +166,7 @@ require_once(
 	* **Required**
 
 
-##### Providers → Customdbtable (``&provider=`customdbtable` ``)
+#### Providers → Customdbtable (``&provider=`customdbtable` ``)
 
 Get resources from custom DB table.
 
@@ -179,7 +176,7 @@ Get resources from custom DB table.
 	* **Required**
 
 
-#### Output format parameters
+### Output format parameters
 
 * `outputter`
 	* Desctription: Format of the output.  
@@ -209,7 +206,7 @@ Get resources from custom DB table.
 	* Default value: —
 
 
-##### Outputter → String (``&outputter=`string` ``)
+#### Outputter → String (``&outputter=`string` ``)
 
 * `outputterParams->templates->item`
 	* Desctription: Item template.  
@@ -276,7 +273,7 @@ Get resources from custom DB table.
 	* Default value: `''`
 
 
-##### Outputter → Json (``&outputter=`json` ``)
+#### Outputter → Json (``&outputter=`json` ``)
 
 * `outputterParams->docFields`
 	* Desctription: Document fields to output (including TVs).
@@ -307,7 +304,7 @@ Get resources from custom DB table.
 	* **Required**
 
 
-##### Outputter → Sitemap (``&outputter=`sitemap` ``)
+#### Outputter → Sitemap (``&outputter=`sitemap` ``)
 
 Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 
@@ -358,7 +355,7 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 		```
 
 
-##### Outputter → Yandexmarket (``&outputter=`yandexmarket` ``)
+#### Outputter → Yandexmarket (``&outputter=`yandexmarket` ``)
 
 Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
@@ -640,7 +637,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default: —
 
 
-#### Extenders parameters
+### Extenders parameters
 	
 * `extenders`
 	* Desctription: Comma-separated string determining which extenders should be applied to the snippet.  
@@ -677,7 +674,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 
 
-##### Extenders → Pagination (``&extenders=`pagination` ``)
+#### Extenders → Pagination (``&extenders=`pagination` ``)
 
 * `extendersParams->pagination->wrapperTpl`
 	* Desctription: Chunk to be used to output the pagination.  
@@ -781,7 +778,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 
 
-##### Extenders → Tagging (``&extenders=`tagging` ``)
+#### Extenders → Tagging (``&extenders=`tagging` ``)
 
 * `extendersParams->tagging->tagsDocumentField`
 	* Desctription: The document field (TV) contains tags.
@@ -799,7 +796,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: `'tags'`
 
 
-##### Extenders → Search (``&extenders=`search` ``)
+#### Extenders → Search (``&extenders=`search` ``)
 
 * `extendersParams->search->docFieldsToSearch`
 	* Desctription: Document fields to search in (including TVs).
@@ -816,7 +813,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* **Required**
 
 
-##### Extenders → SortFromURL (``&extenders=`sortFromURL` ``)
+#### Extenders → SortFromURL (``&extenders=`sortFromURL` ``)
 
 * `$_GET['orderBy']`
 	* Desctription: A string representing the sorting rule similar to `providerParams->orderBy`.
@@ -824,10 +821,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 
 
-### Examples
+## Examples
 
 
-#### Simple fetching child documents from a parent with ID = `1`
+### Simple fetching child documents from a parent with ID = `1`
 
 ```html
 [[ddGetDocuments?
@@ -844,7 +841,7 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 ```
 
 
-#### Simple fetching child documents from a parent with ID = `1` with the `providerParams->filter`
+### Simple fetching child documents from a parent with ID = `1` with the `providerParams->filter`
 
 Add a filter that would not output everything. Let's say we need only published documents.
 
@@ -885,7 +882,7 @@ So we can filter as much as we like (we can use `AND` and `OR`, doucument fields
 ```
 
 
-#### Sorting by TV with the `date` type (`providerParams->orderBy`)
+### Sorting by TV with the `date` type (`providerParams->orderBy`)
 
 Dates in DB stored in specific format (`01-02-2017 08:59:45`) and sorting works unexpectedly at first sight.
 So, we can't just type:
@@ -907,7 +904,7 @@ For correct working we need to convert date from DB to Unixtime for sorting:
 When `TVName` — TV name for sorting by.
 
 
-#### Outputters → JSON (``&outputter=`json` ``): Fetch documents and output in JSON
+### Outputters → JSON (``&outputter=`json` ``): Fetch documents and output in JSON
 
 ```
 [[ddGetDocuments?
@@ -927,7 +924,7 @@ Returns:
 ```
 
 
-#### Outputters → JSON (``&outputter=`json` ``): Set documents fields to output
+### Outputters → JSON (``&outputter=`json` ``): Set documents fields to output
 
 ```
 [[ddGetDocuments?
@@ -965,7 +962,7 @@ Returns:
 ```
 
 
-#### Group items that have the same field values into summary item (`providerParams->orderBy`)
+### Group items that have the same field values into summary item (`providerParams->orderBy`)
 
 For example we have the following documents with TV `gender`:
 
@@ -1004,7 +1001,7 @@ Returns:
 ```
 
 
-#### Extenders → Pagination (``&extenders=`pagination` ``)
+### Extenders → Pagination (``&extenders=`pagination` ``)
 
 ```
 [[ddGetDocuments?
@@ -1047,7 +1044,7 @@ Returns:
 * ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
 
 
-#### Extenders → Search (``&extenders=`search` ``)
+### Extenders → Search (``&extenders=`search` ``)
 
 Call the snippet at the page with search results.
 Let's specify where and how deep we will search.
@@ -1078,7 +1075,7 @@ Then just add to the page URL `?query=Some query text` and the snippet returns o
 We recommend to use cashed snippet calls and turn on document caching type with $_GET parameters in CMS configuration.
 
 
-#### Run the snippet through `\DDTools\Snippet::runSnippet` without DB and eval
+### Run the snippet through `\DDTools\Snippet::runSnippet` without DB and eval
 
 ```php
 //Include (MODX)EvolutionCMS.libraries.ddTools
