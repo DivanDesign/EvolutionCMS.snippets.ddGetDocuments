@@ -1,6 +1,11 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.5 (2022-06-03)
+* \+ Параметры → `providerParams->groupBy`: Новый параметр. Позволяет сгруппировать элементы, имеющие одинаковые значения полей, в один сводный элемент (как SQL `GROUP BY`). См. README.
+* \* README → Примеры: HJSON используется для всех примеров.
+
+
 ## Версия 1.4 (2021-07-27)
 * \* Внимание! Требуется PHP >= 5.6.
 * \* Внимание! Требуется (MODX)EvolutionCMS.libraries.ddTools >= 0.50.

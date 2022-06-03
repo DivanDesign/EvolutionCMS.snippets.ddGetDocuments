@@ -1,13 +1,13 @@
 <?php
 /**
  * ddGetDocuments
- * @version 1.4 (2021-07-27)
+ * @version 1.5 (2022-06-03)
  * 
  * @see README.md
  * 
  * @link https://code.divandesign.biz/modx/ddgetdocuments
  * 
- * @copyright 2015–2021 DD Group {@link https://DivanDesign.biz }
+ * @copyright 2015–2022 DD Group {@link https://DivanDesign.biz }
  */
 
 //Include (MODX)EvolutionCMS.libraries.ddTools
