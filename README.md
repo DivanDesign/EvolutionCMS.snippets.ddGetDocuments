@@ -63,7 +63,7 @@ require_once(
 #### Core parameters
 
 * `fieldDelimiter`
-	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->orderBy` and `providerParams->filter`.
+	* Desctription: The field delimiter to be used in order to distinct data base column names in those parameters which can contain SQL queries directly, e. g. `providerParams->groupBy`, `providerParams->orderBy` and `providerParams->filter`.
 	* Valid values: `string`
 	* Default value: ``'`'``
 
@@ -104,6 +104,16 @@ require_once(
 	* Desctription: Resources offset.
 	* Valid values: `integer`
 	* Default value: `0`
+	
+* `providerParams->groupBy`
+	* Desctription: Group items that have the same values into summary item (like SQL `GROUP BY`).
+	* Valid values: `stringCommaSeparated`
+	* Default value: —
+	
+* `providerParams->groupBy[$i]`
+	* Desctription: Document field or TV by which the items will be grouped.
+	* Valid values: `string`
+	* **Required**
 	
 * `providerParams->orderBy`
 	* Desctription: A string representing the sorting rule.  
@@ -951,6 +961,45 @@ Returns:
 		"menuindex": "2",
 		"someTV": ""
 	}
+]
+```
+
+
+#### Group items that have the same field values into summary item (`providerParams->orderBy`)
+
+For example we have the following documents with TV `gender`:
+
+* Mary Teresa, female
+* Mahatma Gandhi, male
+* Tenzin Gyatso, male
+* Dmitry Muratov, male
+* ICAN, none
+
+And we want to make a gender list with unique items: 
+
+```
+[[ddGetDocuments?
+	&fieldDelimiter=`#`
+	&providerParams=`{
+		//The parent of our documents
+		parentIds: 42
+		//The field by which the items will be grouped
+		groupBy: "#gender#"
+	}`
+	&outputter=`json`
+	&outputterParams=`{
+		docFields: gender
+	}`
+]]
+```
+
+Returns:
+
+```json
+[
+	{"gender": "female"},
+	{"gender": "male"},
+	{"gender": "none"}
 ]
 ```
 

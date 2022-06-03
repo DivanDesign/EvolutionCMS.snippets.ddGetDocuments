@@ -40,7 +40,7 @@ class Input extends \DDTools\BaseClass {
 	
 	/**
 	 * __construct
-	 * @version 4.4.2 (2021-07-18)
+	 * @version 4.5 (2022-06-03)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -99,10 +99,11 @@ class Input extends \DDTools\BaseClass {
 		$this->setExistingProps($snippetParams);
 		
 		
-		//Make sure orderBy and filter looks like SQL
+		//Make sure groupBy, orderBy and filter looks like SQL
 		foreach (
 			[
 				'filter',
+				'groupBy',
 				'orderBy'
 			] as
 			$paramName
