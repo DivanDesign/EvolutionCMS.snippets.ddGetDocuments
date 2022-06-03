@@ -22,6 +22,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 		$total,
 		$filter = '',
 		$offset = 0,
+		$groupBy = '',
 		$orderBy = ''
 	;
 	
@@ -454,7 +455,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareQueryData
-	 * @version 2.1.1 (2020-03-10)
+	 * @version 2.2 (2022-06-03)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -462,6 +463,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	 * @return $result {stdClass}
 	 * @return $result->from {string}
 	 * @return $result->where {string}
+	 * @return $result->groupBy {string}
 	 * @return $result->orderBy {string}
 	 * @return $result->limit {string}
 	 */
@@ -479,9 +481,17 @@ abstract class DataProvider extends \DDTools\BaseClass {
 		$result = (object) [
 			'from' => $fromAndFilterQueries->from,
 			'where' => '',
+			'groupBy' => '',
 			'orderBy' => '',
 			'limit' => '',
 		];
+		
+		if(!empty($this->groupBy)){
+			$result->groupBy =
+				'GROUP BY ' .
+				$this->groupBy
+			;
+		}
 		
 		if(!empty($this->orderBy)){
 			$result->orderBy =
@@ -543,7 +553,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareQuery
-	 * @version 1.3 (2020-05-20)
+	 * @version 1.4 (2022-06-03)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -600,6 +610,8 @@ abstract class DataProvider extends \DDTools\BaseClass {
 				$queryData->from .
 				' AS `resources` ' .
 				$queryData->where .
+				' ' .
+				$queryData->groupBy .
 				' ' .
 				$queryData->orderBy .
 				' ' .
