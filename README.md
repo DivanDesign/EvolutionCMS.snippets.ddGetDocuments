@@ -823,18 +823,27 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 
 ## Examples
 
+All examples are written using [HJSON](https://hjson.github.io/), but if you want you can use vanilla JSON instead.
+
 
 ### Simple fetching child documents from a parent with ID = `1`
 
 ```html
 [[ddGetDocuments?
 	&providerParams=`{
-		"parentIds": "1",
-		"depth": 1
+		parentIds: 1
+		depth: 1
 	}`
 	&outputterParams=`{
-		"templates": {
-			"item": "@CODE:<div><h2>[+pagetitle+]</h2><p>[+introtext+]</p>[+someTV+]</div>"
+		templates: {
+			item:
+				'''
+				@CODE:<div>
+					<h2>[+pagetitle+]</h2>
+					<p>[+introtext+]</p>
+					[+someTV+]
+				</div>
+				'''
 		}
 	}`
 ]]
@@ -851,13 +860,13 @@ _Don't forget about `fieldDelimiter`._
 [[ddGetDocuments?
 	&fieldDelimiter=`#`
 	&providerParams=`{
-		"parentIds": "1",
-		"depth": 1,
-		"filter": "#published# = 1"
+		parentIds: 1
+		depth: 1
+		filter: "#published# = 1"
 	}`
 	&outputterParams=`{
-		"templates": {
-			"item": "documents_item"
+		templates: {
+			item: documents_item
 		}
 	}`
 ]]
@@ -869,13 +878,18 @@ So we can filter as much as we like (we can use `AND` and `OR`, doucument fields
 [[ddGetDocuments?
 	&fieldDelimiter=`#`
 	&providerParams=`{
-		"parentIds": "1",
-		"depth": 1,
-		"filter": "#published# = 1 AND #hidemenu# = 0 OR #SomeTVName# = 1"
+		parentIds: 1
+		depth: 1
+		filter:
+			'''
+			#published# = 1 AND
+			#hidemenu# = 0 OR
+			#SomeTVName# = 1
+			'''
 	}`
 	&outputterParams=`{
-		"templates: {
-			"item": "documents_item"
+		templates: {
+			item: documents_item
 		}
 	}`
 ]]
@@ -889,7 +903,7 @@ So, we can't just type:
 
 ```
 &providerParams=`{
-	"orderBy": "#TVName# DESC"
+	orderBy: "#TVName# DESC"
 }`
 ```
 
@@ -897,7 +911,7 @@ For correct working we need to convert date from DB to Unixtime for sorting:
 
 ```
 &providerParams=`{
-	"orderBy": "STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC"
+	orderBy: "STR_TO_DATE(#TVName#, '%d-%m-%Y %H:%i:%s') DESC"
 }`
 ```
 
@@ -908,7 +922,7 @@ When `TVName` — TV name for sorting by.
 
 ```
 [[ddGetDocuments?
-	&providerParams=`{"parentIds": "1"}`
+	&providerParams=`{parentIds: 1}`
 	&outputter=`json`
 ]]
 ```
@@ -928,10 +942,10 @@ Returns:
 
 ```
 [[ddGetDocuments?
-	&providerParams=`{"parentIds": "1"}`
+	&providerParams=`{parentIds: 1}`
 	&outputter=`json`
 	&outputterParams=`{
-		"docFields": "id,pagetitle,menuindex,someTV"
+		docFields: id,pagetitle,menuindex,someTV
 	}`
 ]]
 ```
@@ -1007,41 +1021,45 @@ Returns:
 [[ddGetDocuments?
 	&fieldDelimiter=`#`
 	&providerParams=`{
-		"parentIds": "[*id*]",
-		"filter": "#published# = 1",
-		"total": 3,
-		"orderBy": "#pub_date# DESC`"
+		parentIds: "[*id*]"
+		filter: "#published# = 1"
+		total: 3
+		orderBy: "#pub_date# DESC`"
 	}`
 	&outputterParams=`{
-		"templates": {
-			"item": "documents_item",
-			"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]",
-			"noResults": "@CODE:"
+		templates: {
+			item: documents_item
+			wrapper:
+				''''
+				@CODE:[+ddGetDocuments_items+]
+				[+extenders.pagination+]
+				'''
+			noResults: "@CODE:"
 		}
 	}`
 	&extenders=`pagination`
 	&extendersParams=`{
-		"pagination": {
-			"wrapperTpl": "general_pagination",
-			"nextTpl": "general_pagination_next",
-			"previousTpl": "general_pagination_prev",
-			"nextOffTpl": "general_pagination_nextOff",
-			"previousOffTpl": "general_pagination_prevOff",
-			"pageTpl": "general_pagination_page",
-			"currentPageTpl": "general_pagination_pageCurrent"
+		pagination: {
+			wrapperTpl: general_pagination
+			nextTpl: general_pagination_next
+			previousTpl: general_pagination_prev
+			nextOffTpl: general_pagination_nextOff
+			previousOffTpl: general_pagination_prevOff
+			pageTpl: general_pagination_page
+			currentPageTpl: general_pagination_pageCurrent
 		}
 	}`
 ]]
 ```
 
-* ``&providerParams=`{"parentIds": "[*id*]"}` `` — fetch current doc children.
-* ``&providerParams=`{"filter": "#published# = 1"}` `` — only published.
-* ``&providerParams=`{"total": 3}` `` — items per page.
-* ``&providerParams=`{"orderBy": "#pub_date# DESC"} `` — sort by publish date, new first.
-* ``&outputterParams=`{"templates": {"item": "documents_item"}}` `` — item template (chunk name).
-* ``&outputterParams=`{"templates": {"wrapper": "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]"}}` `` — we need set where pagination will being outputted.
-* ``&outputterParams=`{"templates": {"noResults": "@CODE:"}}` `` — return nothing if nothing found.
-* ``&extendersParams=`{"pagination": {}}` `` — pagination templates (see the parameters description).
+* ``&providerParams=`{parentIds: "[*id*]"}` `` — fetch current doc children.
+* ``&providerParams=`{filter: "#published# = 1"}` `` — only published.
+* ``&providerParams=`{total: 3}` `` — items per page.
+* ``&providerParams=`{orderBy: "#pub_date# DESC"} `` — sort by publish date, new first.
+* ``&outputterParams=`{templates: {item: documents_item}}` `` — item template (chunk name).
+* ``&outputterParams=`{templates: {wrapper: "@CODE:[+ddGetDocuments_items+][+extenders.pagination+]"}}` `` — we need set where pagination will being outputted.
+* ``&outputterParams=`{templates: {noResults: "@CODE:"}}` `` — return nothing if nothing found.
+* ``&extendersParams=`{pagination: {}}` `` — pagination templates (see the parameters description).
 
 
 ### Extenders → Search (``&extenders=`search` ``)
@@ -1054,17 +1072,22 @@ Set up filter to get only necessary documets.
 [[ddGetDocuments?
 	&fieldDelimiter=`#`
 	&providerParams=`{
-		"parentIds": 1,
-		"depth": 3,
-		"filter": "#published# = 1 AND #deleted# = 0 AND #template# = 11"
+		parentIds: 1
+		depth: 3
+		filter:
+			'''
+			#published# = 1 AND
+			#deleted# = 0 AND
+			#template# = 11
+			'''
 	}`
 	&extenders=`search`
 	&extendersParams=`{
-		"docFieldsToSearch": "pagetitle,content,someTv"
+		docFieldsToSearch: pagetitle,content,someTv
 	}`
 	&outputterParams=`{
-		"templates": {
-			"item": "documents_item"
+		templates: {
+			item: documents_item
 		}
 	}
 ]]
