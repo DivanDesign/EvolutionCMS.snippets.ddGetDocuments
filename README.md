@@ -297,7 +297,8 @@ Get resources from custom DB table.
 		It is useful for manipulations with doc field values through running snippets.  
 		
 		Available placeholders:
-		* `[+value+]` — document field value
+		* `[+value+]` — the field value
+		* `[+`any document field or tv name`+]` — Any document field name or TV specified in `outputterParams->docFields`
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
