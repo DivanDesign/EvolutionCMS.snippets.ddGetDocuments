@@ -305,7 +305,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareFields
-	 * @version 1.0.1 (2021-07-09)
+	 * @version 1.0.2 (2022-09-20)
 	 * 
 	 * @return {void}
 	 */
@@ -313,6 +313,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		//Convert fields to objects
 		$this->shopData = (object) $this->shopData;
 		$this->offerFields = (object) $this->offerFields;
+		$this->templates = (object) $this->templates;
 		foreach (
 			$this->offerFields as
 			$offerFieldName =>
