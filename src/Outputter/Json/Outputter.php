@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.2 (2021-07-12)
+	 * @version 2.3 (2022-09-30)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -39,9 +39,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				){
 					$result_item[$docField] = \ddTools::parseSource(\ddTools::parseText([
 						'text' => $this->templates->{$docField},
-						'data' => [
-							'value' => $result_item[$docField]
-						]
+						'data' => \DDTools\ObjectTools::extend([
+							'objects' => [
+								$itemData,
+								[
+									'value' => $result_item[$docField]
+								]
+							]
+						])
 					]));
 				}
 			}

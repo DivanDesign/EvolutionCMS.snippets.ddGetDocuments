@@ -1,6 +1,11 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.6 (2022-09-30)
+* \+ Outputters → Json → Parameters → `outputterParams->templates->{$docFieldName}` → Placeholders: The new placeholders contain any document field name or TV specified in `outputterParams->docFields`.
+* \* Outputters → Yandexmarket: Critical error related to missing initialization of an object field has been fixed.
+
+
 ## Version 1.5 (2022-06-03)
 * \+ Parameters → `providerParams->groupBy`: The new parameter. Allows to group items that have the same field values into summary item (like SQL `GROUP BY`). See README.
 * \* README → Examples: HJSON is used for all examples.

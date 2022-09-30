@@ -1,7 +1,7 @@
 {
 	"name": "dd/evolutioncms-snippets-ddgetdocuments",
 	"type": "modxevo-snippet",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"description": "A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.",
 	"keywords": [
 		"modx",

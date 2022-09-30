@@ -20,7 +20,7 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.5</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.6</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -297,7 +297,8 @@ Get resources from custom DB table.
 		It is useful for manipulations with doc field values through running snippets.  
 		
 		Available placeholders:
-		* `[+value+]` — document field value
+		* `[+value+]` — the field value
+		* `[+`any document field or tv name`+]` — Any document field name or TV specified in `outputterParams->docFields`
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`

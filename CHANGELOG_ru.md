@@ -1,7 +1,12 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
-## Version 1.5 (2022-06-03)
+## Версия 1.6 (2022-09-30)
+* \+ Outputters → Json → Параметры → `outputterParams->templates->{$docFieldName}` → Плейсхолдеры: Новые плейсхолдеры. Содержат значения полей документа (и TV), указанных в `outputterParams->docFields`.
+* \* Outputters → Yandexmarket: Исправлена критическая ошибка, связанная с отсутствием инициализации поля объекта.
+
+
+## Версия 1.5 (2022-06-03)
 * \+ Параметры → `providerParams->groupBy`: Новый параметр. Позволяет сгруппировать элементы, имеющие одинаковые значения полей, в один сводный элемент (как SQL `GROUP BY`). См. README.
 * \* README → Примеры: HJSON используется для всех примеров.
 
