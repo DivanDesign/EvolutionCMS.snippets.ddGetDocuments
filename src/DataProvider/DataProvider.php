@@ -27,7 +27,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	;
 	
 	/**
-	 * @property $getResourcesDataFromDb_tvsSQL {string} — Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 * @property $getResourcesDataFromDb_tvsSQL {string} — Temporary code for compatibility with MariaDB < 10.5. This code must be removed when MariaDB 10.5 will be released.
 	 */
 	private $getResourcesDataFromDb_tvsSQL = 'JSON_OBJECTAGG(
 		`tvName`.`name`,
@@ -59,9 +59,9 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * construct_compatibilityWithOldMariaDB
-	 * @version 1.0 (2020-10-01)
+	 * @version 1.0.1 (2020-10-01)
 	 * 
-	 * @todo Temporary code for compatibility with MariaDB < 10.4. This code must be removed when MariaDB 10.4 will be released.
+	 * @todo Temporary code for compatibility with MariaDB < 10.5. This code must be removed when MariaDB 10.5 will be released.
 	 * 
 	 * @return {void}
 	 */
@@ -74,10 +74,10 @@ abstract class DataProvider extends \DDTools\BaseClass {
 				$dbVersion,
 				'mariadb'
 			) !== false &&
-			//And version < 10.4
+			//And version < 10.5
 			version_compare(
 				$dbVersion,
-				'10.4',
+				'10.5',
 				'<'
 			)
 		){
