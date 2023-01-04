@@ -553,7 +553,7 @@ abstract class DataProvider extends \DDTools\BaseClass {
 	
 	/**
 	 * prepareQuery
-	 * @version 1.4 (2022-06-03)
+	 * @version 1.4.1 (2023-01-04)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -592,13 +592,15 @@ abstract class DataProvider extends \DDTools\BaseClass {
 						SELECT
 							' . $this->getResourcesDataFromDb_tvsSQL . '
 						FROM
-							' . \ddTools::$tables['site_content'] . ' as `content` LEFT JOIN
-							' . \ddTools::$tables['site_tmplvar_templates'] . ' as `resTvTemplates` ON
- 							`content`.`template` = `resTvTemplates`.`templateid` LEFT JOIN
- 							' . \ddTools::$tables['site_tmplvars'] . ' as `tvName` ON
-							`resTvTemplates`.`tmplvarid` = `tvName`.`id` LEFT JOIN
-							' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue` ON
-							`content`.`id` = `tvValue`.`contentid` AND `tvName`.`id` = `tvValue`.`tmplvarid`
+							' . \ddTools::$tables['site_content'] . ' as `content`
+							LEFT JOIN ' . \ddTools::$tables['site_tmplvar_templates'] . ' as `resTvTemplates`
+								ON `content`.`template` = `resTvTemplates`.`templateid`
+							LEFT JOIN ' . \ddTools::$tables['site_tmplvars'] . ' as `tvName`
+								ON `resTvTemplates`.`tmplvarid` = `tvName`.`id`
+							LEFT JOIN ' . \ddTools::$tables['site_tmplvar_contentvalues'] . ' as `tvValue`
+								ON
+									`content`.`id` = `tvValue`.`contentid` AND
+									`tvName`.`id` = `tvValue`.`tmplvarid`
 						WHERE
 							`resources`.`id` = `content`.`id`
 					) as `TVs`
