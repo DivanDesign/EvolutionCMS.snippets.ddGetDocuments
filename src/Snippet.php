@@ -13,7 +13,7 @@ class Snippet extends \DDTools\Snippet {
 	
 	/**
 	 * run
-	 * @version 1.0 (2021-02-18)
+	 * @version 1.0.1 (2023-05-02)
 	 */
 	public function run(){
 		$result = '';
@@ -31,11 +31,6 @@ class Snippet extends \DDTools\Snippet {
 		){
 			$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
 				'name' => $extenderName,
-				'parentDir' =>
-					$this->paths->src .
-					'Extender'
-				,
-				//Passing parameters into constructor
 				'params' => $extenderParams
 			]);
 			//Passing a link to the storage
@@ -47,11 +42,6 @@ class Snippet extends \DDTools\Snippet {
 		
 		$dataProviderObject = \ddGetDocuments\DataProvider\DataProvider::createChildInstance([
 			'name' => $input->provider,
-			'parentDir' =>
-				$this->paths->src .
-				'DataProvider'
-			,
-			//Passing parameters into constructor
 			'params' => $input->providerParams
 		]);
 		
@@ -60,11 +50,6 @@ class Snippet extends \DDTools\Snippet {
 			
 			$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
 				'name' => $input->outputter,
-				'parentDir' =>
-					$this->paths->src .
-					'Outputter'
-				,
-				//Passing parameters into constructor
 				'params' => $input->outputterParams
 			]);
 		}
