@@ -1,10 +1,11 @@
 <?php
 namespace ddGetDocuments\Outputter;
 
-
 use ddGetDocuments\Output;
 
-abstract class Outputter extends \DDTools\BaseClass {
+abstract class Outputter extends \DDTools\Base\Base {
+	use \DDTools\Base\AncestorTrait;
+	
 	protected
 		/**
 		 * @property $docFields {array} — Document fields including TVs used in the output.

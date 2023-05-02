@@ -2,7 +2,7 @@
 namespace ddGetDocuments;
 
 
-class Input extends \DDTools\BaseClass {
+class Input extends \DDTools\Base\Base {
 	public
 		/**
 		 * @property $fieldDelimiter {string}

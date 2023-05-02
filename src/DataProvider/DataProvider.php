@@ -1,8 +1,9 @@
 <?php
 namespace ddGetDocuments\DataProvider;
 
-
-abstract class DataProvider extends \DDTools\BaseClass {
+abstract class DataProvider extends \DDTools\Base\Base {
+	use \DDTools\Base\AncestorTrait;
+	
 	protected
 		/**
 		 * @property $resourcesTableName {string} — Source DB table name. Default: \ddTools::$tables['site_content'].
