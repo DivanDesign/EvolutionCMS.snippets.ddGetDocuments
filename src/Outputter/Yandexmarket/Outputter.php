@@ -177,7 +177,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.1.2 (2021-07-12)
+	 * @version 2.1.3 (2023-05-02)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -213,7 +213,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->templates->{'offers_item_elem' . $FieldName} {stringChunkName|string} — Можно задать шаблон любого элемента offer, называем в соответствии с параметрами 'offerFields_', например: $params->templates_offers_item_elemCountryOfOrigin. Default: —.
 	 * @param $params->categoryIds_last {stringCommaSepareted} — id конечных категорий(parent). Если пусто то выводятся только непосредственный родитель товара. Defalut: —. 
 	 */
-	function __construct($params = []){
+	public function __construct($params = []){
 		$params = (object) $params;
 		
 		
@@ -289,7 +289,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		
 		//We use the “String” Outputter as base
-		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = (object) [
 			'templates' => (object) [
 				'item' => $this->templates->offers_item,
@@ -300,7 +299,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		if (isset($params->dataProvider)){
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
-		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+		$this->outputter_StringInstance = \ddGetDocuments\Outputter\Outputter::createChildInstance([
+			'name' => 'String',
+			'params' => $outputter_StringParams
+		]);
 	}
 	
 	/**

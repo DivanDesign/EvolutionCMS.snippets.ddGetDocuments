@@ -21,41 +21,13 @@ abstract class Outputter extends \DDTools\Base\Base {
 	;
 	
 	/**
-	 * includeOutputterByName
-	 * @version 1.0.3 (2019-03-11)
-	 * 
-	 * @TODO: Remove it, use `\DDTools\BaseClass::createChildInstance` instead
-	 * 
-	 * @param $parserName {string}
-	 * 
-	 * @throws \Exception
-	 * 
-	 * @return {string}
-	 */
-	public final static function includeOutputterByName($parserName){
-		$parserName = ucfirst(strtolower($parserName));
-		$parserPath = $parserName.DIRECTORY_SEPARATOR . 'Outputter' . '.php';
-		
-		if(is_file(__DIR__.DIRECTORY_SEPARATOR . $parserPath)){
-			require_once($parserPath);
-			
-			return __NAMESPACE__ . '\\' . $parserName . '\\' . 'Outputter';
-		}else{
-			throw new \Exception(
-				'Outputter “' . $parserName . '” not found.',
-				500
-			);
-		}
-	}
-	
-	/**
 	 * __construct
-	 * @version 1.5.1 (2021-07-13)
+	 * @version 1.5.2 (2023-05-02)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
 	 */
-	function __construct($params = []){
+	public function __construct($params = []){
 		$params = (object) $params;
 		
 		//Prepare templates

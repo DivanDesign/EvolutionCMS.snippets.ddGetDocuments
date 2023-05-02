@@ -20,7 +20,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0 (2021-07-13)
+	 * @version 2.0.1 (2023-05-02)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -29,7 +29,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->templates->item {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
 	 * @param $params->templates->wrapper {string|stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
 	 */
-	function __construct($params = []){
+	public function __construct($params = []){
 		//Call base constructor
 		parent::__construct($params);
 		
@@ -44,7 +44,6 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		]);
 		
 		//We use the “String” Outputter as base
-		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
 		$outputter_StringParams = (object) [
 			'templates' => $this->templates
 		];
@@ -52,7 +51,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		if (isset($params->dataProvider)){
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
-		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+		$this->outputter_StringInstance = \ddGetDocuments\Outputter\Outputter::createChildInstance([
+			'name' => 'String',
+			'params' => $outputter_StringParams
+		]);
 	}
 	
 	/**
