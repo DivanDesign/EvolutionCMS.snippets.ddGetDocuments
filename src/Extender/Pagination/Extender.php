@@ -43,7 +43,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * __construct
-	 * @version 1.2.2 (2020-10-02)
+	 * @version 1.2.3 (2023-05-14)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 */
@@ -63,7 +63,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 			] as
 			$tplName
 		){
-			$this->{$tplName} = \ddTools::$modx->getTpl((string) $this->{$tplName});
+			$this->{$tplName} = \ddTools::getTpl($this->{$tplName});
 		}
 		
 		$this->pageIndex =

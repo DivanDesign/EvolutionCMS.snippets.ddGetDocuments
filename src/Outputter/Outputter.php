@@ -57,7 +57,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 	
 	/**
 	 * construct_prepareFields_templates
-	 * @version 1.0 (2021-07-13)
+	 * @version 1.0.1 (2023-05-14)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — See __construct.
 	 */
@@ -87,7 +87,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 		){
 			//Exclude null values
 			if (is_string($templateValue)){
-				$this->templates->{$templateName} = \ddTools::$modx->getTpl($templateValue);
+				$this->templates->{$templateName} = \ddTools::getTpl($templateValue);
 			}
 		}
 	}
