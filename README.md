@@ -216,6 +216,8 @@ Get resources from custom DB table.
 		* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
 		* `[+itemNumber+]` — Item number started from 1.
 		* `[+itemNumberZeroBased+]` Item number started from 0.
+		* `[+total+]` — number of returned items
+		* `[+totalFound+]` — number of found items
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -242,6 +244,8 @@ Get resources from custom DB table.
 		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
 		* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
 		* `[+ddGetDocuments_items+]`
+		* `[+total+]` — number of returned items
+		* `[+totalFound+]` — number of found items
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
