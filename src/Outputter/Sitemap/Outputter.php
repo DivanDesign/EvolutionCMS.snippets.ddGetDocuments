@@ -20,7 +20,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0.1 (2023-05-02)
+	 * @version 2.0.2 (2024-07-13)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -40,7 +40,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'priorityTVName' => $this->priorityTVName,
 				'changefreqTVName' => $this->changefreqTVName
 			],
-			'mergeAll' => false
+			'isCompletelyParsingEnabled' => false
 		]);
 		
 		//We use the “String” Outputter as base

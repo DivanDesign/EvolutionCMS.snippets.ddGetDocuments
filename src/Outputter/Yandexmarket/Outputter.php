@@ -336,7 +336,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareTemplates
-	 * @version 1.0 (2021-02-08)
+	 * @version 1.0.1 (2024-07-13)
 	 * 
 	 * @return {void}
 	 */
@@ -353,7 +353,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'value' => $templateData['shopData']['currencyId'],
 				'attrs' => ''
 			],
-			'mergeAll' => false
+			'isCompletelyParsingEnabled' => false
 		]);
 		
 		foreach (
@@ -378,7 +378,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$this->templates->offers_item = \ddTools::parseText([
 			'text' => $this->templates->offers_item,
 			'data' => $templateData,
-			'mergeAll' => false
+			'isCompletelyParsingEnabled' => false
 		]);
 		
 		
@@ -398,7 +398,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					'value' => $templateData['shopData']['agency'],
 					'attrs' => ''
 				],
-				'mergeAll' => false
+				'isCompletelyParsingEnabled' => false
 			]);
 		}
 		
@@ -406,7 +406,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$this->templates->wrapper = \ddTools::parseText([
 			'text' => $this->templates->wrapper,
 			'data' => $templateData,
-			'mergeAll' => false
+			'isCompletelyParsingEnabled' => false
 		]);
 	}
 	
@@ -440,7 +440,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.6 (2021-02-27)
+	 * @version 1.6.1 (2024-07-13)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -615,7 +615,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 										//Escaped value
 										$this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
 								],
-								'mergeAll' => false
+								'isCompletelyParsingEnabled' => false
 							]);
 						}
 					}
@@ -642,7 +642,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.7 (2021-02-08)
+	 * @version 1.1.8 (2024-07-13)
 	 *
 	 * @return {string}
 	 */
@@ -698,7 +698,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 							' parentId="' . $categoryDocData['parent'] . '"' :
 							''
 					],
-					'mergeAll' => false
+					'isCompletelyParsingEnabled' => false
 				]);
 				
 				if($hasParentCategory){
