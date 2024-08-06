@@ -22,7 +22,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareFields_templates
-	 * @version 1.0 (2021-07-13)
+	 * @version 1.0.1 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — @required
 	 * @param $params->templates {stdClass|arrayAssociative} — Templates. @required
@@ -36,20 +36,20 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->itemGlue {string} — The string that combines items while rendering. Default: ''.
 	 */
 	protected function construct_prepareFields_templates($params){
-		//Call base method
+		// Call base method
 		parent::construct_prepareFields_templates($params);
 		
-		//Prepare item templates
+		// Prepare item templates
 		if (is_string($this->templates->item)){
 			$textToGetPlaceholdersFrom = $this->templates->item;
 			
-			//First item
+			// First item
 			if (is_string($this->templates->itemFirst)){
 				$textToGetPlaceholdersFrom .= $this->templates->itemFirst;
 			}else{
 				$this->templates->itemFirst = $this->templates->item;
 			}
-			//Last item
+			// Last item
 			if (is_string($this->templates->itemLast)){
 				$textToGetPlaceholdersFrom .= $this->templates->itemLast;
 			}else{
@@ -64,7 +64,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 2.1.4 (2021-07-13)
+	 * @version 2.1.5 (2024-08-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -103,16 +103,16 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		if(
 			is_array($data->provider->items) &&
-			//Item template is set
+			// Item template is set
 			$this->templates->item !== null
 		){
 			$maxIndex = $total - 1;
-			//Foreach items
+			// Foreach items
 			foreach(
 				$data->provider->items as
 				$index => $item
 			){
-				//Prepare item output template
+				// Prepare item output template
 				if($index == 0){
 					$chunkName = $this->templates->itemFirst;
 				}elseif($index == $maxIndex){
@@ -142,7 +142,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$resultItems
 		);
 		
-		//If no items found and “noResults” is not empty
+		// If no items found and “noResults” is not empty
 		if(
 			$total == 0 &&
 			$this->templates->noResults !== null &&

@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.3 (2022-09-30)
+	 * @version 2.3.1 (2024-08-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -16,21 +16,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	public function parse(Output $data){
 		$result = [];
 		
-		//Пройдемся по полученным данным
+		// Пройдемся по полученным данным
 		foreach(
 			$data->provider->items as
 			$itemData
 		){
 			$result_item = [];
 			
-			//Result must contains only specified fields
+			// Result must contains only specified fields
 			foreach(
 				$this->docFields as
 				$docField
 			){
 				$result_item[$docField] = $itemData[$docField];
 				
-				//If template for this field is set
+				// If template for this field is set
 				if (
 					\DDTools\ObjectTools::isPropExists([
 						'object' => $this->templates,
@@ -54,7 +54,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$result[] = $result_item;
 		}
 		
-		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
+		// JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
 		return json_encode(
 			$result,
 			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES

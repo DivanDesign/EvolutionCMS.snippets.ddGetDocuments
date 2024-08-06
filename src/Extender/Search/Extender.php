@@ -16,13 +16,13 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * __construct
-	 * @version 1.1 (2018-06-12)
+	 * @version 1.1.1 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->docFieldsToSearch {array|stringCommaSepareted} — Document fields to search in. Default: ['pagetitle', 'content'].
 	 */
 	public function __construct($params = []){
-		//Call base constructor
+		// Call base constructor
 		parent::__construct($params);
 		
 		if(!is_array($this->docFieldsToSearch)){
@@ -39,14 +39,14 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToDataProviderParams
-	 * @version 1.0 (2021-02-12)
+	 * @version 1.0.1 (2024-08-06)
 	 * 
 	 * @param $dataProviderParams {stdClass}
 	 * 
 	 * @return {stdClass}
 	 */
 	public function applyToDataProviderParams($dataProviderParams){
-		//If URL contains tags
+		// If URL contains tags
 		if (!empty($this->currentQuery)){
 			$searchQueries = [];
 			

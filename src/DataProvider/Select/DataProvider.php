@@ -11,12 +11,12 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	
 	/**
 	 * get
-	 * @version 1.0.7 (2020-03-10)
+	 * @version 1.0.8 (2024-08-06)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public function get(){
-		//Order by selected IDs sequence
+		// Order by selected IDs sequence
 		if (
 			empty($this->orderBy) &&
 			!empty($this->ids)

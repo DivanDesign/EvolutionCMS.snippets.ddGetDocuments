@@ -4,22 +4,22 @@ namespace ddGetDocuments\Extender\Tagging;
 
 class Extender extends \ddGetDocuments\Extender\Extender {
 	private
-		//Current selected tags
+		// Current selected tags
 		$currentTags = []
 	;
 	
 	protected
-		//The parameter in $_REQUEST to get the tags value from
+		// The parameter in $_REQUEST to get the tags value from
 		$tagsRequestParamName = 'tags',
-		//A document field (TV) contains tags
+		// A document field (TV) contains tags
 		$tagsDocumentField = 'tags',
-		//Tags delimiter
+		// Tags delimiter
 		$tagsDelimiter = ', '
 	;
 	
 	/**
 	 * __construct
-	 * @version 1.1.2 (2020-03-10)
+	 * @version 1.1.3 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->tagsDocumentField {stringTvName} — The document field (TV) contains tags. Default: 'tags'.
@@ -27,14 +27,14 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	 * @param $params->tagsRequestParamName {string} — The parameter in $_REQUEST to get the tags value from. Default: 'tags'.
 	 */
 	public function __construct($params = []){
-		//Call base constructor
+		// Call base constructor
 		parent::__construct($params);
 		
 		if (isset($_REQUEST[$this->tagsRequestParamName])){
 			$this->currentTags = $_REQUEST[$this->tagsRequestParamName];
 			
 			//?tags[]=someTag1&tags[]=someTag2
-			//or
+			// or
 			//?tags=someTag1,someTag2
 			if (!is_array($this->currentTags)){
 				$this->currentTags = explode(
@@ -55,14 +55,14 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToDataProviderParams
-	 * @version 1.0 (2021-02-12)
+	 * @version 1.0.1 (2024-08-06)
 	 * 
 	 * @param $dataProviderParams {stdClass}
 	 * 
 	 * @return {stdClass}
 	 */
 	public function applyToDataProviderParams($dataProviderParams){
-		//If URL contains tags
+		// If URL contains tags
 		if (!empty($this->currentTags)){
 			if(
 				isset($dataProviderParams->filter) &&

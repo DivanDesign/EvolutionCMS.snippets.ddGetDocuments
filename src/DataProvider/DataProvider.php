@@ -37,22 +37,22 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * __construct
-	 * @version 2.0 (2021-02-15)
+	 * @version 2.0.1 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 */
 	function __construct($params){
-		//Все параметры задают свойства объекта
+		// Все параметры задают свойства объекта
 		$this->setExistingProps($params);
 		
-		//Init source DB table name
+		// Init source DB table name
 		$this->resourcesTableName =
 			isset(\ddTools::$tables[$this->resourcesTableName]) ?
 			\ddTools::$tables[$this->resourcesTableName] :
 			\ddTools::$modx->getFullTableName($this->resourcesTableName)
 		;
 		
-		//Init needed resources fields
+		// Init needed resources fields
 		$this->resourcesFieldsToGet = (object) $this->resourcesFieldsToGet;
 		
 		$this->construct_compatibilityWithOldMariaDB();
@@ -60,7 +60,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * construct_compatibilityWithOldMariaDB
-	 * @version 1.0.1 (2020-10-01)
+	 * @version 1.0.2 (2024-08-06)
 	 * 
 	 * @todo Temporary code for compatibility with MariaDB < 10.5. This code must be removed when MariaDB 10.5 will be released.
 	 * 
@@ -70,12 +70,12 @@ abstract class DataProvider extends \DDTools\Base\Base {
 		$dbVersion = \ddTools::$modx->db->getValue(\ddTools::$modx->db->query('SELECT VERSION()'));
 		
 		if (
-			//MariaDB is used
+			// MariaDB is used
 			stripos(
 				$dbVersion,
 				'mariadb'
 			) !== false &&
-			//And version < 10.5
+			// And version < 10.5
 			version_compare(
 				$dbVersion,
 				'10.5',
@@ -101,7 +101,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * addResourcesFieldsToGet
-	 * @version 2.0.2 (2019-03-19)
+	 * @version 2.0.3 (2024-08-06)
 	 * 
 	 * @param $fields {array}
 	 * @param $fields[i] {string} — Name of document field or TV.
@@ -109,19 +109,19 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 * @return {void}
 	 */
 	public function addResourcesFieldsToGet($fields){
-		//Separate TVs and common document fields
+		// Separate TVs and common document fields
 		$fields = \ddTools::prepareDocData([
 			'data' => array_flip($fields)
 		]);
 		
-		//Save common fields
+		// Save common fields
 		if (!empty($fields->fieldsData)){
 			$this->resourcesFieldsToGet->fields = array_unique(array_merge(
 				$this->resourcesFieldsToGet->fields,
 				array_keys($fields->fieldsData)
 			));
 		}
-		//Save TVs
+		// Save TVs
 		if (!empty($fields->tvsData)){
 			$this->resourcesFieldsToGet->tvs = array_unique(array_merge(
 				$this->resourcesFieldsToGet->tvs,
@@ -132,7 +132,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * getResourcesDataFromDb
-	 * @version 6.1.3 (2020-03-10)
+	 * @version 6.1.4 (2024-08-06)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -140,7 +140,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	protected final function getResourcesDataFromDb($params = []){
-		//Empty result by default
+		// Empty result by default
 		$result = new DataProviderOutput(
 			[],
 			0
@@ -148,7 +148,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 		
 		$query = $this->prepareQuery($params);
 		
-		//Invalid query — empty result
+		// Invalid query — empty result
 		if(!empty($query)){
 			$data = \ddTools::$modx->db->makeArray(\ddTools::$modx->db->query($query));
 			
@@ -158,9 +158,9 @@ abstract class DataProvider extends \DDTools\Base\Base {
 			){
 				$totalFound = \ddTools::$modx->db->getValue('SELECT FOUND_ROWS()');
 				
-				//If TVs exist
+				// If TVs exist
 				if (!empty($this->resourcesFieldsToGet->tvs)){
-					//Get TVs values
+					// Get TVs values
 					foreach (
 						$data as
 						$docIndex =>
@@ -175,7 +175,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 							$this->resourcesFieldsToGet->tvs as
 							$tvName
 						){
-							//If valid TV exist
+							// If valid TV exist
 							if(isset($docValue['TVs'][$tvName])){
 								$data[$docIndex][$tvName] = $docValue['TVs'][$tvName];
 							}
@@ -207,7 +207,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * getUsedFieldsFromSqlString
-	 * @version 1.0 (2019-03-13)
+	 * @version 1.0.1 (2024-08-06)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
@@ -217,7 +217,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	protected final function getUsedFieldsFromSqlString($sqlString){
 		$result = [];
 		
-		//Try to find all resources fields (including tvs) used in string (e. g. in “filter”) by the pattern
+		// Try to find all resources fields (including tvs) used in string (e. g. in “filter”) by the pattern
 		preg_match_all(
 			"/`(\w+)`/",
 			$sqlString,
@@ -233,7 +233,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * prepareUsedDocFieldsFromSqlString
-	 * @version 3.0.3 (2020-03-10)
+	 * @version 3.0.4 (2024-08-06)
 	 * 
 	 * @param $sqlString {string_sql}
 	 * 
@@ -249,10 +249,10 @@ abstract class DataProvider extends \DDTools\Base\Base {
 		$usedFields = $this->getUsedFieldsFromSqlString($sqlString);
 		
 		if(!empty($usedFields)){
-			//Sort out fields from tvs
+			// Sort out fields from tvs
 			$fieldsArray = \ddTools::prepareDocData([
 				'data' => array_flip($usedFields),
-				//Just something
+				// Just something
 				'tvAdditionalFieldsToGet' => [
 					'name'
 				]
@@ -262,17 +262,17 @@ abstract class DataProvider extends \DDTools\Base\Base {
 				$result->fields = array_keys($fieldsArray->fieldsData);
 			}
 			
-			//If there were tv names in the passed filter string
+			// If there were tv names in the passed filter string
 			if(!empty($fieldsArray->tvsAdditionalData)){
 				$result->tvs = [];
 				
-				//Check whether the current tv name is an actual tv name
+				// Check whether the current tv name is an actual tv name
 				foreach(
 					$fieldsArray->tvsAdditionalData as
 					$tvName =>
 					$tvData
 				){
-					//Pupulate the array with the current tv name
+					// Pupulate the array with the current tv name
 					$result->tvs[] = $tvName;
 				}
 				
@@ -287,7 +287,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * buildTVsSubQuery
-	 * @version 1.0.6 (2020-03-10)
+	 * @version 1.0.7 (2024-08-06)
 	 * 
 	 * @desc A helper method to build subquery with joined TVS to make possible to use filter conditions for both fields and tvs.
 	 * 
@@ -296,22 +296,22 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 * @return {string}
 	 */
 	protected function buildTVsSubQuery(array $tvs){
-		//Aliases:
-		//c - site_content
-		//tvt - site_tmplvar_templates
-		//tv - site_tmplvars
-		//tvcv - site_tmplvar_contentvalues
+		// Aliases:
+		// c - site_content
+		// tvt - site_tmplvar_templates
+		// tv - site_tmplvars
+		// tvcv - site_tmplvar_contentvalues
 		
-		//select query
+		// select query
 		$selectTvsQuery = 'SELECT `c`.*,';
 		$fromTvsQuery =
 			'FROM ' .
 			$this->resourcesTableName .
 			' as `c`'
 		;
-		//join query
+		// join query
 		$joinTvsQuery = '';
-		//where query
+		// where query
 		$whereTvsQuery = '';
 		
 		$tvCounter = 1;
@@ -320,25 +320,25 @@ abstract class DataProvider extends \DDTools\Base\Base {
 			$tvs as
 			$tvName
 		){
-			//alias of tmplvar_templates
+			// alias of tmplvar_templates
 			$tvtAlias =
 				'`tvt_' .
 				$tvCounter .
 				'`'
 			;
-			//alias of tmplvars
+			// alias of tmplvars
 			$tvAlias =
 				'`tv_' .
 				$tvCounter .
 				'`'
 			;
-			//alias of tmplvar_contentvalues
+			// alias of tmplvar_contentvalues
 			$tvcvAlias =
 				'`tvcv_' .
 				$tvCounter .
 				'`'
 			;
-			//select not null value from either the real value column or default
+			// select not null value from either the real value column or default
 			$selectTvsQuery .=
 				'coalesce(' .
 				$tvcvAlias .
@@ -401,7 +401,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 			)
 		;
 		
-		//complete from query
+		// complete from query
 		return
 			$selectTvsQuery .
 			' ' .
@@ -415,7 +415,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * prepareQueryData_fromAndFilter
-	 * @version 3.0.1 (2020-03-10)
+	 * @version 3.0.2 (2024-08-06)
 	 * 
 	 * @param $filterStr {string} — Filter string. @required
 	 * 
@@ -425,18 +425,18 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 */
 	protected final function prepareQueryData_fromAndFilter($filterStr){
 		$result = (object) [
-			//By default, the required data is just fetched from the site_content table
+			// By default, the required data is just fetched from the site_content table
 			'from' => $this->resourcesTableName,
 			'filter' => ''
 		];
 		
-		//If a filter is set, it is needed to check which TVs are used in the filter query
+		// If a filter is set, it is needed to check which TVs are used in the filter query
 		if(!empty($filterStr)){
 			$usedFields = $this->prepareUsedDocFieldsFromSqlString($filterStr);
 			
-			//If there are some TV names in the filter query, make a temp table from which the required data will be fetched
+			// If there are some TV names in the filter query, make a temp table from which the required data will be fetched
 			if(!empty($usedFields->tvs)){
-				//complete from query
+				// complete from query
 				$result->from =
 					'(' .
 					$this->buildTVsSubQuery($usedFields->tvs) .
@@ -456,7 +456,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * prepareQueryData
-	 * @version 2.2 (2022-06-03)
+	 * @version 2.2.1 (2024-08-06)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get. Default: ''.
@@ -469,7 +469,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 * @return $result->limit {string}
 	 */
 	protected final function prepareQueryData($params = []){
-		//Defaults
+		// Defaults
 		$params = (object) array_merge(
 			[
 				'resourcesIds' => ''
@@ -501,14 +501,14 @@ abstract class DataProvider extends \DDTools\Base\Base {
 			;
 		}
 		
-		//If LIMIT needed
+		// If LIMIT needed
 		if (
 			!empty($this->offset) ||
 			!empty($this->total)
 		){
 			$result->limit = 'LIMIT ';
 			
-			//Prepare offset
+			// Prepare offset
 			if (!empty($this->offset)){
 				$result->limit .=
 					$this->offset .
@@ -516,11 +516,11 @@ abstract class DataProvider extends \DDTools\Base\Base {
 				;
 			}
 			
-			//Prepare total rows
+			// Prepare total rows
 			if (!empty($this->total)){
 				$result->limit .= $this->total;
 			}else{
-				//All rows
+				// All rows
 				$result->limit .= PHP_INT_MAX;
 			}
 		}
@@ -554,7 +554,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	
 	/**
 	 * prepareQuery
-	 * @version 1.4.1 (2023-01-04)
+	 * @version 1.4.2 (2024-08-06)
 	 * 
 	 * @param $params {arrayAssociative|stdClass}
 	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used). Default: ''.
@@ -562,7 +562,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 	 * @return $result {string}
 	 */
 	protected function prepareQuery($params = []){
-		//Defaults
+		// Defaults
 		$params = (object) array_merge(
 			[
 				'resourcesIds' => ''
@@ -574,7 +574,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 		
 		$queryData = $this->prepareQueryData($params);
 		
-		//Invalid query data — empty result
+		// Invalid query data — empty result
 		if(!empty($queryData->from)){
 			$result = '
 				SELECT
@@ -585,7 +585,7 @@ abstract class DataProvider extends \DDTools\Base\Base {
 					) . '`
 			';
 			
-			//If TVs exist
+			// If TVs exist
 			if (!empty($this->resourcesFieldsToGet->tvs)){
 				$result .= '
 					,

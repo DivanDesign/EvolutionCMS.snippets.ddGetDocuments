@@ -37,13 +37,13 @@ A snippet for fetching and parsing resources from the document tree or custom DB
 Just run the following PHP code in your sources or [Console](https://github.com/vanchelo/MODX-Evolution-Ajax-Console):
 
 ```php
-//Include (MODX)EvolutionCMS.libraries.ddInstaller
+// Include (MODX)EvolutionCMS.libraries.ddInstaller
 require_once(
 	$modx->getConfig('base_path') .
 	'assets/libs/ddInstaller/require.php'
 );
 
-//Install (MODX)EvolutionCMS.snippets.ddGetDocuments
+// Install (MODX)EvolutionCMS.snippets.ddGetDocuments
 \DDInstaller::install([
 	'url' => 'https://github.com/DivanDesign/EvolutionCMS.snippets.ddGetDocuments',
 	'type' => 'snippet'
@@ -997,9 +997,9 @@ And we want to make a gender list with unique items:
 [[ddGetDocuments?
 	&fieldDelimiter=`#`
 	&providerParams=`{
-		//The parent of our documents
+		// The parent of our documents
 		parentIds: 42
-		//The field by which the items will be grouped
+		// The field by which the items will be grouped
 		groupBy: "#gender#"
 	}`
 	&outputter=`json`
@@ -1106,17 +1106,17 @@ We recommend to use cashed snippet calls and turn on document caching type with 
 ### Run the snippet through `\DDTools\Snippet::runSnippet` without DB and eval
 
 ```php
-//Include (MODX)EvolutionCMS.libraries.ddTools
+// Include (MODX)EvolutionCMS.libraries.ddTools
 require_once(
 	$modx->getConfig('base_path') .
 	'assets/libs/ddTools/modx.ddtools.class.php'
 );
 
-//Run (MODX)EvolutionCMS.snippets.ddGetDocuments
+// Run (MODX)EvolutionCMS.snippets.ddGetDocuments
 \DDTools\Snippet::runSnippet([
 	'name' => 'ddGetDocuments',
 	'params' => [
-		//It is convenient to set the parameter as a native PHP array or object
+		// It is convenient to set the parameter as a native PHP array or object
 		'providerParams' => [
 			'parentIds' => 1
 		],

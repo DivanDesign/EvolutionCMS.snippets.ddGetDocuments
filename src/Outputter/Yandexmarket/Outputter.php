@@ -11,7 +11,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		 */
 		$docFields = [
 			'id',
-			//May need for smart name
+			// May need for smart name
 			'pagetitle'
 		],
 		
@@ -69,7 +69,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			],
 			'available' => [
 				'docFieldName' => '',
-				//without template
+				// without template
 				'templateName' => ''
 			],
 			'description' => [
@@ -177,7 +177,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.1.3 (2023-05-02)
+	 * @version 2.1.4 (2024-08-06)
 	 * 
 	 * @note @link https://yandex.ru/support/partnermarket/export/yml.html
 	 * 
@@ -217,12 +217,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$params = (object) $params;
 		
 		
-		//# Prepare object fields
+		// # Prepare object fields
 		$this->construct_prepareFields();
 		
 		
-		//# Save shopData
-		//If parameter is passed
+		// # Save shopData
+		// If parameter is passed
 		if (
 			\DDTools\ObjectTools::isPropExists([
 				'object' => $params,
@@ -236,18 +236,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				]
 			]);
 			
-			//Remove from params to prevent overwriting through `$this->setExistingProps`
+			// Remove from params to prevent overwriting through `$this->setExistingProps`
 			unset($params->shopData);
 		}
 		
 		
-		//# Save offerFields
+		// # Save offerFields
 		foreach (
 			$params->offerFields as
 			$offerFieldName =>
 			$offerFieldParamValue
 		){
-			//If parameter set as full data
+			// If parameter set as full data
 			if (is_object($offerFieldParamValue)){
 				$this->offerFields->{$offerFieldName} = \DDTools\ObjectTools::extend([
 					'objects' => [
@@ -255,27 +255,27 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						$offerFieldParamValue
 					]
 				]);
-			//If parameter set as doc field name only
+			// If parameter set as doc field name only
 			}else{
 				$this->offerFields->{$offerFieldName}->docFieldName = $offerFieldParamValue;
 			}
 		}
 		
-		//Remove from params to prevent overwriting through `$this->setExistingProps`
+		// Remove from params to prevent overwriting through `$this->setExistingProps`
 		unset($params->offerFields);
 		
-		//If name doc field is not set
+		// If name doc field is not set
 		if (empty($this->offerFields->name->docFieldName)){
-			//Pagetitle will be used
+			// Pagetitle will be used
 			$this->offerFields->name->docFieldName = 'pagetitle';
 		}
 		
 		
-		//# Call base constructor
+		// # Call base constructor
 		parent::__construct($params);
 		
 		
-		//# Prepare last parent category IDs
+		// # Prepare last parent category IDs
 		if (!is_array($this->categoryIds_last)){
 			$this->categoryIds_last = explode(
 				',',
@@ -284,18 +284,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}
 		
 		
-		//# Prepare templates
+		// # Prepare templates
 		$this->construct_prepareTemplates();
 		
 		
-		//We use the “String” Outputter as base
+		// We use the “String” Outputter as base
 		$outputter_StringParams = (object) [
 			'templates' => (object) [
 				'item' => $this->templates->offers_item,
 				'wrapper' => $this->templates->wrapper
 			]
 		];
-		//Transfer provider link
+		// Transfer provider link
 		if (isset($params->dataProvider)){
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
@@ -307,12 +307,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareFields
-	 * @version 1.0.2 (2022-09-20)
+	 * @version 1.0.3 (2024-08-06)
 	 * 
 	 * @return {void}
 	 */
 	private function construct_prepareFields(){
-		//Convert fields to objects
+		// Convert fields to objects
 		$this->shopData = (object) $this->shopData;
 		$this->offerFields = (object) $this->offerFields;
 		$this->templates = (object) $this->templates;
@@ -324,7 +324,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$this->offerFields->{$offerFieldName} = (object) $this->offerFields->{$offerFieldName};
 		}
 		
-		//Trim all templates
+		// Trim all templates
 		foreach (
 			$this->templates as
 			$templateName =>
@@ -336,12 +336,12 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * construct_prepareTemplates
-	 * @version 1.0.1 (2024-07-13)
+	 * @version 1.0.2 (2024-08-06)
 	 * 
 	 * @return {void}
 	 */
 	private function construct_prepareTemplates(){
-		//Offer
+		// Offer
 		$templateData = [
 			'shopData' => (array) $this->shopData
 		];
@@ -363,18 +363,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		){
 			$templateData[$fieldAlias] = $fieldData->docFieldName;
 			
-			//Replace to field name placeholder
+			// Replace to field name placeholder
 			if (!empty($fieldData->docFieldName)){
 				$templateData[$fieldAlias] = '[+' . $templateData[$fieldAlias] . '+]';
 			}else{
-				//Always available
+				// Always available
 				if ($fieldAlias == 'available'){
 					$templateData[$fieldAlias] = 'true';
 				}
 			}
 		}
 		
-		//Prepare offer item template
+		// Prepare offer item template
 		$this->templates->offers_item = \ddTools::parseText([
 			'text' => $this->templates->offers_item,
 			'data' => $templateData,
@@ -382,14 +382,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		]);
 		
 		
-		//Wrapper
+		// Wrapper
 		$templateData = [
 			'shopData' => (array) $this->shopData,
 			'generationDate' => date('Y-m-d H:i')
 		];
 		
-		//TODO Это здесь вообще надо делать или лучше в другое место перенести?
-		//Prepare «agency» tag
+		// TODO Это здесь вообще надо делать или лучше в другое место перенести?
+		// Prepare «agency» tag
 		if (!empty($templateData['shopData']['agency'])){
 			$templateData['shopData']['agency'] = \ddTools::parseText([
 				'text' => $this->templates->offers_item_elem,
@@ -402,7 +402,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			]);
 		}
 		
-		//Prepare wrapper template
+		// Prepare wrapper template
 		$this->templates->wrapper = \ddTools::parseText([
 			'text' => $this->templates->wrapper,
 			'data' => $templateData,
@@ -440,82 +440,82 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.6.1 (2024-07-13)
+	 * @version 1.6.2 (2024-08-06)
 	 * 
 	 * @param $data {Output}
 	 * 
 	 * @return {string}
 	 */
 	public function parse(Output $data){
-		//# Items
+		// # Items
 		foreach (
-			//Foreach all docs-items
+			// Foreach all docs-items
 			$data->provider->items as
 			$docIndex =>
-			//Value must be assigned by reference for modifying inside the cycle
+			// Value must be assigned by reference for modifying inside the cycle
 			&$docData
 		){
-			//Correct price
+			// Correct price
 			if (
-				//Main price is not set
+				// Main price is not set
 				empty($docData[$this->offerFields->price->docFieldName]) &&
-				//But old price is set
+				// But old price is set
 				!empty($docData[$this->offerFields->priceOld->docFieldName])
 			){
-				//Use old price as main price
+				// Use old price as main price
 				$docData[$this->offerFields->price->docFieldName] = $docData[$this->offerFields->priceOld->docFieldName];
 				
-				//And old price is no needed
+				// And old price is no needed
 				unset($docData[$this->offerFields->priceOld->docFieldName]);
 			}
 			
-			//Check required elements
+			// Check required elements
 			if (
-				//Price
+				// Price
 				!empty($docData[$this->offerFields->price->docFieldName])
 			){
-				//If category is set
+				// If category is set
 				if (is_numeric($docData[$this->offerFields->categoryId->docFieldName])){
-					//Save category ID
+					// Save category ID
 					$this->categoryIds[] = $docData[$this->offerFields->categoryId->docFieldName];
 				}
 				
-				//Foreach all offer fields
+				// Foreach all offer fields
 				foreach(
 					$this->offerFields as
 					$offerFieldName =>
 					$offerFieldData
 				){
-					//Smart offer name
+					// Smart offer name
 					if (
 						$offerFieldName == 'name' &&
-						//If doc name is empty
+						// If doc name is empty
 						empty($docData[$offerFieldData->docFieldName])
 					){
-						//Pagetitle will be used
+						// Pagetitle will be used
 						$docData[$offerFieldData->docFieldName] = $docData['pagetitle'];
 					}
 					
 					
-					//Numeric fields
+					// Numeric fields
 					if (
-						//If weight is set
+						// If weight is set
 						$offerFieldName == 'weight' &&
-						//But invalid
+						// But invalid
 						$docData[$offerFieldData->docFieldName] == '0'
 					){
-						//Clear it
+						// Clear it
 						$docData[$offerFieldData->docFieldName] = '';
 					}
 					
 					
 					if (
-						//If object field is set
+						// If object field is set
 						!empty($offerFieldData->docFieldName) &&
-						//And doc data is set
+						// And doc data is set
 						!empty($docData[$offerFieldData->docFieldName])
 					){
-						//Boolean fields
+						// Boolean fields
 						if (
 							in_array(
 								$offerFieldName,
@@ -538,7 +538,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						}
 						
 						
-						//Fields that may be set as document IDs
+						// Fields that may be set as document IDs
 						if (
 							in_array(
 								$offerFieldName,
@@ -547,41 +547,41 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 									'countryOfOrigin'
 								]
 							) &&
-							//Set as document id
+							// Set as document id
 							is_numeric($docData[$offerFieldData->docFieldName])
 						){
-							//Try to get pagetitle
+							// Try to get pagetitle
 							$docData_fieldToGet_data = \ddTools::getDocument(
 								$docData[$offerFieldData->docFieldName],
 								'pagetitle'
 							);
-							//If success
+							// If success
 							if (is_array($docData_fieldToGet_data)){
 								$docData[$offerFieldData->docFieldName] = $docData_fieldToGet_data['pagetitle'];
 							}
 						}
 						
 						
-						//Value prefix
+						// Value prefix
 						if (isset($offerFieldData->valuePrefix)){
 							$docData[$offerFieldData->docFieldName] =
 								$offerFieldData->valuePrefix .
 								$docData[$offerFieldData->docFieldName]
 							;
 						}
-						//Value suffix
+						// Value suffix
 						if (isset($offerFieldData->valueSuffix)){
 							$docData[$offerFieldData->docFieldName] .= $offerFieldData->valueSuffix;
 						}
 						
 						
-						//Try to search template by name
+						// Try to search template by name
 						$templateName =
 							'offers_item_elem' .
 							ucfirst($offerFieldName)
 						;
 						if (!isset($this->templates->{$templateName})){
-							//Default element template
+							// Default element template
 							if (!isset($offerFieldData->templateName)){
 								$templateName = 'offers_item_elem';
 							}else{
@@ -591,18 +591,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 						
 						
 						if (
-							//If need to use template
+							// If need to use template
 							!empty($templateName) &&
-							//Required data for template
+							// Required data for template
 							!empty($offerFieldData->tagName)
 						){
-							//Final element parsing
+							// Final element parsing
 							$docData[$offerFieldData->docFieldName] = \ddTools::parseText([
 								'text' => $this->templates->{$templateName},
 								'data' => [
 									'tagName' => $offerFieldData->tagName,
 									'value' =>
-										//If escaping is disabled
+										// If escaping is disabled
 										(
 											\DDTools\ObjectTools::isPropExists([
 												'object' => $offerFieldData,
@@ -610,9 +610,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 											]) &&
 											$offerFieldData->disableEscaping
 										) ?
-										//Unescaped value
+										// Unescaped value
 										$docData[$offerFieldData->docFieldName] :
-										//Escaped value
+										// Escaped value
 										$this->escapeSpecialChars($docData[$offerFieldData->docFieldName])
 								],
 								'isCompletelyParsingEnabled' => false
@@ -621,28 +621,28 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					}
 				}
 			}else{
-				//Remove invalid offers
+				// Remove invalid offers
 				unset($data->provider->items[$docIndex]);
 			}
 		}
 		
-		//Destroy unused referenced variable
+		// Destroy unused referenced variable
 		unset($docData);
 		
 		$this->categoryIds = array_unique($this->categoryIds);
 		
 		
-		//# Categories
+		// # Categories
 		$this->outputter_StringInstance->placeholders['ddGetDocuments_categories'] = $this->parse_categories();
 		
 		
-		//Just use the “String” class
+		// Just use the “String” class
 		return $this->outputter_StringInstance->parse($data);
 	}
 	
 	/**
 	 * parse_categories
-	 * @version 1.1.8 (2024-07-13)
+	 * @version 1.1.9 (2024-08-06)
 	 *
 	 * @return {string}
 	 */
@@ -651,7 +651,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		$categoryIds_all = [];
 		
-		//TODO: Avoid to use global variables
+		// TODO: Avoid to use global variables
 		$getCategories = function ($id) use (
 			&$categoryIds_all, 
 			&$getCategories
@@ -666,21 +666,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			){
 				$categoryIds_all[] = $id;
 				
-				//Get category doc data
+				// Get category doc data
 				$categoryDocData = \ddTools::getDocument(
-					//id
+					// id
 					$id,
 					'pagetitle,id,parent',
-					//published
+					// published
 					'all',
-					//deleted
+					// deleted
 					0
 				);
 				
 				$hasParentCategory = 
-					//If root categories are set
+					// If root categories are set
 					!empty($this->categoryIds_last) &&
-					//And it is not one of the “root” category
+					// And it is not one of the “root” category
 					!in_array(
 						$id, 
 						$this->categoryIds_last
@@ -702,7 +702,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				]);
 				
 				if($hasParentCategory){
-					//Get parent category
+					// Get parent category
 					$result .= $getCategories($categoryDocData['parent']);
 				}
 			}

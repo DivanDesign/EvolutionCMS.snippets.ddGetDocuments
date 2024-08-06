@@ -22,7 +22,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 	
 	/**
 	 * __construct
-	 * @version 1.5.2 (2023-05-02)
+	 * @version 1.5.3 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
@@ -30,15 +30,15 @@ abstract class Outputter extends \DDTools\Base\Base {
 	public function __construct($params = []){
 		$params = (object) $params;
 		
-		//Prepare templates
+		// Prepare templates
 		$this->construct_prepareFields_templates($params);
-		//Remove from params to prevent overwriting through `$this->setExistingProps`
+		// Remove from params to prevent overwriting through `$this->setExistingProps`
 		unset($params->templates);
 		
-		//Все параметры задают свойства объекта
+		// Все параметры задают свойства объекта
 		$this->setExistingProps($params);
 		
-		//Comma separated strings
+		// Comma separated strings
 		if (!is_array($this->docFields)){
 			$this->docFields = explode(
 				',',
@@ -47,31 +47,31 @@ abstract class Outputter extends \DDTools\Base\Base {
 		}
 		
 		if (empty($this->docFields)){
-			//We need something
+			// We need something
 			$this->docFields = ['id'];
 		}elseif (isset($params->dataProvider)){
-			//Ask dataProvider to get them
+			// Ask dataProvider to get them
 			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
 		}
 	}
 	
 	/**
 	 * construct_prepareFields_templates
-	 * @version 1.0.1 (2023-05-14)
+	 * @version 1.0.2 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — See __construct.
 	 */
 	protected function construct_prepareFields_templates($params){
 		$this->templates = (object) $this->templates;
 		
-		//If parameter is passed
+		// If parameter is passed
 		if (
 			\DDTools\ObjectTools::isPropExists([
 				'object' => $params,
 				'propName' => 'templates'
 			])
 		){
-			//Extend defaults
+			// Extend defaults
 			$this->templates = \DDTools\ObjectTools::extend([
 				'objects' => [
 					$this->templates,
@@ -85,7 +85,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 			$templateName =>
 			$templateValue
 		){
-			//Exclude null values
+			// Exclude null values
 			if (is_string($templateValue)){
 				$this->templates->{$templateName} = \ddTools::getTpl($templateValue);
 			}

@@ -20,7 +20,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0.2 (2024-07-13)
+	 * @version 2.0.3 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -30,10 +30,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->templates->wrapper {string|stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
 	 */
 	public function __construct($params = []){
-		//Call base constructor
+		// Call base constructor
 		parent::__construct($params);
 		
-		//Prepare item template
+		// Prepare item template
 		$this->templates->item = \ddTools::parseText([
 			'text' => $this->templates->item,
 			'data' => [
@@ -43,11 +43,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'isCompletelyParsingEnabled' => false
 		]);
 		
-		//We use the “String” Outputter as base
+		// We use the “String” Outputter as base
 		$outputter_StringParams = (object) [
 			'templates' => $this->templates
 		];
-		//Transfer provider link
+		// Transfer provider link
 		if (isset($params->dataProvider)){
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
@@ -59,7 +59,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * parse
-	 * @version 1.1.2 (2020-04-30)
+	 * @version 1.1.3 (2024-08-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -71,7 +71,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$docIndex =>
 			$docData
 		){
-			//Convert date to appropriate format
+			// Convert date to appropriate format
 			if (isset($data->provider->items[$docIndex]['editedon'])){
 				$data->provider->items[$docIndex]['editedon'] = date(
 					'Y-m-d',
@@ -80,7 +80,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		//Just use the “String” class
+		// Just use the “String” class
 		return $this->outputter_StringInstance->parse($data);
 	}
 }
