@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.3.2 (2024-10-05)
+	 * @version 2.4 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -19,7 +19,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		// Пройдемся по полученным данным
 		foreach(
 			$data->provider->items
-			as $itemData
+			as $itemIndex
+			=> $itemData
 		){
 			$result_item = [];
 			
@@ -46,6 +47,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 										$itemData,
 										[
 											'value' => $result_item[$docField],
+											'itemNumber' => $itemIndex + 1,
+											'itemNumberZeroBased' => $itemIndex,
 										]
 									],
 								]),

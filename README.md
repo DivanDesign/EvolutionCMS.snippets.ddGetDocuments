@@ -303,6 +303,8 @@ Get resources from custom DB table.
 		Available placeholders:
 		* `[+value+]` — the field value
 		* `[+`any document field or tv name`+]` — Any document field name or TV specified in `outputterParams->docFields`
+		* `[+itemNumber+]` — item number started from 1
+		* `[+itemNumberZeroBased+]` — item number started from 0
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
