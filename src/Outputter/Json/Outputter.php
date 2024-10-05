@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.3.1 (2024-08-06)
+	 * @version 2.3.2 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -18,15 +18,15 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		// Пройдемся по полученным данным
 		foreach(
-			$data->provider->items as
-			$itemData
+			$data->provider->items
+			as $itemData
 		){
 			$result_item = [];
 			
 			// Result must contains only specified fields
 			foreach(
-				$this->docFields as
-				$docField
+				$this->docFields
+				as $docField
 			){
 				$result_item[$docField] = $itemData[$docField];
 				
@@ -34,20 +34,24 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				if (
 					\DDTools\ObjectTools::isPropExists([
 						'object' => $this->templates,
-						'propName' => $docField
+						'propName' => $docField,
 					])
 				){
-					$result_item[$docField] = \ddTools::parseSource(\ddTools::parseText([
-						'text' => $this->templates->{$docField},
-						'data' => \DDTools\ObjectTools::extend([
-							'objects' => [
-								$itemData,
-								[
-									'value' => $result_item[$docField]
-								]
-							]
-						])
-					]));
+					$result_item[$docField] =
+						\ddTools::parseSource(
+							\ddTools::parseText([
+								'text' => $this->templates->{$docField},
+								'data' => \DDTools\ObjectTools::extend([
+									'objects' => [
+										$itemData,
+										[
+											'value' => $result_item[$docField],
+										]
+									],
+								]),
+							])
+						)
+					;
 				}
 			}
 			

@@ -43,7 +43,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * __construct
-	 * @version 1.2.4 (2024-08-06)
+	 * @version 1.2.5 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 */
@@ -60,22 +60,22 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 				'nextOffTpl',
 				'previousTpl',
 				'previousOffTpl'
-			] as
-			$tplName
+			]
+			as $tplName
 		){
 			$this->{$tplName} = \ddTools::getTpl($this->{$tplName});
 		}
 		
 		$this->pageIndex =
-			isset($_REQUEST[$this->pageIndexRequestParamName]) ?
-			(int) $_REQUEST[$this->pageIndexRequestParamName] :
-			1
+			isset($_REQUEST[$this->pageIndexRequestParamName])
+			? (int) $_REQUEST[$this->pageIndexRequestParamName]
+			: 1
 		;
 	}
 	
 	/**
 	 * applyToDataProviderParams
-	 * @version 1.0.1 (2024-08-06)
+	 * @version 1.0.2 (2024-10-05)
 	 * 
 	 * @param $dataProviderParams {stdClass}
 	 * 
@@ -86,10 +86,10 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		if(isset($dataProviderParams->total)){
 			$dataProviderParams->offset =
 				(
-					$this->pageIndex -
-					1
-				) *
-				$dataProviderParams->total
+					$this->pageIndex
+					- 1
+				)
+				* $dataProviderParams->total
 			;
 		}
 		
@@ -100,7 +100,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToOutput
-	 * @version 1.2.4 (2024-08-06)
+	 * @version 1.2.5 (2024-10-05)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -112,8 +112,8 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		// Check to prevent division by zero
 		if($this->dataProviderParams->total != 0){
 			$pagesTotal = ceil(
-				$dataProviderOutput->totalFound /
-				$this->dataProviderParams->total
+				$dataProviderOutput->totalFound
+				/ $this->dataProviderParams->total
 			);
 			
 			if($pagesTotal > 1){
@@ -137,8 +137,8 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 					
 					if (count($currentQuery) > 0){
 						$urlPrefix .=
-							http_build_query($currentQuery) .
-							'&'
+							http_build_query($currentQuery)
+							. '&'
 						;
 					}
 				}
@@ -164,77 +164,85 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 						$pageChunk = $this->currentPageTpl;
 					}
 					
-					$pagesOutputText .= \ddTools::parseSource(\ddTools::parseText([
-						'text' => $pageChunk,
-						'data' => [
-							'url' =>
-								$urlPrefix .
-								$this->pageIndexRequestParamName .
-								'=' .
-								$pageIndex
-							,
-							'page' => $pageIndex
-						]
-					]));
+					$pagesOutputText .= \ddTools::parseSource(
+						\ddTools::parseText([
+							'text' => $pageChunk,
+							'data' => [
+								'url' =>
+									$urlPrefix
+									. $this->pageIndexRequestParamName
+									. '='
+									. $pageIndex
+								,
+								'page' => $pageIndex,
+							],
+						])
+					);
 				}
 				
 				$previousLinkChunk =
-					$this->pageIndex == 1 ?
-					$this->previousOffTpl :
-					$this->previousTpl
+					$this->pageIndex == 1
+					? $this->previousOffTpl
+					: $this->previousTpl
 				;
 				
 				$nextLinkChunk =
-					$this->pageIndex == $pagesTotal ?
-					$this->nextOffTpl :
-					$this->nextTpl
+					$this->pageIndex == $pagesTotal
+					? $this->nextOffTpl
+					: $this->nextTpl
 				;
 				
-				$result = \ddTools::parseSource(\ddTools::parseText([
-					'text' => $this->wrapperTpl,
-					'data' => [
-						'previous' => \ddTools::parseSource(\ddTools::parseText([
-							'text' => $previousLinkChunk,
-							'data' => [
-								'url' =>
-									$this->pageIndex == 1 ?
-									'' :
-									(
-										$urlPrefix .
-										$this->pageIndexRequestParamName .
-										'=' .
-										(
-											$this->pageIndex -
-											1
-										)
-									)
-								,
-								'totalPages' => $pagesTotal
-							]
-						])),
-						'pages' => $pagesOutputText,
-						'next' => \ddTools::parseSource(\ddTools::parseText([
-							'text' => $nextLinkChunk,
-							'data' => [
-								'url' =>
-									$this->pageIndex == $pagesTotal ?
-									'' :
-									(
-										$urlPrefix .
-										$this->pageIndexRequestParamName .
-										'=' .
-										(
-											$this->pageIndex +
-											1
-										)
-									)
-								,
-								'totalPages' => $pagesTotal
-							]
-						])),
-						'totalPages' => $pagesTotal
-					]
-				]));
+				$result = \ddTools::parseSource(
+					\ddTools::parseText([
+						'text' => $this->wrapperTpl,
+						'data' => [
+							'previous' => \ddTools::parseSource(
+								\ddTools::parseText([
+									'text' => $previousLinkChunk,
+									'data' => [
+										'url' =>
+											$this->pageIndex == 1
+											? ''
+											: (
+												$urlPrefix
+												. $this->pageIndexRequestParamName
+												. '='
+												. (
+													$this->pageIndex
+													- 1
+												)
+											)
+										,
+										'totalPages' => $pagesTotal,
+									],
+								])
+							),
+							'pages' => $pagesOutputText,
+							'next' => \ddTools::parseSource(
+								\ddTools::parseText([
+									'text' => $nextLinkChunk,
+									'data' => [
+										'url' =>
+											$this->pageIndex == $pagesTotal
+											? ''
+											: (
+												$urlPrefix
+												. $this->pageIndexRequestParamName
+												. '='
+												. (
+													$this->pageIndex
+													+ 1
+												)
+											)
+										,
+										'totalPages' => $pagesTotal,
+									],
+								])
+							),
+							'totalPages' => $pagesTotal,
+						],
+					])
+				);
 			}
 		}
 		

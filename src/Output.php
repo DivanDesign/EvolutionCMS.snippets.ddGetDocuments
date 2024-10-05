@@ -22,7 +22,7 @@ class Output
 	public final function toArray(){
 		return [
 			'provider' => $this->provider->toArray(),
-			'extenders' => $this->extenders
+			'extenders' => $this->extenders,
 		];
 	}
 }

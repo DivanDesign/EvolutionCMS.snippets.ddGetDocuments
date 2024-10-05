@@ -19,7 +19,7 @@ class Input extends \DDTools\Base\Base {
 			'filter' => '',
 			'offset' => 0,
 			'total' => NULL,
-			'orderBy' => ''
+			'orderBy' => '',
 		],
 		
 		/**
@@ -40,7 +40,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * __construct
-	 * @version 4.5.1 (2024-08-06)
+	 * @version 4.5.2 (2024-10-05)
 	 * 
 	 * @param $snippetParams {stdClass} — The object of parameters. @required
 	 * @param $snippetParams->providerParams {stdClass|arrayAssociative|stringJsonObject}
@@ -53,9 +53,9 @@ class Input extends \DDTools\Base\Base {
 			[
 				'providerParams',
 				'outputterParams',
-				'extendersParams'
-			] as
-			$paramName
+				'extendersParams',
+			]
+			as $paramName
 		){
 			// Convert to object
 			$this->{$paramName} = (object) $this->{$paramName};
@@ -63,7 +63,7 @@ class Input extends \DDTools\Base\Base {
 			if (
 				\DDTools\ObjectTools::isPropExists([
 					'object' => $snippetParams,
-					'propName' => $paramName
+					'propName' => $paramName,
 				])
 			){
 				$this->{$paramName} = \DDTools\ObjectTools::extend([
@@ -73,9 +73,9 @@ class Input extends \DDTools\Base\Base {
 						// Given parameters 
 						\DDTools\ObjectTools::convertType([
 							'object' => $snippetParams->{$paramName},
-							'type' => 'objectStdClass'
-						])
-					]
+							'type' => 'objectStdClass',
+						]),
+					],
 				]);
 			}
 			
@@ -104,9 +104,9 @@ class Input extends \DDTools\Base\Base {
 			[
 				'filter',
 				'groupBy',
-				'orderBy'
-			] as
-			$paramName
+				'orderBy',
+			]
+			as $paramName
 		){
 			$this->providerParams->{$paramName} = str_replace(
 				$this->fieldDelimiter,
@@ -118,7 +118,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * prepareExtendersParams
-	 * @version 3.0.1 (2024-08-06)
+	 * @version 3.0.2 (2024-10-05)
 	 * 
 	 * @desc Prepare extenders params.
 	 * 
@@ -130,7 +130,7 @@ class Input extends \DDTools\Base\Base {
 		if (
 			\DDTools\ObjectTools::isPropExists([
 				'object' => $snippetParams,
-				'propName' => 'extenders'
+				'propName' => 'extenders',
 			])
 		){
 			// Prepare extenders
@@ -153,23 +153,23 @@ class Input extends \DDTools\Base\Base {
 					if(
 						!\DDTools\ObjectTools::isPropExists([
 							'object' => $this->extendersParams,
-							'propName' => $snippetParams->extenders[0]
+							'propName' => $snippetParams->extenders[0],
 						])
 					){
 						$this->extendersParams = (object) [
-							$snippetParams->extenders[0] => $this->extendersParams
+							$snippetParams->extenders[0] => $this->extendersParams,
 						];
 					}
 				}else{
 					// Make sure that for each extender there is an item in $this->extendersParams
 					foreach(
-						$snippetParams->extenders as
-						$extenderName
+						$snippetParams->extenders
+						as $extenderName
 					){
 						if(
 							!\DDTools\ObjectTools::isPropExists([
 								'object' => $this->extendersParams,
-								'propName' => $extenderName
+								'propName' => $extenderName,
 							])
 						){
 							$this->extendersParams->{$extenderName} = (object) [];
@@ -182,7 +182,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * backwardCompatibility_dataProviderParams
-	 * @version 2.0.1 (2024-08-06)
+	 * @version 2.0.2 (2024-10-05)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
@@ -197,14 +197,14 @@ class Input extends \DDTools\Base\Base {
 				'filter',
 				'offset',
 				'total',
-				'orderBy'
-			] as
-			$paramName
+				'orderBy',
+			]
+			as $paramName
 		){
 			if (
 				\DDTools\ObjectTools::isPropExists([
 					'object' => $snippetParams,
-					'propName' => $paramName
+					'propName' => $paramName,
 				])
 			){
 				$this->providerParams->{$paramName} = $snippetParams->{$paramName};
@@ -214,7 +214,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * backwardCompatibility_outputterParams
-	 * @version 1.1 (2021-07-18)
+	 * @version 1.1.1 (2024-10-05)
 	 * 
 	 * @desc Prepare data provider params preserve backward compatibility.
 	 * 
@@ -228,14 +228,14 @@ class Input extends \DDTools\Base\Base {
 					'itemFirst' => 'itemTplFirst',
 					'itemLast' => 'itemTplLast',
 					'wrapper' => 'wrapperTpl',
-					'noResults' => 'noResults'
+					'noResults' => 'noResults',
 				]);
 			break;
 			
 			case 'sitemap':
 				$this->backwardCompatibility_outputterParams_moveTemplates([
 					'item' => 'itemTpl',
-					'wrapper' => 'wrapperTpl'
+					'wrapper' => 'wrapperTpl',
 				]);
 			break;
 			
@@ -247,7 +247,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * backwardCompatibility_outputterParams_moveTemplates
-	 * @version 1.0.1 (2024-08-06)
+	 * @version 1.0.2 (2024-10-05)
 	 * 
 	 * @desc Moves required templates from $this->outputterParams to $this->outputterParams->templates.
 	 * 
@@ -261,20 +261,20 @@ class Input extends \DDTools\Base\Base {
 			// If required templates is not set, then we need to provide backward compatibility
 			!\DDTools\ObjectTools::isPropExists([
 				'object' => $this->outputterParams,
-				'propName' => 'templates'
+				'propName' => 'templates',
 			])
 		){
 			$this->outputterParams->templates = (object) [];
 			
 			foreach(
-				$complianceArray as
-				$newName =>
-				$oldName
+				$complianceArray
+				as $newName
+				=> $oldName
 			){
 				if (
 					\DDTools\ObjectTools::isPropExists([
 						'object' => $this->outputterParams,
-						'propName' => $oldName
+						'propName' => $oldName,
 					])
 				){
 					$this->outputterParams->templates->{$newName} = $this->outputterParams->{$oldName};
@@ -287,7 +287,7 @@ class Input extends \DDTools\Base\Base {
 	
 	/**
 	 * backwardCompatibility_outputterParams_yandexmarket
-	 * @version 1.0.1 (2024-08-06)
+	 * @version 1.0.2 (2024-10-05)
 	 * 
 	 * @return {void}
 	 */
@@ -305,12 +305,12 @@ class Input extends \DDTools\Base\Base {
 			$this->outputterParams->templates = (object) [];
 			
 			foreach (
-				$this->outputterParams as
-				$paramName =>
-				$paramValue
+				$this->outputterParams
+				as $paramName
+				=> $paramValue
 			){
-				$targetGroupName = NULL;
-				$targetParamName = NULL;
+				$targetGroupName = null;
+				$targetParamName = null;
 				
 				// $this->outputterParams->shopData
 				if (
@@ -318,9 +318,11 @@ class Input extends \DDTools\Base\Base {
 						$paramName,
 						0,
 						9
-					) == 'shopData_'
+					)
+					== 'shopData_'
 				){
 					$targetGroupName = 'shopData';
+					
 					$targetParamName = substr(
 						$paramName,
 						9
@@ -331,9 +333,11 @@ class Input extends \DDTools\Base\Base {
 						$paramName,
 						0,
 						12
-					) == 'offerFields_'
+					)
+					== 'offerFields_'
 				){
 					$targetGroupName = 'offerFields';
+					
 					$targetParamName = substr(
 						$paramName,
 						12
@@ -344,9 +348,11 @@ class Input extends \DDTools\Base\Base {
 						$paramName,
 						0,
 						10
-					) == 'templates_'
+					)
+					== 'templates_'
 				){
 					$targetGroupName = 'offerFields';
+					
 					$targetParamName = substr(
 						$paramName,
 						10

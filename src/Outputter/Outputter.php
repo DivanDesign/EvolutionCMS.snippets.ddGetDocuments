@@ -57,7 +57,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 	
 	/**
 	 * construct_prepareFields_templates
-	 * @version 1.0.2 (2024-08-06)
+	 * @version 1.0.3 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — See __construct.
 	 */
@@ -68,22 +68,22 @@ abstract class Outputter extends \DDTools\Base\Base {
 		if (
 			\DDTools\ObjectTools::isPropExists([
 				'object' => $params,
-				'propName' => 'templates'
+				'propName' => 'templates',
 			])
 		){
 			// Extend defaults
 			$this->templates = \DDTools\ObjectTools::extend([
 				'objects' => [
 					$this->templates,
-					$params->templates
-				]
+					$params->templates,
+				],
 			]);
 		}
 		
 		foreach (
-			$this->templates as
-			$templateName =>
-			$templateValue
+			$this->templates
+			as $templateName
+			=> $templateValue
 		){
 			// Exclude null values
 			if (is_string($templateValue)){

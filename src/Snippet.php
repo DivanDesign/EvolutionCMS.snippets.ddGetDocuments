@@ -7,13 +7,13 @@ class Snippet extends \DDTools\Snippet {
 		
 		$renamedParamsCompliance = [
 			'outputter' => 'outputFormat',
-			'outputterParams' => 'outputFormatParams'
+			'outputterParams' => 'outputFormatParams',
 		]
 	;
 	
 	/**
 	 * run
-	 * @version 1.0.2 (2024-08-06)
+	 * @version 1.0.3 (2024-10-05)
 	 */
 	public function run(){
 		$result = '';
@@ -25,13 +25,13 @@ class Snippet extends \DDTools\Snippet {
 		
 		// Iterate through all extenders to create their instances
 		foreach(
-			$input->extendersParams as
-			$extenderName =>
-			$extenderParams
+			$input->extendersParams
+			as $extenderName
+			=> $extenderParams
 		){
 			$extenderObject = \ddGetDocuments\Extender\Extender::createChildInstance([
 				'name' => $extenderName,
-				'params' => $extenderParams
+				'params' => $extenderParams,
 			]);
 			// Passing a link to the storage
 			$extendersStorage[$extenderName] = $extenderObject;
@@ -42,7 +42,7 @@ class Snippet extends \DDTools\Snippet {
 		
 		$dataProviderObject = \ddGetDocuments\DataProvider\DataProvider::createChildInstance([
 			'name' => $input->provider,
-			'params' => $input->providerParams
+			'params' => $input->providerParams,
 		]);
 		
 		if ($input->outputter != 'raw'){
@@ -50,7 +50,7 @@ class Snippet extends \DDTools\Snippet {
 			
 			$outputterObject = \ddGetDocuments\Outputter\Outputter::createChildInstance([
 				'name' => $input->outputter,
-				'params' => $input->outputterParams
+				'params' => $input->outputterParams,
 			]);
 		}
 		
@@ -60,9 +60,9 @@ class Snippet extends \DDTools\Snippet {
 		
 		// Iterate through all extenders again to apply them to the output
 		foreach(
-			$extendersStorage as
-			$extenderName =>
-			$extenderObject
+			$extendersStorage
+			as $extenderName
+			=> $extenderObject
 		){
 			$outputData->extenders[$extenderName] = $extenderObject->applyToOutput($dataProviderResult);
 		}

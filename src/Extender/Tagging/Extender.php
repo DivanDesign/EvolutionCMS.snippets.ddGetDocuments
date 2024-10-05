@@ -19,7 +19,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * __construct
-	 * @version 1.1.3 (2024-08-06)
+	 * @version 1.1.4 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->tagsDocumentField {stringTvName} — The document field (TV) contains tags. Default: 'tags'.
@@ -44,9 +44,9 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 			}
 			
 			foreach (
-				$this->currentTags as
-				$index =>
-				$value
+				$this->currentTags
+				as $index
+				=> $value
 			){
 				$this->currentTags[$index] = \ddTools::$modx->db->escape($value);
 			}
@@ -55,7 +55,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToDataProviderParams
-	 * @version 1.0.1 (2024-08-06)
+	 * @version 1.0.2 (2024-10-05)
 	 * 
 	 * @param $dataProviderParams {stdClass}
 	 * 
@@ -65,8 +65,8 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 		// If URL contains tags
 		if (!empty($this->currentTags)){
 			if(
-				isset($dataProviderParams->filter) &&
-				trim($dataProviderParams->filter) != ''
+				isset($dataProviderParams->filter)
+				&& trim($dataProviderParams->filter) != ''
 			){
 				$dataProviderParams->filter .= ' AND';
 			}else{
@@ -76,29 +76,29 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 			$tagQueries = [];
 			
 			foreach (
-				$this->currentTags as
-				$currentTag
+				$this->currentTags
+				as $currentTag
 			){
 				$tagQueries[] =
-					'`' .
-					$this->tagsDocumentField .
-					'` REGEXP "(^|' .
-					$this->tagsDelimiter .
-					')' .
-					$currentTag .
-					'($|' .
-					$this->tagsDelimiter .
-					')"'
+					'`'
+					. $this->tagsDocumentField
+					. '` REGEXP "(^|'
+					. $this->tagsDelimiter
+					. ')'
+					. $currentTag
+					. '($|'
+					. $this->tagsDelimiter
+					. ')"'
 				;
 			}
 			
 			$dataProviderParams->filter .=
-				' (' .
-				implode(
+				' ('
+				. implode(
 					' OR ',
 					$tagQueries
-				) .
-				')'
+				)
+				. ')'
 			;
 		}
 		
@@ -107,7 +107,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	
 	/**
 	 * applyToOutput
-	 * @version 1.0.3 (2020-10-02)
+	 * @version 1.0.4 (2024-10-05)
 	 * 
 	 * @param $dataProviderOutput {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 * 
@@ -115,7 +115,7 @@ class Extender extends \ddGetDocuments\Extender\Extender {
 	 */
 	public function applyToOutput(\ddGetDocuments\DataProvider\DataProviderOutput $dataProviderOutput){
 		return [
-			'currentTags' => $this->currentTags
+			'currentTags' => $this->currentTags,
 		];
 	}
 }

@@ -10,7 +10,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$changefreqTVName = 'general_seo_sitemap_changefreq',
 		$templates = [
 			'item' => '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
-			'wrapper' => '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'
+			'wrapper' => '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>',
 		]
 	;
 	
@@ -20,7 +20,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0.3 (2024-08-06)
+	 * @version 2.0.4 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -38,14 +38,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'text' => $this->templates->item,
 			'data' => [
 				'priorityTVName' => $this->priorityTVName,
-				'changefreqTVName' => $this->changefreqTVName
+				'changefreqTVName' => $this->changefreqTVName,
 			],
-			'isCompletelyParsingEnabled' => false
+			'isCompletelyParsingEnabled' => false,
 		]);
 		
 		// We use the “String” Outputter as base
 		$outputter_StringParams = (object) [
-			'templates' => $this->templates
+			'templates' => $this->templates,
 		];
 		// Transfer provider link
 		if (isset($params->dataProvider)){
@@ -53,13 +53,13 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		}
 		$this->outputter_StringInstance = \ddGetDocuments\Outputter\Outputter::createChildInstance([
 			'name' => 'String',
-			'params' => $outputter_StringParams
+			'params' => $outputter_StringParams,
 		]);
 	}
 	
 	/**
 	 * parse
-	 * @version 1.1.3 (2024-08-06)
+	 * @version 1.1.4 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -67,9 +67,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 */
 	public function parse(Output $data){
 		foreach (
-			$data->provider->items as
-			$docIndex =>
-			$docData
+			$data->provider->items
+			as $docIndex
+			=> $docData
 		){
 			// Convert date to appropriate format
 			if (isset($data->provider->items[$docIndex]['editedon'])){
