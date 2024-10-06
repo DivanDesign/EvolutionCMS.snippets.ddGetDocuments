@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.5.1 (2024-10-06)
+	 * @version 2.6 (2024-10-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -76,9 +76,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$result[] = $result_item;
 		}
 		
-		return \DDTools\Tools\Objects::convertType([
-			'object' => $result,
-			'type' => 'stringJsonAuto',
-		]);
+		if (
+			empty($result)
+			&& \DDTools\Tools\Objects::isPropExists([
+				'object' => $this->templates,
+				'propName' => 'noResults',
+			])
+		){
+			$result = $this->templates->noResults;
+		}else{
+			$result = \DDTools\Tools\Objects::convertType([
+				'object' => $result,
+				'type' => 'stringJsonAuto',
+			]);
+		}
+		
+		return $result;
 	}
 }

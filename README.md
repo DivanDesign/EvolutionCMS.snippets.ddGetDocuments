@@ -307,7 +307,14 @@ Get resources from custom DB table.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* **Required**
+	* Default value: —
+	
+* `outputterParams->templates->noResults`
+	* Description: A chunk or text to output when no items found.
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: `'[]'`
 
 
 #### Outputter → Sitemap (``&outputter=`sitemap` ``)
