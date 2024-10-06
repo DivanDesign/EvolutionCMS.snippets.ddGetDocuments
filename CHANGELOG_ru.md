@@ -1,6 +1,15 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Версия 1.7 (2024-10-06)
+
+* \+ Outputters → Json → Параметры:
+	* \+ `outputterParams->templates->{$docFieldName}` → Плейсхолдеры → `[+itemNumber+]`, `[+itemNumberZeroBased+]`: Новые плейсхолдеры.
+	* \+ `outputterParams->docFields[i]`: Добавлена возможность использовать кастомные псевдонимы вместо имён полей для вывода, используя разделитель `'='`, например: `'pagetitle=title'`, `'content=text'`, etc. (см. README → Примеры).
+* \* `\ddTools::getTpl` используется вместо `$modx->getTpl` (стало чуть меньше багов).
+* \* Внимание! Требуется (MODX)EvolutionCMS.libraries.ddTools >= 0.62.
+
+
 ## Версия 1.6 (2022-09-30)
 
 * \+ Outputters → Json → Параметры → `outputterParams->templates->{$docFieldName}` → Плейсхолдеры: Новые плейсхолдеры. Содержат значения полей документа (и TV), указанных в `outputterParams->docFields`.

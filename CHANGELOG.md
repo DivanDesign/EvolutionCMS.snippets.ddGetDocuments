@@ -1,6 +1,15 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.7 (2024-10-06)
+
+* \+ Outputters → Json → Parameters:
+	* \+ `outputterParams->templates->{$docFieldName}` → Placeholders → `[+itemNumber+]`, `[+itemNumberZeroBased+]`: The new placeholders.
+	* \+ `outputterParams->docFields[i]`: Added ability to use custom aliases instead of field names for output using the `'='` separator, for example: `'pagetitle=title'`, `'content=text'`, etc. (see README → Examples).
+* \* `\ddTools::getTpl` is used instead of `$modx->getTpl` (means a bit less bugs).
+* \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.62 is required.
+
+
 ## Version 1.6 (2022-09-30)
 
 * \+ Outputters → Json → Parameters → `outputterParams->templates->{$docFieldName}` → Placeholders: The new placeholders contain any document field name or TV specified in `outputterParams->docFields`.
