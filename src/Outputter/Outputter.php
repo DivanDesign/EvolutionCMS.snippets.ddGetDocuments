@@ -14,6 +14,12 @@ abstract class Outputter extends \DDTools\Base\Base {
 		$docFields = ['id'],
 		
 		/**
+		 * @property $fieldAliases {stdClass} — Aliases of fields if used.
+		 * @property $fieldAliases->{$fieldName} {string} — A key is an original field name, a value is an alias.
+		 */
+		$fieldAliases = [],
+		
+		/**
 		 * @property $templates {stdClass}
 		 * @property $templates->{$templateName} {string}
 		 */
@@ -22,7 +28,7 @@ abstract class Outputter extends \DDTools\Base\Base {
 	
 	/**
 	 * __construct
-	 * @version 1.5.3 (2024-08-06)
+	 * @version 1.6 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->dataProvider {\ddGetDocuments\DataProvider\DataProvider}
@@ -38,6 +44,8 @@ abstract class Outputter extends \DDTools\Base\Base {
 		// Все параметры задают свойства объекта
 		$this->setExistingProps($params);
 		
+		$this->fieldAliases = (object) $this->fieldAliases;
+		
 		// Comma separated strings
 		if (!is_array($this->docFields)){
 			$this->docFields = explode(
@@ -49,9 +57,39 @@ abstract class Outputter extends \DDTools\Base\Base {
 		if (empty($this->docFields)){
 			// We need something
 			$this->docFields = ['id'];
-		}elseif (isset($params->dataProvider)){
-			// Ask dataProvider to get them
-			$params->dataProvider->addResourcesFieldsToGet($this->docFields);
+		}else{
+			// Prepare field aliases
+			foreach (
+				$this->docFields
+				as $fieldNameIndex
+				=> $fieldName
+			){
+				// If alias is used
+				if (
+					strpos(
+						$fieldName,
+						'='
+					)
+					!== false
+				){
+					// E. g. 'pagetitle=title'
+					$fieldName = explode(
+						'=',
+						$fieldName
+					);
+					
+					// Remove alias from field name
+					$this->docFields[$fieldNameIndex] = $fieldName[0];
+					
+					// Save alias
+					$this->fieldAliases->{$this->docFields[$fieldNameIndex]} = $fieldName[1];
+				}
+			}
+			
+			if (isset($params->dataProvider)){
+				// Ask dataProvider to get them
+				$params->dataProvider->addResourcesFieldsToGet($this->docFields);
+			}
 		}
 	}
 	

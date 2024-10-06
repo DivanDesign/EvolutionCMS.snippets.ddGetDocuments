@@ -288,9 +288,10 @@ Get resources from custom DB table.
 	
 * `outputterParams->docFields[i]`
 	* Desctription: Document field or TV.
+		* You can use custom aliases instead of field names for output using the `'='` separator (for example: `'pagetitle=title'`, `'content=text'`, etc).
 	* Valid values:
-		* `stringDocFieldName`
-		* `stringTvName`
+		* `string` — document field
+		* `stringSeparated` — document field and it's alias separated by `'='`
 	* **Required**
 	
 * `outputterParams->templates->{$docFieldName}`
@@ -978,6 +979,48 @@ Returns:
 		"pagetitle": "Contacts",
 		"menuindex": "2",
 		"someTV": ""
+	}
+]
+```
+
+
+### Outputters → JSON (``&outputter=`json` ``): Use custom aliases instead of field names
+
+```
+[[ddGetDocuments?
+	&providerParams=`{
+		parentIds: 1
+	}`
+	&outputter=`json`
+	&outputterParams=`{
+		docFields: pagetitle=name,menuindex=position
+	}`
+]]
+```
+
+Returns:
+
+```json
+[
+	{
+		"name": "Denial",
+		"position": "0",
+	},
+	{
+		"name": "Anger",
+		"position": "1",
+	},
+	{
+		"name": "Bargaining",
+		"position": "2",
+	},
+	{
+		"name": "Depression",
+		"position": "3",
+	},
+	{
+		"name": "Acceptance",
+		"position": "4",
 	}
 ]
 ```

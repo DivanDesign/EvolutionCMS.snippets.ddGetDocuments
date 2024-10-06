@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.4 (2024-10-05)
+	 * @version 2.5 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -15,6 +15,8 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 */
 	public function parse(Output $data){
 		$result = [];
+		
+		$isFieldAliasesUsed = !\ddTools::isEmpty($this->fieldAliases);
 		
 		// Пройдемся по полученным данным
 		foreach(
@@ -29,7 +31,20 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				$this->docFields
 				as $docField
 			){
-				$result_item[$docField] = $itemData[$docField];
+				// If aliases are used
+				if (
+					$isFieldAliasesUsed
+					&& \DDTools\Tools\Objects::isPropExists([
+						'object' => $this->fieldAliases,
+						'propName' => $docField,
+					])
+				){
+					$result_item[$this->fieldAliases->{$docField}] = $itemData[$docField];
+					
+					$docField = $this->fieldAliases->{$docField};
+				}else{
+					$result_item[$docField] = $itemData[$docField];
+				}
 				
 				// If template for this field is set
 				if (
