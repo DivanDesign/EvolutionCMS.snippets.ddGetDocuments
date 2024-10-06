@@ -28,7 +28,6 @@ require_once(
 // Install (MODX)EvolutionCMS.snippets.ddGetDocuments
 \DDInstaller::install([
 	'url' => 'https://github.com/DivanDesign/EvolutionCMS.snippets.ddGetDocuments',
-	'type' => 'snippet',
 ]);
 ```
 
@@ -42,7 +41,7 @@ require_once(
 #### 1. Elements → Snippets: Create a new snippet with the following data
 
 1. Snippet name: `ddGetDocuments`.
-2. Description: `<b>1.7</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
+2. Description: `<b>1.8</b> A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.`.
 3. Category: `Core`.
 4. Parse DocBlock: `no`.
 5. Snippet code (php): Insert content of the `ddGetDocuments_snippet.php` file from the archive.
@@ -307,7 +306,25 @@ Get resources from custom DB table.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
-	* **Required**
+	* Default value: —
+	
+* `outputterParams->templates->noResults`
+	* Description: A chunk or text to output when no items found.
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: `'[]'`
+	
+* `outputterParams->templates->wrapper`
+	* Description: Wrapper template.
+		* Available placeholders:
+			* `[+ddGetDocuments_items+]`
+			* `[+total+]` — number of returned items
+			* `[+totalFound+]` — number of found items
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: `'[+ddGetDocuments_items+]'`
 
 
 #### Outputter → Sitemap (``&outputter=`sitemap` ``)

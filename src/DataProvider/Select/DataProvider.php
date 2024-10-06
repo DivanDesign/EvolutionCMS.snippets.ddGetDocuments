@@ -32,4 +32,27 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 			'resourcesIds' => $this->ids
 		]);
 	}
+	
+	/**
+	 * prepareQuery
+	 * @version 1.0 (2024-10-06)
+	 * 
+	 * @param $params {arrayAssociative|stdClass}
+	 * @param $params['resourcesIds'] — Document IDs to get ($this->filter will be used).
+	 * 
+	 * @return $result {string}
+	 */
+	protected function prepareQuery($params = []){
+		return
+			// resourcesIds is required
+			!empty(
+				\DDTools\Tools\Objects::getPropValue([
+					'object' => $params,
+					'propName' => 'resourcesIds',
+				])
+			)
+			? parent::prepareQuery($params)
+			: ''
+		;
+	}
 }
