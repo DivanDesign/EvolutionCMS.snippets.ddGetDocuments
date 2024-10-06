@@ -21,14 +21,14 @@ Just run the following PHP code in your sources or [Console](https://github.com/
 ```php
 // Include (MODX)EvolutionCMS.libraries.ddInstaller
 require_once(
-	$modx->getConfig('base_path') .
-	'assets/libs/ddInstaller/require.php'
+	$modx->getConfig('base_path')
+	. 'assets/libs/ddInstaller/require.php'
 );
 
 // Install (MODX)EvolutionCMS.snippets.ddGetDocuments
 \DDInstaller::install([
 	'url' => 'https://github.com/DivanDesign/EvolutionCMS.snippets.ddGetDocuments',
-	'type' => 'snippet'
+	'type' => 'snippet',
 ]);
 ```
 
@@ -68,8 +68,8 @@ require_once(
 ### Data provider parameters
 
 * `provider`
-	* Description: Name of the provider that will be used to fetch documents.  
-		Data provider names are case insensitive (the following names are equal: `parent`, `Parent`, `pArEnT`, etc).
+	* Description: Name of the provider that will be used to fetch documents.
+		* Data provider names are case insensitive (the following names are equal: `parent`, `Parent`, `pArEnT`, etc).
 	* Valid values:
 		* `'parent'`
 		* `'select'`
@@ -87,8 +87,8 @@ require_once(
 	* Default value: —
 	
 * `providerParams->filter`
-	* Description: The filter condition in SQL-style to be applied while resource fetching.  
-		Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
+	* Description: The filter condition in SQL-style to be applied while resource fetching.
+		* Notice that all fields/tvs names specified in the filter parameter must be wrapped in `fieldDelimiter`.
 	* Valid values: `string`
 	* Default value: ``'`published` = 1 AND `deleted` = 0'``
 	
@@ -113,8 +113,8 @@ require_once(
 	* **Required**
 	
 * `providerParams->orderBy`
-	* Description: A string representing the sorting rule.  
-		TV names also can be used.
+	* Description: A string representing the sorting rule.
+		* TV names also can be used.
 	* Valid values: `string`
 	* Default value: —
 
@@ -179,8 +179,8 @@ Get resources from custom DB table.
 ### Output format parameters
 
 * `outputter`
-	* Description: Format of the output.  
-		Outputter names are case insensitive (the following names are equal: `string`, `String`, `sTrInG`, etc).
+	* Description: Format of the output.
+		* Outputter names are case insensitive (the following names are equal: `string`, `String`, `sTrInG`, etc).
 	* Valid values:
 		* `'string'`
 		* `'json'`
@@ -209,60 +209,61 @@ Get resources from custom DB table.
 #### Outputter → String (``&outputter=`string` ``)
 
 * `outputterParams->templates->item`
-	* Description: Item template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
-		* `[+itemNumber+]` — Item number started from 1.
-		* `[+itemNumberZeroBased+]` Item number started from 0.
-		* `[+total+]` — number of returned items
-		* `[+totalFound+]` — number of found items
+	* Description: Item template.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
+			* `[+itemNumber+]` — Item number started from 1.
+			* `[+itemNumberZeroBased+]` Item number started from 0.
+			* `[+total+]` — number of returned items
+			* `[+totalFound+]` — number of found items
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* **Required**
 	
 * `outputterParams->templates->itemFirst`
-	* Description: Template for the first item. Has the same placeholders as `outputterParams->templates->item`.
+	* Description: Template for the first item.
+		* Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: == `outputterParams->templates->item`.
 	
 * `outputterParams->templates->itemLast`
-	* Description: Template for the last item. Has the same placeholders as `outputterParams->templates->item`.
+	* Description: Template for the last item.
+		* Has the same placeholders as `outputterParams->templates->item`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: == `outputterParams->templates->item`.
 	
 * `outputterParams->templates->wrapper`
-	* Description: Wrapper template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
-		* `[+ddGetDocuments_items+]`
-		* `[+total+]` — number of returned items
-		* `[+totalFound+]` — number of found items
+	* Description: Wrapper template.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+`any placeholders from `placeholders` param`+]` — Any custom placeholders (see `outputterParams->placeholders` description below).
+			* `[+ddGetDocuments_items+]`
+			* `[+total+]` — number of returned items
+			* `[+totalFound+]` — number of found items
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: —
 	
 * `outputterParams->templates->noResults`
-	* Description: A chunk or text to output when no items found.  
-		Has the same placeholders as `outputterParams->templates->wrapper`.
+	* Description: A chunk or text to output when no items found.
+		* Has the same placeholders as `outputterParams->templates->wrapper`.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: —
 	
 * `outputterParams->placeholders`
-	* Description:
-		Additional data has to be passed into `templates->item`, `templates->itemFirst`, `templates->itemLast` and `templates->wrapper`.  
-		Arrays are supported too: `some[a]=one&some[b]=two` => `[+some.a+]`, `[+some.b+]`; `some[]=one&some[]=two` => `[+some.0+]`, `[some.1]`.
+	* Description: Additional data has to be passed into `templates->item`, `templates->itemFirst`, `templates->itemLast` and `templates->wrapper`.
+		* Arrays are supported too: `some[a]=one&some[b]=two` => `[+some.a+]`, `[+some.b+]`; `some[]=one&some[]=two` => `[+some.0+]`, `[some.1]`.
 	* Valid values: `object`
 	* Default value: —
 	
@@ -295,17 +296,14 @@ Get resources from custom DB table.
 	* **Required**
 	
 * `outputterParams->templates->{$docFieldName}`
-	* Description:
-		You can use templates for some document fields.  
-		Templates will be used before JSON conversion of results. So you don't need to care about characters escaping.  
-		
-		It is useful for manipulations with doc field values through running snippets.  
-		
-		Available placeholders:
-		* `[+value+]` — the field value
-		* `[+`any document field or tv name`+]` — Any document field name or TV specified in `outputterParams->docFields`
-		* `[+itemNumber+]` — item number started from 1
-		* `[+itemNumberZeroBased+]` — item number started from 0
+	* Description: You can use templates for some document fields.
+		* Templates will be used before JSON conversion of results. So you don't need to care about characters escaping.
+		* It is useful for manipulations with doc field values through running snippets.  
+		* Available placeholders:
+			* `[+value+]` — the field value
+			* `[+`any document field or tv name`+]` — Any document field name or TV specified in `outputterParams->docFields`
+			* `[+itemNumber+]` — item number started from 1
+			* `[+itemNumberZeroBased+]` — item number started from 0
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -328,11 +326,11 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 	
 * `outputterParams->templates->item`
 	* Description: Item template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+itemNumber+]` — Item number started from 1.
-		* `[+itemNumberZeroBased+]` Item number started from 0.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+itemNumber+]` — Item number started from 1.
+			* `[+itemNumberZeroBased+]` Item number started from 0.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -347,11 +345,11 @@ Output in [Sitemap XML format](https://en.wikipedia.org/wiki/Sitemaps).
 		```
 	
 * `outputterParams->templates->wrapper`
-	* Description: Wrapper template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+ddGetDocuments_items+]`
+	* Description: Wrapper template.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+ddGetDocuments_items+]`
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -445,8 +443,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 	
 * `outputterParams->offerFields->price`
-	* Description: A document field name, that contains offer price.  
-		If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
+	* Description: A document field name, that contains offer price.
+		* If a document field value is empty, but `outputterParams->offerFields->priceOld` is set, the last will be used instead.
 	* Valid values: `stringTvName`
 	* **Required**
 	
@@ -461,8 +459,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 	
 * `outputterParams->offerFields->name`
-	* Description: A document field name, that contains offer name.  
-		If a document field value is empty, the `pagetitle` field will be used instead.
+	* Description: A document field name, that contains offer name.
+		* If a document field value is empty, the `pagetitle` field will be used instead.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
@@ -521,20 +519,20 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 	
 * `outputterParams->offerFields->dimensions`
-	* Description: A document field name, that contains offer dimensions (length, width, height) including packaging.  
-		Specify dimensions in centimeters. Format: three positive numbers with accuracy of 0.001, using a dot as the decimal separator.  
-		The numbers must be separated by the slash character `/` without spaces.
+	* Description: A document field name, that contains offer dimensions (length, width, height) including packaging.
+		* Specify dimensions in centimeters. Format: three positive numbers with accuracy of 0.001, using a dot as the decimal separator.
+		* The numbers must be separated by the slash character `/` without spaces.
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
 	* Default value: —
 	
 * `outputterParams->offerFields->weight`
-	* Description: Item weight in kilograms including packaging.  
-		Some categories have limits on the minimum or maximum weight.  
-		[Download a list of minimum and maximum weight values](https://download.cdn.yandex.net/support/ru/partnermarket/yandex.market-weight.xlsx).  
-		In any category, the weight can be specified accurate to one thousandth (for example, 1.001, using a dot as a decimal point).  
-		If the minimum value is set to 0, there is no minimum weight limit and it can be specified starting from one gram (0.001 kg).
+	* Description: Item weight in kilograms including packaging.
+		* Some categories have limits on the minimum or maximum weight.
+		* [Download a list of minimum and maximum weight values](https://download.cdn.yandex.net/support/ru/partnermarket/yandex.market-weight.xlsx).
+		* In any category, the weight can be specified accurate to one thousandth (for example, 1.001, using a dot as a decimal point).
+		* If the minimum value is set to `0`, there is no minimum weight limit and it can be specified starting from one gram (0.001 kg).
 	* Valid values:
 		* `stringDocFieldName`
 		* `stringTvName`
@@ -555,11 +553,11 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* Default value: —
 	
 * `outputterParams->templates->wrapper`
-	* Description: Wrapper template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+ddGetDocuments_items+]`
+	* Description: Wrapper template.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+ddGetDocuments_items+]`
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -585,11 +583,11 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	
 * `outputterParams->templates->categories_item`
 	* Description: Category item template.
-		Available placeholders:
-		* `[+id+]` — Category doc ID. 
-		* `[+value+]` — Category name.
-		* `[+parent+]` — Category parent ID.
-		* `[+attrs+]` — Attributes string (e. g. `parentId="42"`).
+		* Available placeholders:
+			* `[+id+]` — Category doc ID. 
+			* `[+value+]` — Category name.
+			* `[+parent+]` — Category parent ID.
+			* `[+attrs+]` — Attributes string (e. g. `parentId="42"`).
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -601,12 +599,12 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `outputterParams->templates->offers_item`
-	* Description: Offer item template.  
-		Available placeholders:
-		* `[+`any document field or tv name`+]` — Any document field name or TV.
-		* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
-		* `[+itemNumber+]` — Item number started from 1.
-		* `[+itemNumberZeroBased+]` Item number started from 0.
+	* Description: Offer item template.
+		* Available placeholders:
+			* `[+`any document field or tv name`+]` — Any document field name or TV.
+			* `[+`any of extender placeholders`+]` — Any extender placeholders (see extenders description below).
+			* `[+itemNumber+]` — Item number started from 1.
+			* `[+itemNumberZeroBased+]` Item number started from 0.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -635,10 +633,11 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `outputterParams->templates->{'offers_item_elem' . $FieldName}`
-	* Description: You can set custom template for any offer element. Specify an element name in accordance with `offerFields->` parameters, e. g. `outputterParams->templates->offers_item_elemCountryOfOrigin`.  
-		Available placeholders:
-		* `[+tagName+]` — Element tag name.
-		* `[+value+]` — Element value.
+	* Description: You can set custom template for any offer element.
+		* Specify an element name in accordance with `offerFields->` parameters, e. g. `outputterParams->templates->offers_item_elemCountryOfOrigin`.
+		* Available placeholders:
+			* `[+tagName+]` — Element tag name.
+			* `[+value+]` — Element value.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -648,15 +647,15 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 ### Extenders parameters
 	
 * `extenders`
-	* Description: Comma-separated string determining which extenders should be applied to the snippet.  
-		Be aware that the order of extender names can affect the output.
+	* Description: Comma-separated string determining which extenders should be applied to the snippet.
+		* Be aware that the order of extender names can affect the output.
 	* Valid values: `stringCommaSeparated`
 	* Default value: —
 	
 * `extenders[i]`
-	* Description: Extender name.  
-		Be aware that the order of extender names can affect the output.  
-		Extender names are case insensitive (the following names are equal: `pagination`, `Pagination`, `pAgInAtIoN`, etc).
+	* Description: Extender name.
+		* Be aware that the order of extender names can affect the output.
+		* Extender names are case insensitive (the following names are equal: `pagination`, `Pagination`, `pAgInAtIoN`, etc).
 	* Valid values:
 		* `'pagination'`
 		* `'tagging'`
@@ -665,8 +664,8 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 	* **Required**
 	
 * `extendersParams`
-	* Description: Parameters to be passed to their corresponding extensions.  
-		You can avoid extender name if you are using only one extender (see examples below).
+	* Description: Parameters to be passed to their corresponding extensions.
+		* You can avoid extender name if you are using only one extender (see examples below).
 	* Valid values:
 		* `stringJsonObject` — as [JSON](https://en.wikipedia.org/wiki/JSON)
 		* `stringHjsonObject` — as [HJSON](https://hjson.github.io/)
@@ -685,12 +684,12 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 #### Extenders → Pagination (``&extenders=`pagination` ``)
 
 * `extendersParams->pagination->wrapperTpl`
-	* Description: Chunk to be used to output the pagination.  
-		Available placeholders:
-		* `[+previous+]` — HTML code of navigation block to the previous page (see parameters description below).
-		* `[+next+]` — HTML code of navigation block to the next page (see parameters description below).
-		* `[+pages+]` — HTML code of pages navigalion block (see parameters description below).
-		* `[+totalPages+]` — Total number of pages.
+	* Description: Chunk to be used to output the pagination.
+		* Available placeholders:
+			* `[+previous+]` — HTML code of navigation block to the previous page (see parameters description below).
+			* `[+next+]` — HTML code of navigation block to the next page (see parameters description below).
+			* `[+pages+]` — HTML code of pages navigalion block (see parameters description below).
+			* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -706,10 +705,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->pageTpl`
-	* Description: Chunk to be used to output pages within the pagination.  
-		Available placeholders:
-		* `[+url+]` — Page URL.
-		* `[+page+]` — Page number.
+	* Description: Chunk to be used to output pages within the pagination.
+		* Available placeholders:
+			* `[+url+]` — Page URL.
+			* `[+page+]` — Page number.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -719,10 +718,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->currentPageTpl`
-	* Description: Chunk to be used to output the current page within the pagination.  
-		Available placeholders:
-		* `[+url+]` — Page URL.
-		* `[+page+]` — Page number.
+	* Description: Chunk to be used to output the current page within the pagination.
+		* Available placeholders:
+			* `[+url+]` — Page URL.
+			* `[+page+]` — Page number.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -732,10 +731,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->nextTpl`
-	* Description: Chunk to be used to output the navigation block to the next page.  
-		Available placeholders:
-		* `[+url+]` — Next page URL.
-		* `[+totalPages+]` — Total number of pages.
+	* Description: Chunk to be used to output the navigation block to the next page.
+		* Available placeholders:
+			* `[+url+]` — Next page URL.
+			* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -746,9 +745,9 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->nextOffTpl`
-	* Description: 	Chunk to be used to output the navigation block to the next page if there are no more pages after.  
-		Available placeholders:
-		* `[+totalPages+]` — Total number of pages.
+	* Description: 	Chunk to be used to output the navigation block to the next page if there are no more pages after.
+		* Available placeholders:
+			* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -759,10 +758,10 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->previousTpl`
-	* Description: Chunk to be used to output the navigation block to the previous page.  
-		Available placeholders:
-		* `[+url+]` — Next page URL.
-		* `[+totalPages+]` — Total number of pages.
+	* Description: Chunk to be used to output the navigation block to the previous page.
+		* Available placeholders:
+			* `[+url+]` — Next page URL.
+			* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -773,9 +772,9 @@ Output in [YML format](https://yandex.ru/support/partnermarket/export/yml.html).
 		```
 	
 * `extendersParams->pagination->previousOffTpl`
-	* Description: Chunk to be used to output the navigation block to the previous page if there are no more pages before.  
-		Available placeholders:
-		* `[+totalPages+]` — Total number of pages.
+	* Description: Chunk to be used to output the navigation block to the previous page if there are no more pages before.
+		* Available placeholders:
+			* `[+totalPages+]` — Total number of pages.
 	* Valid values:
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
@@ -1153,8 +1152,8 @@ We recommend to use cashed snippet calls and turn on document caching type with 
 ```php
 // Include (MODX)EvolutionCMS.libraries.ddTools
 require_once(
-	$modx->getConfig('base_path') .
-	'assets/libs/ddTools/modx.ddtools.class.php'
+	$modx->getConfig('base_path')
+	. 'assets/libs/ddTools/modx.ddtools.class.php'
 );
 
 // Run (MODX)EvolutionCMS.snippets.ddGetDocuments
@@ -1163,10 +1162,10 @@ require_once(
 	'params' => [
 		// It is convenient to set the parameter as a native PHP array or object
 		'providerParams' => [
-			'parentIds' => 1
+			'parentIds' => 1,
 		],
-		'outputter' => 'json'
-	]
+		'outputter' => 'json',
+	],
 ]);
 ```
 
