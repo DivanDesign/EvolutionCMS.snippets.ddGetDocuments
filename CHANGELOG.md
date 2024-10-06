@@ -1,6 +1,14 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.8 (2024-10-06)
+
+* \+ Outputters → Json → Parameters:
+	* \+ `outputterParams->templates->noResults`: The new optional parameter. Allows to specify a chunk or text to output when no items found.
+	* \+ `outputterParams->templates->wrapper`: The new optional parameter. Allows to specify a wrapper template.
+* \* Providers → Select → Parameters → `providerParams->ids`: If the required parameter is empty, nothing will be returned.
+
+
 ## Version 1.7 (2024-10-06)
 
 * \+ Outputters → Json → Parameters:

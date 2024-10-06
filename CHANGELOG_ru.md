@@ -1,6 +1,14 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Версия 1.8 (2024-10-06)
+
+* \+ Outputters → Json → Параметры:
+	* \+ `outputterParams->templates->noResults`: Новый необязательный параметр. Позволяет задать чанк или текст, который нужно вывести, когда ничего не найдено.
+	* \+ `outputterParams->templates->wrapper`: Новый необязательный параметр. Позволяет задать шаблон-обёртку.
+* \* Providers → Select → Параметры → `providerParams->ids`: Если обязательный параметр пуст, ничего не выведется.
+
+
 ## Версия 1.7 (2024-10-06)
 
 * \+ Outputters → Json → Параметры:
