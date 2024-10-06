@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.6 (2024-10-06)
+	 * @version 2.7 (2024-10-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -89,6 +89,22 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'object' => $result,
 				'type' => 'stringJsonAuto',
 			]);
+			
+			if (
+				\DDTools\Tools\Objects::isPropExists([
+					'object' => $this->templates,
+					'propName' => 'wrapper',
+				])
+			){
+				$result = \ddTools::parseText([
+					'text' => $this->templates->wrapper,
+					'data' => [
+						'ddGetDocuments_items' => $result,
+						'total' => count($data->provider->items),
+						'totalFound' => $data->provider->totalFound,
+					],
+				]);
+			}
 		}
 		
 		return $result;

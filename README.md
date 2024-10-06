@@ -315,6 +315,17 @@ Get resources from custom DB table.
 		* `stringChunkName`
 		* `string` — use inline templates starting with `@CODE:`
 	* Default value: `'[]'`
+	
+* `outputterParams->templates->wrapper`
+	* Description: Wrapper template.
+		* Available placeholders:
+			* `[+ddGetDocuments_items+]`
+			* `[+total+]` — number of returned items
+			* `[+totalFound+]` — number of found items
+	* Valid values:
+		* `stringChunkName`
+		* `string` — use inline templates starting with `@CODE:`
+	* Default value: `'[+ddGetDocuments_items+]'`
 
 
 #### Outputter → Sitemap (``&outputter=`sitemap` ``)
