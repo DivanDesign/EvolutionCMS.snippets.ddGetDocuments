@@ -28,7 +28,6 @@ require_once(
 // Install (MODX)EvolutionCMS.snippets.ddGetDocuments
 \DDInstaller::install([
 	'url' => 'https://github.com/DivanDesign/EvolutionCMS.snippets.ddGetDocuments',
-	'type' => 'snippet',
 ]);
 ```
 
