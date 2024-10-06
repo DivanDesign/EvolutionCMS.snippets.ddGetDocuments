@@ -1,7 +1,7 @@
 {
 	"name": "dd/evolutioncms-snippets-ddgetdocuments",
 	"type": "modxevo-snippet",
-	"version": "1.6.0",
+	"version": "1.7.0",
 	"description": "A snippet for fetching and parsing resources from the document tree or custom DB table by a custom rule.",
 	"keywords": [
 		"modx",
@@ -17,26 +17,18 @@
 		"get documents",
 		"ddgetdocuments"
 	],
-	"homepage": "https://code.divandesign.biz/modx/ddgetdocuments",
+	"homepage": "https://code.divandesign.ru/modx/ddgetdocuments",
 	"support": {
 		"chat": "https://t.me/dd_code"
 	},
 	"authors": [
 		{
-			"name": "DD Group",
-			"email": "code@DivanDesign.biz",
-			"homepage": "https://code.divandesign.biz",
+			"name": "Ilyas Ronef",
+			"homepage": "https://ronef.me",
 			"role": "Owner"
 		},
 		{
-			"name": "Ilyas Ronef",
-			"email": "ilyas@DivanDesign.ru",
-			"homepage": "https://ronef.ru",
-			"role": "Developer"
-		},
-		{
 			"name": "Alexey Davydov",
-			"email": "davalemic@DivanDesign.ru",
 			"homepage": "https://github.com/davalemic",
 			"role": "Developer"
 		},
@@ -59,7 +51,7 @@
 	"license": "MIT",
 	"require": {
 		"php": ">=5.6.0",
-		"dd/evolutioncms-libraries-ddtools": ">=0.50.0",
+		"dd/evolutioncms-libraries-ddtools": ">=0.62.0",
 		"composer/installers": "~1.0.0"
 	},
 	"autoload": {

@@ -15,14 +15,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			'itemFirst' =>  null,
 			'itemLast' =>  null,
 			'wrapper' =>  null,
-			'noResults' => null
+			'noResults' => null,
 		],
 		$itemGlue = ''
 	;
 	
 	/**
 	 * construct_prepareFields_templates
-	 * @version 1.0 (2021-07-13)
+	 * @version 1.0.2 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative} — @required
 	 * @param $params->templates {stdClass|arrayAssociative} — Templates. @required
@@ -36,20 +36,20 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->itemGlue {string} — The string that combines items while rendering. Default: ''.
 	 */
 	protected function construct_prepareFields_templates($params){
-		//Call base method
+		// Call base method
 		parent::construct_prepareFields_templates($params);
 		
-		//Prepare item templates
+		// Prepare item templates
 		if (is_string($this->templates->item)){
 			$textToGetPlaceholdersFrom = $this->templates->item;
 			
-			//First item
+			// First item
 			if (is_string($this->templates->itemFirst)){
 				$textToGetPlaceholdersFrom .= $this->templates->itemFirst;
 			}else{
 				$this->templates->itemFirst = $this->templates->item;
 			}
-			//Last item
+			// Last item
 			if (is_string($this->templates->itemLast)){
 				$textToGetPlaceholdersFrom .= $this->templates->itemLast;
 			}else{
@@ -57,14 +57,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 			
 			$this->docFields = \ddTools::getPlaceholdersFromText([
-				'text' => $textToGetPlaceholdersFrom
+				'text' => $textToGetPlaceholdersFrom,
 			]);
 		}
 	}
 	
 	/**
 	 * parse
-	 * @version 2.1.4 (2021-07-13)
+	 * @version 2.1.6 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -78,14 +78,14 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		
 		$generalPlaceholders = [
 			'total' => $total,
-			'totalFound' => $data->provider->totalFound
+			'totalFound' => $data->provider->totalFound,
 		];
 		
 		$generalPlaceholders = \DDTools\ObjectTools::extend([
 			'objects' => [
 				$generalPlaceholders,
-				$this->placeholders
-			]
+				$this->placeholders,
+			],
 		]);
 		
 		if(isset($data->extenders)){
@@ -93,26 +93,27 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 				'objects' => [
 					$generalPlaceholders,
 					[
-						'extenders' => $data->extenders
-					]
-				]
+						'extenders' => $data->extenders,
+					],
+				],
 			]);
 			
 			$generalPlaceholders = \ddTools::unfoldArray($generalPlaceholders);
 		}
 		
 		if(
-			is_array($data->provider->items) &&
-			//Item template is set
-			$this->templates->item !== null
+			is_array($data->provider->items)
+			// Item template is set
+			&& $this->templates->item !== null
 		){
 			$maxIndex = $total - 1;
-			//Foreach items
+			// Foreach items
 			foreach(
-				$data->provider->items as
-				$index => $item
+				$data->provider->items
+				as $index
+				=> $item
 			){
-				//Prepare item output template
+				// Prepare item output template
 				if($index == 0){
 					$chunkName = $this->templates->itemFirst;
 				}elseif($index == $maxIndex){
@@ -121,19 +122,21 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					$chunkName = $this->templates->item;
 				}
 				
-				$resultItems[] = \ddTools::parseSource(\ddTools::parseText([
-					'text' => $chunkName,
-					'data' => \DDTools\ObjectTools::extend([
-						'objects' => [
-							$item,
-							$generalPlaceholders,
-							[
-								'itemNumber' => $index + 1,
-								'itemNumberZeroBased' => $index
-							]
-						]
+				$resultItems[] = \ddTools::parseSource(
+					\ddTools::parseText([
+						'text' => $chunkName,
+						'data' => \DDTools\ObjectTools::extend([
+							'objects' => [
+								$item,
+								$generalPlaceholders,
+								[
+									'itemNumber' => $index + 1,
+									'itemNumberZeroBased' => $index,
+								],
+							],
+						]),
 					])
-				]));
+				);
 			}
 		}
 		
@@ -142,16 +145,18 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$resultItems
 		);
 		
-		//If no items found and “noResults” is not empty
+		// If no items found and “noResults” is not empty
 		if(
-			$total == 0 &&
-			$this->templates->noResults !== null &&
-			$this->templates->noResults != ''
+			$total == 0
+			&& $this->templates->noResults !== null
+			&& $this->templates->noResults != ''
 		){
-			$result = \ddTools::parseSource(\ddTools::parseText([
-				'text' => $this->templates->noResults,
-				'data' => $generalPlaceholders
-			]));
+			$result = \ddTools::parseSource(
+				\ddTools::parseText([
+					'text' => $this->templates->noResults,
+					'data' => $generalPlaceholders,
+				])
+			);
 		}elseif($this->templates->wrapper !== null){
 			$result = \ddTools::parseText([
 				'text' => $this->templates->wrapper,
@@ -159,10 +164,10 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 					'objects' => [
 						$generalPlaceholders,
 						[
-							'ddGetDocuments_items' => $result
-						]
-					]
-				])
+							'ddGetDocuments_items' => $result,
+						],
+					],
+				]),
 			]);
 		}
 		

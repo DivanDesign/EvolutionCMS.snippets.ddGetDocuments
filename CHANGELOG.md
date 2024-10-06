@@ -1,17 +1,29 @@
 # (MODX)EvolutionCMS.snippets.ddGetDocuments changelog
 
 
+## Version 1.7 (2024-10-06)
+
+* \+ Outputters → Json → Parameters:
+	* \+ `outputterParams->templates->{$docFieldName}` → Placeholders → `[+itemNumber+]`, `[+itemNumberZeroBased+]`: The new placeholders.
+	* \+ `outputterParams->docFields[i]`: Added ability to use custom aliases instead of field names for output using the `'='` separator, for example: `'pagetitle=title'`, `'content=text'`, etc. (see README → Examples).
+* \* `\ddTools::getTpl` is used instead of `$modx->getTpl` (means a bit less bugs).
+* \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.62 is required.
+
+
 ## Version 1.6 (2022-09-30)
+
 * \+ Outputters → Json → Parameters → `outputterParams->templates->{$docFieldName}` → Placeholders: The new placeholders contain any document field name or TV specified in `outputterParams->docFields`.
 * \* Outputters → Yandexmarket: Critical error related to missing initialization of an object field has been fixed.
 
 
 ## Version 1.5 (2022-06-03)
+
 * \+ Parameters → `providerParams->groupBy`: The new parameter. Allows to group items that have the same field values into summary item (like SQL `GROUP BY`). See README.
 * \* README → Examples: HJSON is used for all examples.
 
 
 ## Version 1.4 (2021-07-27)
+
 * \* Attention! PHP >= 5.6 is required.
 * \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.50 is required.
 * \+ Parameters → `providerParams`, `outputterParams`, `extendersParams`: Can also be set as [HJSON](https://hjson.github.io/) or as a native PHP object or array (e. g. for calls through `$modx->runSnippet`).
@@ -33,10 +45,12 @@
 
 
 ## Version 1.3.1 (2021-02-28)
+
 * \* Outputters → String → Parameters → `outputterParams->placeholders`: Fixed critical error when the parameter is used.
 
 
 ## Version 1.3 (2021-02-27)
+
 * \* Attention! (MODX)Evolution.libraries.ddTools >= 0.42 is required.
 * \* Parameters: The following parameters were moved from Snippet to Provider (with backward compatibility):
 	* \* `filter` → `providerParams->filter`.
@@ -60,6 +74,7 @@
 
 
 ## Version 1.2 (2020-10-09)
+
 * \+ Extenders → SortFromURL (see README).
 * \* Parameters: The following were changed (with backward compatibility):
 	* \- `orderBy`.
@@ -71,6 +86,7 @@
 
 
 ## Version 1.1 (2020-07-05)
+
 * \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.40.1 is required (not tested in older versions).
 * \* Improved compatibility with new versions of (MODX)EvolutionCMS.libraries.ddTools.
 * \* Snippet:
@@ -87,6 +103,7 @@
 
 
 ## Version 1.0 (2020-03-11)
+
 * \* Attention! (MODX)EvolutionCMS.libraries.ddTools >= 0.30 is required.
 * \+ Providers → Customdbtable. Get resources from custom DB table.
 * \* Outputters → Yandexmarket:
@@ -108,8 +125,9 @@
 
 
 ## Version 0.1 (2015-09-23)
+
 * \+ The first release.
 
 
-<link rel="stylesheet" type="text/css" href="https://DivanDesign.ru/assets/files/ddMarkdown.css" />
+<link rel="stylesheet" type="text/css" href="https://raw.githack.com/DivanDesign/CSS.ddMarkdown/master/style.min.css" />
 <style>ul{list-style:none;}</style>

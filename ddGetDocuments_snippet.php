@@ -1,23 +1,23 @@
 <?php
 /**
  * ddGetDocuments
- * @version 1.6 (2022-09-30)
+ * @version 1.7 (2024-10-06)
  * 
  * @see README.md
  * 
- * @link https://code.divandesign.biz/modx/ddgetdocuments
+ * @link https://code.divandesign.ru/modx/ddgetdocuments
  * 
- * @copyright 2015–2022 DD Group {@link https://DivanDesign.biz }
+ * @copyright 2015–2024 Ronef {@link https://Ronef.me }
  */
 
-//Include (MODX)EvolutionCMS.libraries.ddTools
+// Include (MODX)EvolutionCMS.libraries.ddTools
 require_once(
-	$modx->getConfig('base_path') .
-	'assets/libs/ddTools/modx.ddtools.class.php'
+	$modx->getConfig('base_path')
+	. 'assets/libs/ddTools/modx.ddtools.class.php'
 );
 
 return \DDTools\Snippet::runSnippet([
 	'name' => 'ddGetDocuments',
-	'params' => $params
+	'params' => $params,
 ]);
 ?>

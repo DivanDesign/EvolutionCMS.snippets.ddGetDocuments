@@ -10,7 +10,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 		$changefreqTVName = 'general_seo_sitemap_changefreq',
 		$templates = [
 			'item' => '<url><loc>[(site_url)][~[+id+]~]</loc><lastmod>[+editedon+]</lastmod><priority>[+[+priorityTVName+]+]</priority><changefreq>[+[+changefreqTVName+]+]</changefreq></url>',
-			'wrapper' => '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'
+			'wrapper' => '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>',
 		]
 	;
 	
@@ -20,7 +20,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	
 	/**
 	 * __construct
-	 * @version 2.0 (2021-07-13)
+	 * @version 2.0.4 (2024-10-05)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 * @param $params->priorityTVName {stringTvName} — Name of TV which sets the relative priority of the document. Default: 'general_seo_sitemap_priority'.
@@ -29,35 +29,37 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 * @param $params->templates->item {string|stringChunkName} — Available placeholders: [+any field or tv name+], [+any of extender placeholders+]. Default: ''.
 	 * @param $params->templates->wrapper {string|stringChunkName} — Available placeholders: [+ddGetDocuments_items+], [+any of extender placeholders+]. Default: '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">[+ddGetDocuments_items+]</urlset>'.
 	 */
-	function __construct($params = []){
-		//Call base constructor
+	public function __construct($params = []){
+		// Call base constructor
 		parent::__construct($params);
 		
-		//Prepare item template
+		// Prepare item template
 		$this->templates->item = \ddTools::parseText([
 			'text' => $this->templates->item,
 			'data' => [
 				'priorityTVName' => $this->priorityTVName,
-				'changefreqTVName' => $this->changefreqTVName
+				'changefreqTVName' => $this->changefreqTVName,
 			],
-			'mergeAll' => false
+			'isCompletelyParsingEnabled' => false,
 		]);
 		
-		//We use the “String” Outputter as base
-		$outputter_StringClass = \ddGetDocuments\Outputter\Outputter::includeOutputterByName('String');
+		// We use the “String” Outputter as base
 		$outputter_StringParams = (object) [
-			'templates' => $this->templates
+			'templates' => $this->templates,
 		];
-		//Transfer provider link
+		// Transfer provider link
 		if (isset($params->dataProvider)){
 			$outputter_StringParams->dataProvider = $params->dataProvider;
 		}
-		$this->outputter_StringInstance = new $outputter_StringClass($outputter_StringParams);
+		$this->outputter_StringInstance = \ddGetDocuments\Outputter\Outputter::createChildInstance([
+			'name' => 'String',
+			'params' => $outputter_StringParams,
+		]);
 	}
 	
 	/**
 	 * parse
-	 * @version 1.1.2 (2020-04-30)
+	 * @version 1.1.4 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -65,11 +67,11 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	 */
 	public function parse(Output $data){
 		foreach (
-			$data->provider->items as
-			$docIndex =>
-			$docData
+			$data->provider->items
+			as $docIndex
+			=> $docData
 		){
-			//Convert date to appropriate format
+			// Convert date to appropriate format
 			if (isset($data->provider->items[$docIndex]['editedon'])){
 				$data->provider->items[$docIndex]['editedon'] = date(
 					'Y-m-d',
@@ -78,7 +80,7 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			}
 		}
 		
-		//Just use the “String” class
+		// Just use the “String” class
 		return $this->outputter_StringInstance->parse($data);
 	}
 }

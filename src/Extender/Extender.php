@@ -1,12 +1,9 @@
 <?php
-/**
- * Created by phm
- */
-
 namespace ddGetDocuments\Extender;
 
-
-abstract class Extender extends \DDTools\BaseClass {
+abstract class Extender extends \DDTools\Base\Base {
+	use \DDTools\Base\AncestorTrait;
+	
 	/**
 	 * __construct
 	 * @version 1.0.2 (2020-03-10)

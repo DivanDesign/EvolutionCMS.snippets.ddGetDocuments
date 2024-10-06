@@ -11,20 +11,20 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	
 	/**
 	 * get
-	 * @version 1.0.7 (2020-03-10)
+	 * @version 1.0.9 (2024-10-05)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
 	public function get(){
-		//Order by selected IDs sequence
+		// Order by selected IDs sequence
 		if (
-			empty($this->orderBy) &&
-			!empty($this->ids)
+			empty($this->orderBy)
+			&& !empty($this->ids)
 		){
 			$this->orderBy =
-				'FIELD (`resources`.`id`,' .
-				$this->ids .
-				')'
+				'FIELD (`resources`.`id`,'
+				. $this->ids
+				. ')'
 			;
 		}
 		

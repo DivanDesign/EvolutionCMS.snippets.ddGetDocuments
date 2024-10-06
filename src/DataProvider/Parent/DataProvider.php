@@ -13,15 +13,15 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	
 	/**
 	 * __construct
-	 * @version 2.0 (2021-02-15)
+	 * @version 2.0.1 (2024-08-06)
 	 * 
 	 * @param $params {stdClass|arrayAssociative}
 	 */
 	public function __construct($params){
-		//Call base constructor
+		// Call base constructor
 			parent::__construct($params);
 		
-		//Comma separated strings support
+		// Comma separated strings support
 		if (!is_array($this->parentIds)){
 			$this->parentIds = explode(
 				',',
@@ -35,8 +35,8 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 			);
 		}
 		
-		//Parent IDs must be set.
-		//TODO: Does we need to to this? People must set correct parameters. Or not? :)
+		// Parent IDs must be set.
+		// TODO: Does we need to to this? People must set correct parameters. Or not? :)
 		if (empty($this->parentIds)){
 			$this->parentIds = [0];
 		}
@@ -44,7 +44,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 	
 	/**
 	 * get
-	 * @version 2.0.9 (2020-03-10)
+	 * @version 2.0.11 (2024-10-05)
 	 * 
 	 * @return {\ddGetDocuments\DataProvider\DataProviderOutput}
 	 */
@@ -56,18 +56,20 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 		
 		if (!empty($this->excludeIds)){
 			$excludeIdsStr =
-				'AND `id` NOT IN (' .
-				trim(implode(
-					',',
-					$this->excludeIds
-				)) .
-				')'
+				'AND `id` NOT IN ('
+				. trim(
+					implode(
+						',',
+						$this->excludeIds
+					)
+				)
+				. ')'
 			;
 		}else{
 			$excludeIdsStr = '';
 		}
 		
-		//Need to get multiple levels
+		// Need to get multiple levels
 		if($this->depth > 1){
 			$allChildrenIds = '
 				WITH RECURSIVE `recursive_query` ( `id`, `parent`, `depth` ) AS (
@@ -99,7 +101,7 @@ class DataProvider extends \ddGetDocuments\DataProvider\DataProvider {
 				FROM
 					`recursive_query`
 			';
-		//Just single level
+		// Just single level
 		}else{
 			$allChildrenIds = '
 				SELECT 

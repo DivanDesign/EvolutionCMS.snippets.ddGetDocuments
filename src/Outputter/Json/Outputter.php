@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.3 (2022-09-30)
+	 * @version 2.5 (2024-10-05)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -16,45 +16,67 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	public function parse(Output $data){
 		$result = [];
 		
-		//Пройдемся по полученным данным
+		$isFieldAliasesUsed = !\ddTools::isEmpty($this->fieldAliases);
+		
+		// Пройдемся по полученным данным
 		foreach(
-			$data->provider->items as
-			$itemData
+			$data->provider->items
+			as $itemIndex
+			=> $itemData
 		){
 			$result_item = [];
 			
-			//Result must contains only specified fields
+			// Result must contains only specified fields
 			foreach(
-				$this->docFields as
-				$docField
+				$this->docFields
+				as $docField
 			){
-				$result_item[$docField] = $itemData[$docField];
+				// If aliases are used
+				if (
+					$isFieldAliasesUsed
+					&& \DDTools\Tools\Objects::isPropExists([
+						'object' => $this->fieldAliases,
+						'propName' => $docField,
+					])
+				){
+					$result_item[$this->fieldAliases->{$docField}] = $itemData[$docField];
+					
+					$docField = $this->fieldAliases->{$docField};
+				}else{
+					$result_item[$docField] = $itemData[$docField];
+				}
 				
-				//If template for this field is set
+				// If template for this field is set
 				if (
 					\DDTools\ObjectTools::isPropExists([
 						'object' => $this->templates,
-						'propName' => $docField
+						'propName' => $docField,
 					])
 				){
-					$result_item[$docField] = \ddTools::parseSource(\ddTools::parseText([
-						'text' => $this->templates->{$docField},
-						'data' => \DDTools\ObjectTools::extend([
-							'objects' => [
-								$itemData,
-								[
-									'value' => $result_item[$docField]
-								]
-							]
-						])
-					]));
+					$result_item[$docField] =
+						\ddTools::parseSource(
+							\ddTools::parseText([
+								'text' => $this->templates->{$docField},
+								'data' => \DDTools\ObjectTools::extend([
+									'objects' => [
+										$itemData,
+										[
+											'value' => $result_item[$docField],
+											'itemNumber' => $itemIndex + 1,
+											'itemNumberZeroBased' => $itemIndex,
+										]
+									],
+								]),
+							])
+						)
+					;
 				}
 			}
 			
 			$result[] = $result_item;
 		}
 		
-		//JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
+		// JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
 		return json_encode(
 			$result,
 			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
