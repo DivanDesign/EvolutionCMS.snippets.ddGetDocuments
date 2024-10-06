@@ -7,7 +7,7 @@ use ddGetDocuments\Output;
 class Outputter extends \ddGetDocuments\Outputter\Outputter {
 	/**
 	 * parse
-	 * @version 2.5 (2024-10-05)
+	 * @version 2.5.1 (2024-10-06)
 	 * 
 	 * @param $data {Output}
 	 * 
@@ -76,10 +76,9 @@ class Outputter extends \ddGetDocuments\Outputter\Outputter {
 			$result[] = $result_item;
 		}
 		
-		// JSON_UNESCAPED_UNICODE — Не кодировать многобайтные символы Unicode || JSON_UNESCAPED_SLASHES — Не экранировать /
-		return json_encode(
-			$result,
-			JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-		);
+		return \DDTools\Tools\Objects::convertType([
+			'object' => $result,
+			'type' => 'stringJsonAuto',
+		]);
 	}
 }
